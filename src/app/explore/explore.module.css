@@ -1,11 +1,11 @@
 .exploreSection {
-    min-height: 70vh;
-    padding: 80px 20px;
-    background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);
+    min-height: 100vh;
+    padding: 120px 20px 80px;
+    background: #000000;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -13,70 +13,64 @@
     font-size: 3rem;
     font-weight: 800;
     text-align: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
     margin-bottom: 20px;
 }
 
 .subtitle {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     color: #a0a0a0;
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto 80px;
+    max-width: 800px;
+    margin: 0 auto 60px;
     line-height: 1.6;
 }
 
-.emptyState {
-    text-align: center;
-    padding: 100px 20px;
+.galleryGrid {
+    column-count: 4;
+    column-gap: 20px;
 }
 
-.emptyIcon {
-    font-size: 6rem;
-    margin-bottom: 30px;
-    opacity: 0.3;
+.galleryItem {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease;
+    background: #1a1a1a;
 }
 
-.emptyMessage {
-    font-size: 1.5rem;
-    color: #a0a0a0;
-    margin-bottom: 15px;
+.galleryItem:hover {
+    transform: translateY(-5px);
+    z-index: 1;
 }
 
-.emptyHint {
-    font-size: 1.1rem;
-    color: #707070;
+.image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+}
+
+@media (max-width: 1200px) {
+    .galleryGrid {
+        column-count: 3;
+    }
 }
 
 @media (max-width: 768px) {
-    .exploreSection {
-        padding: 60px 20px;
+    .galleryGrid {
+        column-count: 2;
     }
 
     .title {
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
+}
 
-    .subtitle {
-        font-size: 1.1rem;
-    }
-
-    .emptyState {
-        padding: 60px 20px;
-    }
-
-    .emptyIcon {
-        font-size: 4rem;
-    }
-
-    .emptyMessage {
-        font-size: 1.2rem;
-    }
-
-    .emptyHint {
-        font-size: 1rem;
+@media (max-width: 480px) {
+    .galleryGrid {
+        column-count: 1;
     }
 }

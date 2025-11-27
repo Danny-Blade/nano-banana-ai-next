@@ -4,7 +4,7 @@ import { siteContent } from "@/config/content";
 import styles from './explore.module.css';
 
 export default function ExplorePage() {
-    const { title, subtitle, emptyMessage } = siteContent.explore;
+    const { title, subtitle, images } = siteContent.explore;
 
     return (
         <main>
@@ -14,12 +14,17 @@ export default function ExplorePage() {
                     <h1 className={styles.title}>{title}</h1>
                     <p className={styles.subtitle}>{subtitle}</p>
 
-                    <div className={styles.emptyState}>
-                        <div className={styles.emptyIcon}>🎨</div>
-                        <p className={styles.emptyMessage}>{emptyMessage}</p>
-                        <p className={styles.emptyHint}>
-                            Check back soon for amazing community creations!
-                        </p>
+                    <div className={styles.galleryGrid}>
+                        {images && images.map((imgUrl, index) => (
+                            <div key={index} className={styles.galleryItem}>
+                                <img
+                                    src={imgUrl}
+                                    alt={`Explore item ${index + 1}`}
+                                    className={styles.image}
+                                    loading="lazy"
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>

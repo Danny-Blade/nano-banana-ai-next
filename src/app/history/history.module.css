@@ -1,7 +1,7 @@
 .historySection {
-    min-height: 70vh;
-    padding: 80px 20px;
-    background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%);
+    min-height: 100vh;
+    padding: 120px 20px 80px;
+    background: #000000;
 }
 
 .container {
@@ -10,73 +10,45 @@
 }
 
 .title {
-    font-size: 3rem;
-    font-weight: 800;
+    font-size: 2.5rem;
+    font-weight: 700;
     text-align: center;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 20px;
+    color: #ffffff;
+    margin-bottom: 10px;
 }
 
 .subtitle {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     color: #a0a0a0;
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto 80px;
-    line-height: 1.6;
+    margin-bottom: 60px;
 }
 
 .emptyState {
     text-align: center;
     padding: 100px 20px;
+    background: #111;
+    border-radius: 16px;
+    border: 1px dashed #333;
 }
 
 .emptyIcon {
-    font-size: 6rem;
-    margin-bottom: 30px;
-    opacity: 0.3;
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
 }
 
 .emptyMessage {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: #a0a0a0;
-    margin-bottom: 15px;
-}
-
-.emptyHint {
-    font-size: 1.1rem;
-    color: #707070;
 }
 
 @media (max-width: 768px) {
     .historySection {
-        padding: 60px 20px;
+        padding: 80px 20px;
     }
 
     .title {
-        font-size: 2.2rem;
-    }
-
-    .subtitle {
-        font-size: 1.1rem;
-    }
-
-    .emptyState {
-        padding: 60px 20px;
-    }
-
-    .emptyIcon {
-        font-size: 4rem;
-    }
-
-    .emptyMessage {
-        font-size: 1.2rem;
-    }
-
-    .emptyHint {
-        font-size: 1rem;
+        font-size: 2rem;
     }
 }
