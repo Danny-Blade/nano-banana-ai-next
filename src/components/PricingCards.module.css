@@ -1,0 +1,286 @@
+.pricingSection {
+    padding: 100px 20px;
+    background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: #a0a0a0;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.plansGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 80px;
+}
+
+.planCard {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    padding: 40px 30px;
+    position: relative;
+    transition: all 0.4s ease;
+}
+
+.planCard:hover {
+    transform: translateY(-10px);
+    border-color: rgba(102, 126, 234, 0.5);
+    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.2);
+}
+
+.planCard.highlighted {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-color: #667eea;
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+}
+
+.planCard.highlighted:hover {
+    box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+}
+
+.badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.planName {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.planDescription {
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+}
+
+.priceWrapper {
+    margin-bottom: 30px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.period {
+    color: #a0a0a0;
+    font-size: 1.1rem;
+    margin-left: 5px;
+}
+
+.selectBtn {
+    width: 100%;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 25px;
+}
+
+.selectBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.featuresList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature {
+    color: #d0d0d0;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.5;
+}
+
+.checkmark {
+    color: #667eea;
+    font-weight: bold;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.addonsSection {
+    margin-top: 80px;
+}
+
+.addonsTitle {
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 50px;
+}
+
+.addonsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.addonCard {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 35px 30px;
+    transition: all 0.4s ease;
+}
+
+.addonCard:hover {
+    transform: translateY(-8px);
+    border-color: rgba(79, 172, 254, 0.5);
+    box-shadow: 0 15px 40px rgba(79, 172, 254, 0.2);
+}
+
+.addonName {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.addonDescription {
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.addonPrice {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.addonPrice .price {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.credits {
+    color: #4facfe;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.addonFeatures {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+}
+
+.addonFeatures li {
+    color: #d0d0d0;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.addonFeatures .checkmark {
+    color: #4facfe;
+}
+
+.addonBtn {
+    width: 100%;
+    padding: 14px 25px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.addonBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+}
+
+@media (max-width: 768px) {
+    .pricingSection {
+        padding: 70px 20px;
+    }
+
+    .title {
+        font-size: 2.2rem;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+    }
+
+    .plansGrid,
+    .addonsGrid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .planCard,
+    .addonCard {
+        padding: 30px 25px;
+    }
+
+    .price {
+        font-size: 2.5rem;
+    }
+
+    .addonPrice .price {
+        font-size: 2rem;
+    }
+}

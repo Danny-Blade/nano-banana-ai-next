@@ -1,0 +1,104 @@
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: radial-gradient(circle at center, var(--secondary) 0%, var(--background) 100%);
+    min-height: 60vh;
+    justify-content: center;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.announcement {
+    background: rgba(0, 112, 243, 0.1);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    max-width: 800px;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+}
+
+.ctaGroup {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.primaryBtn {
+    padding: 1rem 2rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+}
+
+.primaryBtn:hover {
+    transform: translateY(-2px);
+}
+
+.secondaryBtn {
+    padding: 1rem 2rem;
+    background: white;
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: background 0.2s;
+}
+
+.secondaryBtn:hover {
+    background: var(--secondary);
+}
+
+.imageWrapper {
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.heroImage {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+}

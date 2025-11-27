@@ -1,0 +1,127 @@
+.faqSection {
+    padding: 100px 20px;
+    background: #0a0a0a;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 60px;
+}
+
+.faqList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.faqItem {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faqItem:hover {
+    border-color: rgba(48, 207, 208, 0.3);
+}
+
+.faqItem.open {
+    border-color: rgba(48, 207, 208, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.question {
+    width: 100%;
+    padding: 25px 30px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+.question:hover {
+    color: #30cfd0;
+}
+
+.icon {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #30cfd0;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(48, 207, 208, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.faqItem.open .icon {
+    background: rgba(48, 207, 208, 0.2);
+    transform: rotate(180deg);
+}
+
+.answerWrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faqItem.open .answerWrapper {
+    max-height: 500px;
+}
+
+.answer {
+    padding: 0 30px 25px 30px;
+    color: #b0b0b0;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .faqSection {
+        padding: 70px 20px;
+    }
+
+    .title {
+        font-size: 2.2rem;
+    }
+
+    .question {
+        padding: 20px;
+        font-size: 1.05rem;
+    }
+
+    .answer {
+        padding: 0 20px 20px 20px;
+        font-size: 1rem;
+    }
+
+    .icon {
+        font-size: 1.3rem;
+        width: 28px;
+        height: 28px;
+    }
+}
