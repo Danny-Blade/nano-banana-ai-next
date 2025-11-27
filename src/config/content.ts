@@ -1,7 +1,7 @@
 export const siteContent = {
     header: {
         logo: "Nano Banana AI",
-        logoImage: "https://ainanobanana.io/logo.png",
+        logoImage: "https://cdn.ainanobanana.io/icon.png",
         navLinks: [
             { label: "Home", href: "/" },
             { label: "Dashboard", href: "/dashboard" },
@@ -28,38 +28,38 @@ export const siteContent = {
         title: "Examples: See what Nano Banana can do",
         items: [
             {
-                before: "/examples/before-1.jpg",
-                after: "/examples/after-1.jpg",
+                before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+                after: "https://cdn.ainanobanana.io/nanobanana-example-after-2.jpg",
                 prompt: "change the bikini to red"
             },
             {
-                before: "/examples/before-2.jpg",
-                after: "/examples/after-2.jpg",
+                before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+                after: "https://cdn.ainanobanana.io/nanobanana-example-2-after.png",
                 prompt: "Transform this anime character into a collectible figure product showcase: Create a physical PVC figure standing on a clear round base, place a product box with the character artwork behind it, and add a computer monitor showing the 3D modeling process in Blender."
             },
             {
-                before: "/examples/before-3.jpg",
-                after: "/examples/after-3.jpg",
+                before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+                after: "https://cdn.ainanobanana.io/nano-banana/cad910b5-b130-4ae6-bf2c-e813d5572835.png",
                 prompt: "Repair and color this photo"
             },
             {
-                before: "/examples/before-4.jpg",
-                after: "/examples/after-4.jpg",
+                before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+                after: "https://cdn.ainanobanana.io/nano-banana/22a808a5-32d2-4760-812c-07eee8875426.png",
                 prompt: "Transform the subject into a handmade crocheted yarn doll with a cute, chibi-style appearance."
             },
             {
-                before: "/examples/before-5.jpg",
-                after: "/examples/after-5.jpg",
+                before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+                after: "https://cdn.ainanobanana.io/nano-banana/c06bcfe8-b5f1-4a11-9181-21138d1b46d3.png",
                 prompt: "Reimagine the photo in the style of Van Gogh's 'Starry Night'."
             },
             {
-                before: "/examples/before-6.jpg",
-                after: "/examples/after-6.jpg",
+                before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+                after: "https://cdn.ainanobanana.io/nano-banana/47b04301-79bb-431a-a54f-8fc88674bc3c.png",
                 prompt: "Change the hair to blue."
             },
             {
-                before: "/examples/before-7.jpg",
-                after: "/examples/after-7.jpg",
+                before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+                after: "https://cdn.ainanobanana.io/nano-banana/7c7f75bd-84e5-47e6-9b93-f1f2164d2b26.png",
                 prompt: "Transform the person into a LEGO minifigure, inside its packaging box."
             },
         ]
@@ -72,18 +72,18 @@ export const siteContent = {
                 title: "Complete Nano Banana AI Transformation Pipeline",
                 prompt: "Transform this anime character into a collectible figure product showcase: Create a physical PVC figure standing on a clear round base, place a product box with the character artwork behind it, and add a computer monitor showing the 3D modeling process in Blender.",
                 videoPrompt: "Let the anime character come to life: make her smile gently, blink naturally, and have her hair sway softly in the breeze",
-                image: "/gallery/showcase-1.jpg",
-                video: "/gallery/showcase-1.mp4"
+                image: "https://cdn.ainanobanana.io/ai-poster.png",
+                video: "" // Video URL not found in extraction, keeping empty or placeholder if needed
             },
             {
                 title: "Nano Banana AI Cyberpunk Portrait",
                 prompt: "Transform into a cyberpunk style portrait with neon lights and futuristic elements",
-                image: "/gallery/showcase-2.jpg"
+                image: "https://cdn.ainanobanana.io/flux-kontext-dev/1e9de2c2-1fea-473c-a2c0-73191a02940c.png"
             },
             {
                 title: "Nano Banana AI Restore Image",
                 prompt: "fix scratches and damage, and colorize old photos",
-                image: "/gallery/showcase-3.jpg"
+                image: "https://cdn.ainanobanana.io/restore-image.png"
             }
         ]
     },

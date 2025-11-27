@@ -28,8 +28,7 @@ const Examples = () => {
                         <div className={styles.imageBox}>
                             <span className={styles.label}>Before</span>
                             <div className={styles.imagePlaceholder}>
-                                <span className={styles.icon}>🖼️</span>
-                                <p>Original Image</p>
+                                <img src={currentExample.before} alt="Before transformation" />
                             </div>
                         </div>
 
@@ -38,8 +37,7 @@ const Examples = () => {
                         <div className={styles.imageBox}>
                             <span className={styles.label}>After</span>
                             <div className={styles.imagePlaceholder}>
-                                <span className={styles.icon}>✨</span>
-                                <p>AI Enhanced</p>
+                                <img src={currentExample.after} alt="After transformation" />
                             </div>
                         </div>
                     </div>
@@ -82,7 +80,7 @@ const Examples = () => {
                             onClick={() => setCurrentIndex(index)}
                         >
                             <div className={styles.thumbnailPlaceholder}>
-                                {index + 1}
+                                <img src={item.after} alt={`Example ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </div>
                         </button>
                     ))}
