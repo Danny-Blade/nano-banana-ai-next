@@ -23,6 +23,10 @@ export default function ExplorePage() {
                                     className={styles.image}
                                     loading="lazy"
                                 />
+                                <div className={styles.overlay}>
+                                    <div className={styles.overlayModel}>Nano Banana AI</div>
+                                    <div className={styles.overlayPrompt}>Creative image generation...</div>
+                                </div>
                             </div>
                         ))}
                     </div>

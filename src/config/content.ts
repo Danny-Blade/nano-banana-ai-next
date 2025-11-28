@@ -73,7 +73,7 @@ export const siteContent = {
                 prompt: "Transform this anime character into a collectible figure product showcase: Create a physical PVC figure standing on a clear round base, place a product box with the character artwork behind it, and add a computer monitor showing the 3D modeling process in Blender.",
                 videoPrompt: "Let the anime character come to life: make her smile gently, blink naturally, and have her hair sway softly in the breeze",
                 image: "https://cdn.ainanobanana.io/ai-poster.png",
-                video: "" // Video URL not found in extraction, keeping empty or placeholder if needed
+                video: "https://image.ainanobanana.io/ai-nanobanana.mp4"
             },
             {
                 title: "Nano Banana AI Cyberpunk Portrait",

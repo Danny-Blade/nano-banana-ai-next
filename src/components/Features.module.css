@@ -39,16 +39,23 @@
     border-color: var(--primary);
 }
 
-.question {
-    font-size: 1.2rem;
+.icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.featureTitle {
+    font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
     color: var(--foreground);
 }
 
-.answer {
-    color: #666;
+.featureDescription {
+    color: #888;
     line-height: 1.6;
+    font-size: 0.95rem;
 }
 
 @media (max-width: 768px) {

@@ -18,7 +18,16 @@ const CommunityGallery = () => {
                     {showcases.map((showcase, index) => (
                         <div key={index} className={styles.showcaseCard}>
                             <div className={styles.showcaseImage}>
-                                <img src={showcase.image} alt={showcase.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                {showcase.video ? (
+                                    <video
+                                        src={showcase.video}
+                                        controls
+                                        poster={showcase.image}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                ) : (
+                                    <img src={showcase.image} alt={showcase.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                )}
                             </div>
                             <div className={styles.showcaseContent}>
                                 <h3 className={styles.showcaseTitle}>{showcase.title}</h3>

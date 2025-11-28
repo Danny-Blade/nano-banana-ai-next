@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "Nano Banana AI",
-  description: "Create stunning images and videos with the power of AI.",
+  title: "Nano Banana AI - Google Gemini 2.5 Flash Image Generation & Editing Studio",
+  description: "Experience Google's revolutionary Nano Banana AI (Gemini 2.5 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana AI （alternative Google AI Studio and Imarena). Professional image editing made simple.",
+  icons: {
+    icon: 'https://ainanobanana.io/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

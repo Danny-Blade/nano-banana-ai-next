@@ -3,17 +3,18 @@ import styles from './Features.module.css';
 import { siteContent } from '@/config/content';
 
 const Features = () => {
-    const { title, items } = siteContent.features;
+    const { title, features } = siteContent.whyChoose;
 
     return (
         <section className={styles.section}>
             <div className={styles.container}>
                 <h2 className={styles.title}>{title}</h2>
                 <div className={styles.grid}>
-                    {items.map((item, index) => (
+                    {features.map((feature, index) => (
                         <div key={index} className={styles.card}>
-                            <h3 className={styles.question}>{item.question}</h3>
-                            <p className={styles.answer}>{item.answer}</p>
+                            <span className={styles.icon}>{feature.icon}</span>
+                            <h3 className={styles.featureTitle}>{feature.title}</h3>
+                            <p className={styles.featureDescription}>{feature.description}</p>
                         </div>
                     ))}
                 </div>
