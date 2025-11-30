@@ -1,7 +1,8 @@
+"use client";
+
 import React from 'react';
 import styles from './CommunityGallery.module.css';
 import { siteContent } from '@/config/content';
-import Link from 'next/link';
 
 const CommunityGallery = () => {
     const { title, subtitle, showcases } = siteContent.communityGallery;
@@ -14,38 +15,39 @@ const CommunityGallery = () => {
                     <p className={styles.subtitle}>{subtitle}</p>
                 </div>
 
-                <div className={styles.showcaseGrid}>
-                    {showcases.map((showcase, index) => (
-                        <div key={index} className={styles.showcaseCard}>
-                            <div className={styles.showcaseImage}>
-                                {showcase.video ? (
+                <div className={styles.grid}>
+                    {showcases.map((item, index) => (
+                        <div key={index} className={styles.card}>
+                            <div className={styles.mediaWrapper}>
+                                {item.video ? (
                                     <video
-                                        src={showcase.video}
-                                        controls
-                                        poster={showcase.image}
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        src={item.video}
+                                        className={styles.media}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        playsInline
+                                        poster={item.image}
                                     />
                                 ) : (
-                                    <img src={showcase.image} alt={showcase.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <img src={item.image} alt={item.title} className={styles.media} />
                                 )}
                             </div>
-                            <div className={styles.showcaseContent}>
-                                <h3 className={styles.showcaseTitle}>{showcase.title}</h3>
-                                <p className={styles.showcasePrompt}>"{showcase.prompt}"</p>
-                                {showcase.videoPrompt && (
-                                    <p className={styles.videoPrompt}>
-                                        <strong>Video:</strong> "{showcase.videoPrompt}"
-                                    </p>
+                            <div className={styles.content}>
+                                <h3 className={styles.cardTitle}>{item.title}</h3>
+
+                                <span className={styles.promptLabel}>Prompt</span>
+                                <p className={styles.promptText}>{item.prompt}</p>
+
+                                {item.videoPrompt && (
+                                    <>
+                                        <span className={styles.promptLabel}>Video Prompt</span>
+                                        <p className={styles.promptText}>{item.videoPrompt}</p>
+                                    </>
                                 )}
                             </div>
                         </div>
                     ))}
-                </div>
-
-                <div className={styles.ctaContainer}>
-                    <Link href="/explore" className={styles.exploreBtn}>
-                        View More Creations
-                    </Link>
                 </div>
             </div>
         </section>

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "Nano Banana AI - Google Gemini 2.5 Flash Image Generation & Editing Studio",
   description: "Experience Google's revolutionary Nano Banana AI (Gemini 2.5 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana AI （alternative Google AI Studio and Imarena). Professional image editing made simple.",
   icons: {
-    icon: 'https://ainanobanana.io/favicon.ico',
+    icon: "https://cdn.ainanobanana.io/icon.png",
   },
 };
 
@@ -16,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

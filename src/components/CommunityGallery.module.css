@@ -1,179 +1,82 @@
 .gallerySection {
-    padding: 100px 20px;
-    background: linear-gradient(180deg, #1a1a2e 0%, #0a0a0a 100%);
-    position: relative;
-    overflow: hidden;
-}
-
-.gallerySection::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 300px;
-    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
-    pointer-events: none;
+    padding: 4rem 1rem;
+    background-color: #fff;
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
 }
 
 .header {
     text-align: center;
-    margin-bottom: 70px;
+    margin-bottom: 3rem;
 }
 
 .title {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 20px;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #111;
 }
 
 .subtitle {
-    font-size: 1.25rem;
-    color: #a0a0a0;
-    max-width: 700px;
+    font-size: 1.125rem;
+    color: #666;
+    max-width: 800px;
     margin: 0 auto;
-    line-height: 1.6;
 }
 
-.showcaseGrid {
+.grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 40px;
-    margin-bottom: 60px;
+    gap: 2rem;
 }
 
-.showcaseCard {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+.card {
+    background: #fff;
+    border-radius: 1rem;
     overflow: hidden;
-    transition: all 0.4s ease;
-    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
 }
 
-.showcaseCard:hover {
-    transform: translateY(-10px);
-    border-color: rgba(79, 172, 254, 0.5);
-    box-shadow: 0 20px 40px rgba(79, 172, 254, 0.2);
-}
-
-.showcaseImage {
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+.mediaWrapper {
     position: relative;
+    aspect-ratio: 16/9;
+    background: #f3f4f6;
     overflow: hidden;
 }
 
-.imagePlaceholder {
+.media {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(79, 172, 254, 0.05) 0%, rgba(0, 242, 254, 0.05) 100%);
+    object-fit: cover;
 }
 
-.icon {
-    font-size: 5rem;
-    opacity: 0.4;
+.content {
+    padding: 1.5rem;
 }
 
-.showcaseContent {
-    padding: 30px;
-}
-
-.showcaseTitle {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 15px;
-}
-
-.showcasePrompt {
-    color: #b0b0b0;
-    font-size: 1rem;
-    line-height: 1.6;
-    font-style: italic;
-    margin-bottom: 12px;
-}
-
-.videoPrompt {
-    color: #4facfe;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.videoPrompt strong {
-    color: #00f2fe;
+.cardTitle {
+    font-size: 1.25rem;
     font-weight: 600;
+    margin-bottom: 1rem;
+    color: #111;
 }
 
-.ctaContainer {
-    text-align: center;
-    margin-top: 50px;
+.promptLabel {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
 }
 
-.exploreBtn {
-    display: inline-block;
-    padding: 18px 50px;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: #fff;
-    text-decoration: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
-}
-
-.exploreBtn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(79, 172, 254, 0.5);
-}
-
-.exploreBtn:active {
-    transform: translateY(-1px);
-}
-
-@media (max-width: 768px) {
-    .gallerySection {
-        padding: 70px 20px;
-    }
-
-    .title {
-        font-size: 2.2rem;
-    }
-
-    .subtitle {
-        font-size: 1.1rem;
-    }
-
-    .showcaseGrid {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-
-    .showcaseContent {
-        padding: 20px;
-    }
-
-    .showcaseTitle {
-        font-size: 1.2rem;
-    }
+.promptText {
+    font-size: 0.875rem;
+    color: #374151;
+    line-height: 1.5;
+    margin-bottom: 1rem;
 }
