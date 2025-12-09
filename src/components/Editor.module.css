@@ -1,28 +1,19 @@
 .editorSection {
     padding: 4rem 1rem;
-    background-color: #fff;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 3rem;
+    background-color: #1a1625;
+    color: #ffffff;
 }
 
 .title {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: #111;
+    color: #ffffff;
 }
 
 .subtitle {
     font-size: 1.125rem;
-    color: #666;
+    color: #a1a1aa;
     max-width: 800px;
     margin: 0 auto;
 }

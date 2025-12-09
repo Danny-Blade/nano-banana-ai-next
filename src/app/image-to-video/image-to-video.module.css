@@ -1,7 +1,7 @@
 .videoSection {
     min-height: 100vh;
     padding: 120px 20px 80px;
-    background: #000000;
+    background: var(--background);
 }
 
 .container {
@@ -13,23 +13,23 @@
     font-size: 2.5rem;
     font-weight: 700;
     text-align: center;
-    color: #ffffff;
+    color: var(--foreground);
     margin-bottom: 10px;
 }
 
 .subtitle {
     font-size: 1.1rem;
-    color: #a0a0a0;
+    color: #666;
     text-align: center;
     margin-bottom: 20px;
 }
 
 .modelInfo {
     text-align: center;
-    color: #3b82f6;
+    color: #2563eb;
     font-size: 0.9rem;
     margin-bottom: 40px;
-    background: rgba(59, 130, 246, 0.1);
+    background: rgba(37, 99, 235, 0.1);
     display: inline-block;
     padding: 8px 16px;
     border-radius: 20px;
@@ -47,25 +47,25 @@
 
 .panelTitle {
     font-size: 1.2rem;
-    color: #ffffff;
+    color: var(--foreground);
     margin-bottom: 15px;
     font-weight: 600;
 }
 
 .uploadArea {
-    border: 2px dashed #333;
+    border: 2px dashed #d1d5db;
     border-radius: 12px;
     padding: 40px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: #111;
+    background: #f9fafb;
     margin-bottom: 20px;
 }
 
 .uploadArea:hover {
-    border-color: #3b82f6;
-    background: #161616;
+    border-color: #2563eb;
+    background: #f3f4f6;
 }
 
 .uploadIcon {
@@ -75,7 +75,7 @@
 }
 
 .uploadHint {
-    color: #666;
+    color: #6b7280;
     font-size: 0.8rem;
     margin-top: 10px;
 }
@@ -86,31 +86,33 @@
 
 .label {
     display: block;
-    color: #ccc;
+    color: #374151;
     margin-bottom: 8px;
     font-size: 0.9rem;
+    font-weight: 500;
 }
 
 .textarea {
     width: 100%;
-    background: #111;
-    border: 1px solid #333;
+    background: #fff;
+    border: 1px solid #d1d5db;
     border-radius: 8px;
     padding: 12px;
-    color: #fff;
+    color: #111;
     font-size: 0.95rem;
     resize: vertical;
 }
 
 .textarea:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #2563eb;
+    ring: 2px solid #2563eb;
 }
 
 .generateBtn {
     width: 100%;
     padding: 14px;
-    background: #3b82f6;
+    background: #2563eb;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -120,19 +122,19 @@
 }
 
 .generateBtn:hover {
-    background: #2563eb;
+    background: #1d4ed8;
 }
 
 .videoPlaceholder {
-    background: #111;
-    border: 1px solid #333;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
     border-radius: 12px;
     aspect-ratio: 16/9;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #666;
+    color: #6b7280;
     margin-bottom: 20px;
 }
 
@@ -142,20 +144,20 @@
 }
 
 .exampleInfo {
-    background: #111;
+    background: #f9fafb;
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid #333;
+    border: 1px solid #e5e7eb;
 }
 
 .exampleLabel {
-    color: #3b82f6;
+    color: #2563eb;
     font-size: 0.9rem;
     margin-bottom: 8px;
 }
 
 .examplePrompt {
-    color: #ccc;
+    color: #4b5563;
     font-size: 0.9rem;
     line-height: 1.5;
 }

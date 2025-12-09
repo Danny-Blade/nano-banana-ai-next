@@ -1,7 +1,7 @@
 .exploreSection {
     min-height: 100vh;
     padding: 120px 20px 80px;
-    background: #000000;
+    background: var(--background);
 }
 
 .container {
@@ -13,13 +13,13 @@
     font-size: 3rem;
     font-weight: 800;
     text-align: center;
-    color: #ffffff;
+    color: var(--foreground);
     margin-bottom: 20px;
 }
 
 .subtitle {
     font-size: 1.2rem;
-    color: #a0a0a0;
+    color: #666;
     text-align: center;
     max-width: 800px;
     margin: 0 auto 60px;
@@ -38,7 +38,8 @@
     overflow: hidden;
     position: relative;
     transition: transform 0.3s ease;
-    background: #1a1a1a;
+    background: #fff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .galleryItem .image {
@@ -70,7 +71,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
     color: white;
     padding: 20px 15px 15px;
     opacity: 0;
@@ -87,7 +88,7 @@
 .overlayModel {
     font-weight: 600;
     margin-bottom: 4px;
-    color: #e0e0e0;
+    color: #f3f4f6;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;

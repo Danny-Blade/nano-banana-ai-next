@@ -23,7 +23,7 @@ const Examples = () => {
                             </div>
                             <div className={styles.prompt}>
                                 <span className={styles.promptLabel}>Prompt used:</span>
-                                <p className={styles.promptText}>"{item.prompt}"</p>
+                                <p className={styles.promptText}>{item.prompt}</p>
                             </div>
                         </div>
                     ))}

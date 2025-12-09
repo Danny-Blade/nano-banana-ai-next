@@ -1,13 +1,13 @@
 import Header from "@/components/Header";
-import Editor from "@/components/Editor";
 import Footer from "@/components/Footer";
+import Dashboard from "@/components/Dashboard";
 
 export default function DashboardPage() {
-    return (
-        <main>
-            <Header />
-            <Editor />
-            <Footer />
-        </main>
-    );
+  return (
+    <main>
+      <Header />
+      <Dashboard />
+      <Footer />
+    </main>
+  );
 }
