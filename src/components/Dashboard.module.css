@@ -163,6 +163,35 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.25rem;
+    align-items: stretch;
+}
+
+.generateGrid {
+    grid-template-columns: 1fr 1.1fr;
+    align-items: start;
+}
+
+.resultColumn {
+    display: flex;
+    height: 100%;
+}
+
+.resultBox {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 1.5px dashed rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.03);
+    height: 100%;
+}
+
+.resultArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .column {
@@ -198,18 +227,39 @@
 }
 
 .uploadArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     padding: 1.2rem;
     border: 1.5px dashed rgba(255, 255, 255, 0.25);
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.04);
-    text-align: center;
     cursor: pointer;
-    transition: border-color 0.2s ease, background 0.2s ease;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .uploadArea:hover {
     border-color: rgba(96, 165, 250, 0.6);
     background: rgba(255, 255, 255, 0.07);
+}
+
+.uploadAreaActive {
+    border-color: rgba(96, 165, 250, 0.9);
+    background: rgba(59, 130, 246, 0.08);
+    transform: translateY(-2px);
+}
+
+.uploadAreaFilled {
+    border-style: solid;
+}
+
+.uploadHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.4rem;
+    justify-content: center;
 }
 
 .uploadIcon {
@@ -229,6 +279,52 @@
 
 .hiddenInput {
     display: none;
+}
+
+.uploadPreviewRow {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.7rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.uploadThumbInline {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.uploadThumbInline img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.removeInlineBtn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.65);
+    color: white;
+    font-weight: 700;
+}
+
+.uploadAdd {
+    width: 96px;
+    height: 96px;
+    border-radius: 12px;
+    border: 1.5px dashed rgba(255, 255, 255, 0.35);
+    color: #cbd5e1;
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .uploadGrid {
@@ -411,21 +507,32 @@
 
 .resultGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 0.9rem;
+    align-items: stretch;
+}
+
+.resultGrid > .placeholder,
+.resultGrid > .placeholderSmall {
+    grid-column: 1 / -1;
 }
 
 .resultCard {
+    display: flex;
+    flex-direction: column;
     border-radius: 12px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.04);
+    min-height: 280px;
 }
 
 .resultCard img {
     width: 100%;
-    height: 180px;
-    object-fit: cover;
+    height: 100%;
+    min-height: 240px;
+    object-fit: contain;
+    background: rgba(15, 23, 42, 0.8);
     display: block;
 }
 
@@ -441,6 +548,19 @@
     color: rgba(255, 255, 255, 0.65);
     font-size: 0.9rem;
     margin-top: 0.15rem;
+}
+
+.resultActions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem 0.8rem;
+    margin-top: auto;
+}
+
+.resultArea .resultGrid,
+.resultArea .compareGrid {
+    flex: 1;
+    min-height: 420px;
 }
 
 .placeholder,

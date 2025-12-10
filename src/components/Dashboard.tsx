@@ -72,9 +72,16 @@ const modelOptions = [
 ];
 
 const ratioOptions = [
-  { value: "1:1", label: "方形", hint: "1:1" },
-  { value: "2:3", label: "竖版", hint: "2:3" },
-  { value: "3:2", label: "横版", hint: "3:2" },
+  { value: "1:1", label: "方形 1:1" },
+  { value: "16:9", label: "横版 16:9" },
+  { value: "9:16", label: "竖版 9:16" },
+  { value: "4:3", label: "横版 4:3" },
+  { value: "3:4", label: "竖版 3:4" },
+  { value: "3:2", label: "横版 3:2" },
+  { value: "2:3", label: "竖版 2:3" },
+  { value: "21:9", label: "影院 21:9" },
+  { value: "5:4", label: "横版 5:4" },
+  { value: "4:5", label: "竖版 4:5" },
 ];
 
 const resolutionOptions: Record<string, string[]> = {
@@ -190,6 +197,8 @@ const Dashboard = () => {
     setResolution(defaults[0]);
   }, [selectedModel]);
 
+  const [isDragging, setIsDragging] = React.useState(false);
+
   const imagePool = React.useMemo(() => siteContent.explore.images || [], []);
 
   const pickImages = React.useCallback(
@@ -243,6 +252,25 @@ const Dashboard = () => {
     setter: React.Dispatch<React.SetStateAction<UploadedImage[]>>
   ) => {
     setter((prev) => prev.filter((img) => img.id !== id));
+  };
+
+  const handleDrop = (
+    event: React.DragEvent<HTMLDivElement>,
+    setter: React.Dispatch<React.SetStateAction<UploadedImage[]>>
+  ) => {
+    event.preventDefault();
+    setIsDragging(false);
+    handleImageUpload(event.dataTransfer.files, setter, 3);
+  };
+
+  const downloadImage = (url: string, name?: string) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = name || `nano-banana-${Date.now()}.png`;
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const runFakeProgress = (
@@ -650,50 +678,6 @@ const Dashboard = () => {
     <section className={styles.dashboard}>
       <div className={styles.gradient} />
       <div className={styles.inner}>
-        <div className={styles.hero}>
-          <div>
-            <div className={styles.heroLabel}>AI 图片大师 · 仿 API易 Dashboard</div>
-            <h1 className={styles.heroTitle}>Gemini 2.5 / GPT-4o 图片生成与编辑工作台</h1>
-            <p className={styles.heroSubtitle}>
-              复刻参考站的抽卡、批量、模型对比体验，支持垫图、比例与分辨率控制，交互与信息层次保持一致。
-            </p>
-            <div className={styles.badgeRow}>
-              <span className={styles.badge}>图片编辑</span>
-              <span className={styles.badge}>批量生成</span>
-              <span className={styles.badge}>模型对比</span>
-              <span className={styles.badge}>历史记录</span>
-            </div>
-            <div className={styles.heroActions}>
-              <button className={styles.primaryBtn} onClick={() => setShowSettings(true)}>
-                <span>API 设置</span>
-              </button>
-              <button className={styles.ghostBtn} onClick={() => setShowGuide(true)}>
-                使用说明
-              </button>
-              <button className={styles.ghostBtn} onClick={() => setShowActivity(true)}>
-                活动提示
-              </button>
-            </div>
-          </div>
-          <div className={styles.heroStats}>
-            <div className={styles.statCard}>
-              <div className={styles.statLabel}>当前模型</div>
-              <div className={styles.statValue}>{currentModel?.label}</div>
-              <div className={styles.statNote}>{currentModel?.subtitle}</div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statLabel}>进度模拟</div>
-              <div className={styles.statValue}>动态条</div>
-              <div className={styles.statNote}>与参考站相同的反馈节奏</div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statLabel}>最近生成</div>
-              <div className={styles.statValue}>{history.length || 0}</div>
-              <div className={styles.statNote}>实时记录</div>
-            </div>
-          </div>
-        </div>
-
         <div className={styles.tabBar}>
           {[
             { key: "generate", label: "图片编辑", icon: "✨" },
@@ -716,7 +700,7 @@ const Dashboard = () => {
 
         {activeTab === "generate" && (
           <div className={styles.panel}>
-            <div className={styles.panelGrid}>
+            <div className={`${styles.panelGrid} ${styles.generateGrid}`}>
               <div className={styles.column}>
                 <div className={styles.sectionHeader}>
                   <div>
@@ -731,29 +715,79 @@ const Dashboard = () => {
                   </button>
                 </div>
                 <div
-                  className={styles.uploadArea}
+                  className={`${styles.uploadArea} ${
+                    isDragging ? styles.uploadAreaActive : ""
+                  } ${referenceImages.length ? styles.uploadAreaFilled : ""}`}
                   onClick={() => referenceInputRef.current?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={(e) => handleDrop(e, setReferenceImages)}
                 >
-                  <div className={styles.uploadIcon}>📁</div>
-                  <div className={styles.uploadTitle}>点击或拖拽上传参考图片</div>
-                  <div className={styles.uploadHint}>支持 JPG / PNG · 最多 3 张</div>
+                  <div className={styles.uploadHeader}>
+                    <div className={styles.uploadIcon}>📁</div>
+                    <div>
+                      <div className={styles.uploadTitle}>点击或拖拽上传参考图片</div>
+                      <div className={styles.uploadHint}>支持 JPG / PNG · 最多 3 张</div>
+                    </div>
+                  </div>
+                  {referenceImages.length > 0 && (
+                    <div className={styles.uploadPreviewRow}>
+                      {referenceImages.map((img) => (
+                        <div key={img.id} className={styles.uploadThumbInline}>
+                          <img src={img.url} alt={img.name} />
+                          <button
+                            className={styles.removeInlineBtn}
+                            aria-label="移除图片"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage(img.id, setReferenceImages);
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                      {referenceImages.length < 3 && (
+                        <button
+                          className={styles.uploadAdd}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            referenceInputRef.current?.click();
+                          }}
+                        >
+                          +
+                        </button>
+                      )}
+                    </div>
+                  )}
                   <input
                     ref={referenceInputRef}
                     type="file"
                     className={styles.hiddenInput}
                     accept="image/*"
                     multiple
-                    onChange={(e) =>
-                      handleImageUpload(e.target.files, setReferenceImages, 3)
-                    }
+                    onChange={(e) => {
+                      handleImageUpload(e.target.files, setReferenceImages, 3);
+                      if (e.target) e.target.value = "";
+                    }}
                   />
                 </div>
-                {renderUploadList(referenceImages, (id) =>
-                  removeImage(id, setReferenceImages)
-                )}
 
                 <div className={styles.inputGroup}>
-                  <label className={styles.label}>提示词</label>
+                  <div className={styles.sectionHeader}>
+                    <label className={styles.label}>提示词</label>
+                    <div className={styles.buttonRow}>
+                      <button className={styles.ghostBtn} onClick={handleClearGenerate}>
+                        清空
+                      </button>
+                      <button className={styles.primaryBtn} onClick={handleGenerate}>
+                        开始生成
+                      </button>
+                    </div>
+                  </div>
                   <textarea
                     className={styles.textarea}
                     rows={4}
@@ -761,6 +795,34 @@ const Dashboard = () => {
                     value={generatePrompt}
                     onChange={(e) => setGeneratePrompt(e.target.value)}
                   />
+                </div>
+
+                <div className={styles.gridTwo}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>比例</label>
+                    <select
+                      className={styles.select}
+                      value={ratio}
+                      onChange={(e) => setRatio(e.target.value)}
+                    >
+                      {ratioOptions.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>生成数量</label>
+                    <select
+                      className={styles.select}
+                      value={generateCount}
+                      onChange={(e) => setGenerateCount(e.target.value)}
+                    >
+                      <option value="1">1 张</option>
+                      <option value="2">2 张</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className={styles.gridTwo}>
@@ -795,162 +857,131 @@ const Dashboard = () => {
                     <div className={styles.inputNote}>按模型支持范围自动切换</div>
                   </div>
                 </div>
-
-                <div className={styles.inputGroup}>
-                  <label className={styles.label}>比例</label>
-                  <div className={styles.ratioRow}>
-                    {ratioOptions.map((opt) => (
-                      <button
-                        key={opt.value}
-                        className={`${styles.ratioBtn} ${
-                          ratio === opt.value ? styles.active : ""
-                        }`}
-                        onClick={() => setRatio(opt.value)}
-                      >
-                        <div>{opt.label}</div>
-                        <span>{opt.hint}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className={styles.gridTwo}>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>生成数量</label>
-                    <select
-                      className={styles.select}
-                      value={generateCount}
-                      onChange={(e) => setGenerateCount(e.target.value)}
-                    >
-                      <option value="1">1 张</option>
-                      <option value="2">2 张</option>
-                    </select>
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>快速操作</label>
-                    <div className={styles.buttonRow}>
-                      <button className={styles.ghostBtn} onClick={handleClearGenerate}>
-                        清空
-                      </button>
-                      <button className={styles.primaryBtn} onClick={handleGenerate}>
-                        开始生成
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
 
-              <div className={styles.column}>
-                <div className={styles.sectionHeader}>
-                  <div className={styles.sectionTitle}>生成结果</div>
-                  <div className={styles.tabRow}>
-                    {["result", "original", "compare"].map((key) => (
-                      <button
-                        key={key}
-                        className={`${styles.subTab} ${
-                          resultTab === key ? styles.active : ""
-                        }`}
-                        onClick={() => setResultTab(key as ResultTab)}
-                      >
-                        {key === "result" && "生成结果"}
-                        {key === "original" && "原图/参考图"}
-                        {key === "compare" && "前后对比"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {resultTab === "result" && (
-                  <div className={styles.resultGrid}>
-                    {results.length ? (
-                      results.map((item) => (
-                        <div key={item.id} className={styles.resultCard}>
-                          <img src={item.url} alt={item.prompt} />
-                          <div className={styles.resultMeta}>
-                            <div className={styles.resultTitle}>{item.prompt}</div>
-                            <div className={styles.resultInfo}>
-                              {item.model} · {item.ratio} · {item.resolution}
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className={styles.placeholder}>
-                        <div className={styles.placeholderIcon}>🎨</div>
-                        <p>生成的图片会出现在这里</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {resultTab === "original" && (
-                  <div className={styles.resultGrid}>
-                    {referenceImages.length ? (
-                      referenceImages.map((img) => (
-                        <div key={img.id} className={styles.resultCard}>
-                          <img src={img.url} alt={img.name} />
-                          <div className={styles.resultMeta}>
-                            <div className={styles.resultTitle}>{img.name}</div>
-                            <div className={styles.resultInfo}>{img.size}</div>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className={styles.placeholder}>
-                        <div className={styles.placeholderIcon}>🖼️</div>
-                        <p>还没有参考图</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {resultTab === "compare" && (
-                  <div className={styles.compareGrid}>
-                    <div>
-                      <div className={styles.sectionCaption}>参考图</div>
-                      <div className={styles.resultGrid}>
-                        {referenceImages.length ? (
-                          referenceImages.map((img) => (
-                            <div key={img.id} className={styles.resultCard}>
-                              <img src={img.url} alt={img.name} />
-                            </div>
-                          ))
-                        ) : (
-                          <div className={styles.placeholderSmall}>上传参考图后显示</div>
-                        )}
-                      </div>
+              <div className={`${styles.column} ${styles.resultColumn}`}>
+                <div className={styles.resultBox}>
+                  <div className={styles.sectionHeader}>
+                    <div className={styles.sectionTitle}>生成结果</div>
+                    <div className={styles.tabRow}>
+                      {["result", "original", "compare"].map((key) => (
+                        <button
+                          key={key}
+                          className={`${styles.subTab} ${
+                            resultTab === key ? styles.active : ""
+                          }`}
+                          onClick={() => setResultTab(key as ResultTab)}
+                        >
+                          {key === "result" && "生成结果"}
+                          {key === "original" && "原图/参考图"}
+                          {key === "compare" && "前后对比"}
+                        </button>
+                      ))}
                     </div>
-                    <div>
-                      <div className={styles.sectionCaption}>生成结果</div>
+                  </div>
+
+                  <div className={styles.resultArea}>
+                    {resultTab === "result" && (
                       <div className={styles.resultGrid}>
                         {results.length ? (
                           results.map((item) => (
                             <div key={item.id} className={styles.resultCard}>
                               <img src={item.url} alt={item.prompt} />
+                              <div className={styles.resultMeta}>
+                                <div className={styles.resultTitle}>{item.prompt}</div>
+                                <div className={styles.resultInfo}>
+                                  {item.model} · {item.ratio} · {item.resolution}
+                                </div>
+                              </div>
+                              <div className={styles.resultActions}>
+                                <button
+                                  className={styles.ghostBtn}
+                                  onClick={() => downloadImage(item.url, `${item.id}.png`)}
+                                >
+                                  下载
+                                </button>
+                              </div>
                             </div>
                           ))
                         ) : (
-                          <div className={styles.placeholderSmall}>生成后展示对比</div>
+                          <div className={styles.placeholder}>
+                            <div className={styles.placeholderIcon}>🎨</div>
+                            <p>生成的图片会出现在这里</p>
+                          </div>
                         )}
                       </div>
-                    </div>
-                  </div>
-                )}
+                    )}
 
-                {(isGenerating || progress > 0) && (
-                  <div className={styles.progressBlock}>
-                    <div className={styles.progressBar}>
-                      <div
-                        className={styles.progressFill}
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                    <div className={styles.progressText}>
-                      正在生成图片... {progress.toFixed(0)}%
-                    </div>
+                    {resultTab === "original" && (
+                      <div className={styles.resultGrid}>
+                        {referenceImages.length ? (
+                          referenceImages.map((img) => (
+                            <div key={img.id} className={styles.resultCard}>
+                              <img src={img.url} alt={img.name} />
+                              <div className={styles.resultMeta}>
+                                <div className={styles.resultTitle}>{img.name}</div>
+                                <div className={styles.resultInfo}>{img.size}</div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className={styles.placeholder}>
+                            <div className={styles.placeholderIcon}>🖼️</div>
+                            <p>还没有参考图</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {resultTab === "compare" && (
+                      <div className={styles.compareGrid}>
+                        <div>
+                          <div className={styles.sectionCaption}>参考图</div>
+                          <div className={styles.resultGrid}>
+                            {referenceImages.length ? (
+                              referenceImages.map((img) => (
+                                <div key={img.id} className={styles.resultCard}>
+                                  <img src={img.url} alt={img.name} />
+                                </div>
+                              ))
+                            ) : (
+                              <div className={styles.placeholderSmall}>上传参考图后显示</div>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <div className={styles.sectionCaption}>生成结果</div>
+                          <div className={styles.resultGrid}>
+                            {results.length ? (
+                              results.map((item) => (
+                                <div key={item.id} className={styles.resultCard}>
+                                  <img src={item.url} alt={item.prompt} />
+                                </div>
+                              ))
+                            ) : (
+                              <div className={styles.placeholderSmall}>生成后展示对比</div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {(isGenerating || progress > 0) && (
+                      <div className={styles.progressBlock}>
+                        <div className={styles.progressBar}>
+                          <div
+                            className={styles.progressFill}
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                        <div className={styles.progressText}>
+                          正在生成图片... {progress.toFixed(0)}%
+                        </div>
+                      </div>
+                    )}
+                    {error && <div className={styles.errorNote}>⚠️ {error}</div>}
                   </div>
-                )}
-                {error && <div className={styles.errorNote}>⚠️ {error}</div>}
+                </div>
               </div>
             </div>
           </div>
@@ -1061,7 +1092,7 @@ const Dashboard = () => {
                       <option value="auto">自适应</option>
                       {ratioOptions.map((opt) => (
                         <option key={opt.value} value={opt.value}>
-                          {opt.label} {opt.hint}
+                          {opt.label}
                         </option>
                       ))}
                     </select>
@@ -1153,6 +1184,14 @@ const Dashboard = () => {
                             {item.ratio} · {item.model}
                           </div>
                         </div>
+                        <div className={styles.resultActions}>
+                          <button
+                            className={styles.ghostBtn}
+                            onClick={() => downloadImage(item.url, `${item.id}.png`)}
+                          >
+                            下载
+                          </button>
+                        </div>
                       </div>
                     ))
                   ) : (
@@ -1243,20 +1282,17 @@ const Dashboard = () => {
 
                 <div className={styles.inputGroup}>
                   <label className={styles.label}>共同支持尺寸</label>
-                  <div className={styles.ratioRow}>
+                  <select
+                    className={styles.select}
+                    value={compareRatio}
+                    onChange={(e) => setCompareRatio(e.target.value)}
+                  >
                     {ratioOptions.map((opt) => (
-                      <button
-                        key={opt.value}
-                        className={`${styles.ratioBtn} ${
-                          compareRatio === opt.value ? styles.active : ""
-                        }`}
-                        onClick={() => setCompareRatio(opt.value)}
-                      >
-                        <div>{opt.label}</div>
-                        <span>{opt.hint}</span>
-                      </button>
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
                     ))}
-                  </div>
+                  </select>
                 </div>
 
                 <div className={styles.buttonRow}>
@@ -1322,6 +1358,20 @@ const Dashboard = () => {
                       <div className={styles.resultMeta}>
                         <div className={styles.resultTitle}>{item.prompt}</div>
                         <div className={styles.resultInfo}>比例 {item.ratio}</div>
+                      </div>
+                      <div className={styles.resultActions}>
+                        <button
+                          className={styles.ghostBtn}
+                          onClick={() => downloadImage(item.left, `${item.id}-left.png`)}
+                        >
+                          下载左侧
+                        </button>
+                        <button
+                          className={styles.ghostBtn}
+                          onClick={() => downloadImage(item.right, `${item.id}-right.png`)}
+                        >
+                          下载右侧
+                        </button>
                       </div>
                     </div>
                   ))
