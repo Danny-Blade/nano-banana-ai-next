@@ -1,19 +1,19 @@
 .editorSection {
     padding: 4rem 1rem;
-    background-color: #1a1625;
-    color: #ffffff;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 80%, #ffffff 100%);
+    color: #0f172a;
 }
 
 .title {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: #ffffff;
+    color: #0f172a;
 }
 
 .subtitle {
     font-size: 1.125rem;
-    color: #a1a1aa;
+    color: #475569;
     max-width: 800px;
     margin: 0 auto;
 }

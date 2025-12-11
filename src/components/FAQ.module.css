@@ -1,6 +1,6 @@
 .faqSection {
     padding: 80px 20px;
-    background: #f9fafb;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 60%, #ffffff 100%);
 }
 
 .title {

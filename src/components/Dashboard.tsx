@@ -52,22 +52,40 @@ const modelOptions = [
   {
     value: "nano-banana",
     label: "Nano Banana",
-    subtitle: "Gemini 2.5 Flash · 极速出图",
-    price: "$0.002/图",
+    description: "极速生成，适合通用场景",
+    points: "消耗 2 积分/张",
     badge: "新",
   },
   {
-    value: "gpt-4o-image",
-    label: "GPT-4o Image",
-    subtitle: "高质量编辑 · 支持垫图",
-    price: "$0.04/图",
-    badge: "推荐",
+    value: "nano-banana-pro",
+    label: "Nano Banana Pro",
+    description: "高质量商业级，细节更强",
+    points: "消耗 4 积分/张",
+    badge: "Pro",
   },
   {
-    value: "flux-dev",
-    label: "Flux Dev",
-    subtitle: "一致性好 · 产品与人像",
-    price: "$0.015/图",
+    value: "seedream-4-0",
+    label: "SeeDream 4.0",
+    description: "写实光影，产品与人物一致性好",
+    points: "消耗 5 积分/张",
+  },
+  {
+    value: "sora-image",
+    label: "Sora_image",
+    description: "动态场景、故事感画面",
+    points: "消耗 6 积分/张",
+  },
+  {
+    value: "flux-kontext-pro",
+    label: "Flux Kontext Pro",
+    description: "文生图稳定，场景理解佳",
+    points: "消耗 3 积分/张",
+  },
+  {
+    value: "flux-kontext-max",
+    label: "Flux Kontext Max",
+    description: "超高分辨率与复杂细节",
+    points: "消耗 8 积分/张",
   },
 ];
 
@@ -85,9 +103,12 @@ const ratioOptions = [
 ];
 
 const resolutionOptions: Record<string, string[]> = {
-  "nano-banana": ["2K", "1K", "4K"],
-  "gpt-4o-image": ["2K", "1K"],
-  "flux-dev": ["1K"],
+  "nano-banana": ["2K", "1K"],
+  "nano-banana-pro": ["4K", "2K", "1K"],
+  "seedream-4-0": ["2K", "1K"],
+  "sora-image": ["2K", "1K"],
+  "flux-kontext-pro": ["2K", "1K"],
+  "flux-kontext-max": ["4K", "2K"],
 };
 
 const templateCategories = [
@@ -182,6 +203,7 @@ const Dashboard = () => {
     templateCategories[0].key
   );
   const [templateTarget, setTemplateTarget] = React.useState<TemplateTarget>("generate");
+  const [showModelPicker, setShowModelPicker] = React.useState(false);
   const [showSettings, setShowSettings] = React.useState(false);
   const [showGuide, setShowGuide] = React.useState(false);
   const [showActivity, setShowActivity] = React.useState(false);
@@ -459,6 +481,12 @@ const Dashboard = () => {
   };
 
   const currentModel = modelOptions.find((m) => m.value === selectedModel);
+  const activeModel = currentModel || modelOptions[0];
+
+  const handleModelSelect = (modelValue: string) => {
+    setSelectedModel(modelValue);
+    setShowModelPicker(false);
+  };
 
   const renderUploadList = (
     items: UploadedImage[],
@@ -526,6 +554,47 @@ const Dashboard = () => {
               >
                 <div className={styles.templateTitle}>模板 {idx + 1}</div>
                 <p className={styles.templateText}>{prompt}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderModelModal = () => {
+    if (!showModelPicker) return null;
+    return (
+      <div className={styles.modalOverlay} role="dialog" aria-modal="true">
+        <div className={styles.modalCard}>
+          <div className={styles.modalHeader}>
+            <div>
+              <div className={styles.modalTitle}>Choose Model</div>
+              <div className={styles.modalCaption}>不同模型速度、质量与积分消耗各有侧重</div>
+            </div>
+            <button className={styles.closeBtn} onClick={() => setShowModelPicker(false)}>
+              ×
+            </button>
+          </div>
+          <div className={styles.modelGrid}>
+            {modelOptions.map((model) => (
+              <button
+                key={model.value}
+                className={`${styles.modelOption} ${
+                  selectedModel === model.value ? styles.active : ""
+                }`}
+                type="button"
+                onClick={() => handleModelSelect(model.value)}
+              >
+                <div className={styles.modelOptionHead}>
+                  <div className={styles.modelOptionName}>{model.label}</div>
+                  <div className={styles.modelOptionPoints}>{model.points}</div>
+                </div>
+                <div className={styles.modelOptionDesc}>{model.description}</div>
+                <div className={styles.modelOptionMeta}>
+                  {model.badge && <span className={styles.badge}>{model.badge}</span>}
+                  <span className={styles.modelOptionHint}>适配垫图与文生图</span>
+                </div>
               </button>
             ))}
           </div>
@@ -702,17 +771,29 @@ const Dashboard = () => {
           <div className={styles.panel}>
             <div className={`${styles.panelGrid} ${styles.generateGrid}`}>
               <div className={styles.column}>
+                <div className={styles.modelBar}>
+                  <div>
+                    <div className={styles.modelLabel}>Selected Model</div>
+                    <div className={styles.modelCurrent}>
+                      <span className={styles.modelName}>{activeModel.label}</span>
+                      <span className={styles.modelPoints}>{activeModel.points}</span>
+                    </div>
+                    <div className={styles.modelDesc}>{activeModel.description}</div>
+                  </div>
+                  <button
+                    className={styles.changeModelBtn}
+                    type="button"
+                    onClick={() => setShowModelPicker(true)}
+                  >
+                    Change Model
+                  </button>
+                </div>
+
                 <div className={styles.sectionHeader}>
                   <div>
                     <div className={styles.sectionTitle}>图生图 / 文生图</div>
                     <div className={styles.sectionCaption}>支持垫图，最多 3 张</div>
                   </div>
-                  <button
-                    className={styles.linkBtn}
-                    onClick={() => setTemplateTarget("generate") || setShowTemplates(true)}
-                  >
-                    提示词模板
-                  </button>
                 </div>
                 <div
                   className={`${styles.uploadArea} ${
@@ -779,14 +860,12 @@ const Dashboard = () => {
                 <div className={styles.inputGroup}>
                   <div className={styles.sectionHeader}>
                     <label className={styles.label}>提示词</label>
-                    <div className={styles.buttonRow}>
-                      <button className={styles.ghostBtn} onClick={handleClearGenerate}>
-                        清空
-                      </button>
-                      <button className={styles.primaryBtn} onClick={handleGenerate}>
-                        开始生成
-                      </button>
-                    </div>
+                    <button
+                      className={styles.linkBtn}
+                      onClick={() => setTemplateTarget("generate") || setShowTemplates(true)}
+                    >
+                      提示词模板
+                    </button>
                   </div>
                   <textarea
                     className={styles.textarea}
@@ -795,6 +874,17 @@ const Dashboard = () => {
                     value={generatePrompt}
                     onChange={(e) => setGeneratePrompt(e.target.value)}
                   />
+                  <div className={styles.promptActions}>
+                    <button className={`${styles.ghostBtn} ${styles.clearBtn}`} onClick={handleClearGenerate}>
+                      清空
+                    </button>
+                    <div className={styles.generateWrap}>
+                      <div className={styles.generateMeta}>预计消耗：{activeModel.points}</div>
+                      <button className={styles.primaryBtn} onClick={handleGenerate}>
+                        开始生成
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className={styles.gridTwo}>
@@ -825,37 +915,20 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className={styles.gridTwo}>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>选择模型</label>
-                    <select
-                      className={styles.select}
-                      value={selectedModel}
-                      onChange={(e) => setSelectedModel(e.target.value)}
-                    >
-                      {modelOptions.map((model) => (
-                        <option key={model.value} value={model.value}>
-                          {model.label} · {model.price}
-                        </option>
-                      ))}
-                    </select>
-                    <div className={styles.inputNote}>{currentModel?.subtitle}</div>
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>分辨率</label>
-                    <select
-                      className={styles.select}
-                      value={resolution}
-                      onChange={(e) => setResolution(e.target.value)}
-                    >
-                      {(resolutionOptions[selectedModel] || []).map((res) => (
-                        <option key={res} value={res}>
-                          {res}
-                        </option>
-                      ))}
-                    </select>
-                    <div className={styles.inputNote}>按模型支持范围自动切换</div>
-                  </div>
+                <div className={styles.inputGroup}>
+                  <label className={styles.label}>分辨率</label>
+                  <select
+                    className={styles.select}
+                    value={resolution}
+                    onChange={(e) => setResolution(e.target.value)}
+                  >
+                    {(resolutionOptions[selectedModel] || []).map((res) => (
+                      <option key={res} value={res}>
+                        {res}
+                      </option>
+                    ))}
+                  </select>
+                  <div className={styles.inputNote}>{activeModel.description}</div>
                 </div>
               </div>
 
@@ -1401,6 +1474,7 @@ const Dashboard = () => {
       </div>
 
       {renderTemplateModal()}
+      {renderModelModal()}
       {renderSettingsModal()}
       {renderGuideModal()}
       {renderActivityModal()}

@@ -16,7 +16,9 @@
     align-items: center;
     text-align: center;
     padding: 120px 24px 80px;
-    background: #000000;
+    background: radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.06), transparent 32%),
+        radial-gradient(circle at 80% 0%, rgba(124, 58, 237, 0.05), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #f8fbff 60%, #ffffff 100%);
     min-height: auto;
     justify-content: center;
 }
@@ -39,12 +41,12 @@
     line-height: 1.1;
     max-width: 900px;
     letter-spacing: -0.02em;
-    color: #ffffff;
+    color: #0f172a;
 }
 
 .subtitle {
     font-size: 18px;
-    color: #a1a1aa;
+    color: #475569;
     margin-bottom: 40px;
     max-width: 700px;
     line-height: 1.6;
@@ -75,9 +77,9 @@
 
 .secondaryBtn {
     padding: 12px 32px;
-    background: transparent;
-    color: #e4e4e7;
-    border: 1px solid #3f3f46;
+    background: #f8fafc;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
     border-radius: 9999px;
     font-weight: 500;
     font-size: 14px;
@@ -85,7 +87,7 @@
 }
 
 .secondaryBtn:hover {
-    background: var(--secondary);
+    background: #e2e8f0;
 }
 
 .imageWrapper {
