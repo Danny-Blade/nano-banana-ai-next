@@ -327,14 +327,35 @@ const Dashboard = () => {
     handleImageUploadFiles(dropped, setter, REFERENCE_IMAGE_LIMIT);
   };
 
-  const downloadImage = (url: string, name?: string) => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = name || `nano-banana-${Date.now()}.png`;
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const downloadImage = async (url: string, name?: string) => {
+    const filename = name || `nano-banana-${Date.now()}.png`;
+
+    const trigger = (href: string) => {
+      const link = document.createElement("a");
+      link.href = href;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
+    // Data URLs and blob URLs can be downloaded directly.
+    if (url.startsWith("data:") || url.startsWith("blob:")) {
+      trigger(url);
+      return;
+    }
+
+    // For remote URLs, fetch as blob to force download without opening a tab.
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      trigger(objectUrl);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 5_000);
+    } catch {
+      // Fallback: best-effort direct download.
+      trigger(url);
+    }
   };
 
   const runFakeProgress = (
