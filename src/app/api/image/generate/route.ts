@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE = "https://api.apiyi.com";
+const API_BASE =
+  process.env.APIYI_API_BASE_URL?.replace(/\/+$/, "") || "https://api.apiyi.com";
 const GEMINI_BASE = `${API_BASE}/v1beta/models`;
 const OPENAI_CHAT_URL = `${API_BASE}/v1/chat/completions`;
 const OPENAI_IMAGES_GENERATIONS_URL = `${API_BASE}/v1/images/generations`;
 const OPENAI_IMAGES_EDITS_URL = `${API_BASE}/v1/images/edits`;
 
-const API_KEY =
-  process.env.APIYI_API_KEY ||
-  process.env.NANO_BANANA_API_KEY ||
-  "sk-HTHfXpVZunRRGTnI70F4448c1c8e4e778b9b05A9Df5a380c";
+const API_KEY = "sk-HTHfXpVZunRRGTnI70F4448c1c8e4e778b9b05A9Df5a380c";
 
 type RequestBody = {
   model?: string;
@@ -69,6 +67,30 @@ const extractDataUrls = (text: string) => {
   return urls;
 };
 
+const readUpstreamError = async (response: Response) => {
+  try {
+    const data: unknown = await response.json();
+    if (data && typeof data === "object") {
+      const record = data as Record<string, unknown>;
+      const err = record.error;
+      if (typeof err === "string") return err;
+      if (err && typeof err === "object") {
+        const errRecord = err as Record<string, unknown>;
+        const message =
+          typeof errRecord.message === "string" ? errRecord.message : null;
+        const type = typeof errRecord.type === "string" ? errRecord.type : null;
+        if (message) return type ? `${type}: ${message}` : message;
+      }
+      const topMessage =
+        typeof record.message === "string" ? record.message : null;
+      if (topMessage) return topMessage;
+    }
+    return JSON.stringify(data);
+  } catch {
+    return await response.text();
+  }
+};
+
 export async function POST(req: NextRequest) {
   const body = (await req.json()) as RequestBody;
   const {
@@ -93,7 +115,10 @@ export async function POST(req: NextRequest) {
   }
   if (!API_KEY) {
     return NextResponse.json(
-      { error: "API key is not configured" },
+      {
+        error:
+          "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重启服务。",
+      },
       { status: 500, statusText: "Missing API key" }
     );
   }
@@ -135,7 +160,7 @@ export async function POST(req: NextRequest) {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await readUpstreamError(response);
         return NextResponse.json(
           { error: errorText || "Upstream request failed" },
           { status: response.status, statusText: response.statusText }
@@ -190,7 +215,7 @@ export async function POST(req: NextRequest) {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await readUpstreamError(response);
         return NextResponse.json(
           { error: errorText || "Upstream request failed" },
           { status: response.status, statusText: response.statusText }
@@ -264,7 +289,7 @@ export async function POST(req: NextRequest) {
         );
 
         if (!response.ok) {
-          const errorText = await response.text();
+          const errorText = await readUpstreamError(response);
           return NextResponse.json(
             { error: errorText || "Upstream request failed" },
             { status: response.status, statusText: response.statusText }
@@ -310,7 +335,7 @@ export async function POST(req: NextRequest) {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await readUpstreamError(response);
         return NextResponse.json(
           { error: errorText || "Upstream request failed" },
           { status: response.status, statusText: response.statusText }
@@ -357,7 +382,7 @@ export async function POST(req: NextRequest) {
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await readUpstreamError(response);
         return NextResponse.json(
           { error: errorText || "Upstream request failed" },
           { status: response.status, statusText: response.statusText }
@@ -397,4 +422,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

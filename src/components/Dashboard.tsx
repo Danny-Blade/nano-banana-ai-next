@@ -212,11 +212,8 @@ const Dashboard = () => {
   );
   const [templateTarget, setTemplateTarget] = React.useState<TemplateTarget>("generate");
   const [showModelPicker, setShowModelPicker] = React.useState(false);
-  const [showSettings, setShowSettings] = React.useState(false);
   const [showGuide, setShowGuide] = React.useState(false);
   const [showActivity, setShowActivity] = React.useState(false);
-  const [apiKey, setApiKey] = React.useState("");
-  const [savedMessage, setSavedMessage] = React.useState("");
 
   const referenceInputRef = React.useRef<HTMLInputElement>(null);
   const batchReferenceInputRef = React.useRef<HTMLInputElement>(null);
@@ -418,8 +415,19 @@ const Dashboard = () => {
           });
 
           if (!response.ok) {
-            const info = await response.json().catch(() => ({}));
-            throw new Error(info.error || response.statusText);
+            const info: unknown = await response.json().catch(() => ({}));
+            let err: string | undefined;
+            if (info && typeof info === "object") {
+              const infoRecord = info as Record<string, unknown>;
+              const e = infoRecord.error;
+              if (typeof e === "string") err = e;
+              else if (e && typeof e === "object") {
+                const eRecord = e as Record<string, unknown>;
+                if (typeof eRecord.message === "string") err = eRecord.message;
+                else err = JSON.stringify(eRecord);
+              }
+            }
+            throw new Error(err || response.statusText);
           }
 
           const data = (await response.json()) as {
@@ -542,8 +550,19 @@ const Dashboard = () => {
       });
 
       if (!response.ok) {
-        const info = await response.json().catch(() => ({}));
-        throw new Error(info.error || response.statusText);
+        const info: unknown = await response.json().catch(() => ({}));
+        let err: string | undefined;
+        if (info && typeof info === "object") {
+          const infoRecord = info as Record<string, unknown>;
+          const e = infoRecord.error;
+          if (typeof e === "string") err = e;
+          else if (e && typeof e === "object") {
+            const eRecord = e as Record<string, unknown>;
+            if (typeof eRecord.message === "string") err = eRecord.message;
+            else err = JSON.stringify(eRecord);
+          }
+        }
+        throw new Error(err || response.statusText);
       }
 
       const data = (await response.json()) as {
@@ -616,11 +635,6 @@ const Dashboard = () => {
       setComparePrompt(prompt);
     }
     setShowTemplates(false);
-  };
-
-  const handleSaveApiKey = () => {
-    setSavedMessage(apiKey ? "已保存到本地，仅前端存储。" : "请输入 API Key。");
-    setTimeout(() => setSavedMessage(""), 2200);
   };
 
   const currentModel = modelOptions.find((m) => m.value === selectedModel);
@@ -804,50 +818,6 @@ const Dashboard = () => {
                 </div>
               </button>
             ))}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderSettingsModal = () => {
-    if (!showSettings) return null;
-    return (
-      <div className={styles.modalOverlay} role="dialog" aria-modal="true">
-        <div className={styles.modalCard}>
-          <div className={styles.modalHeader}>
-            <div>
-              <div className={styles.modalTitle}>API 设置</div>
-              <div className={styles.modalCaption}>
-                保存 API 易 / 自建中转站的 Key，前端本地存储
-              </div>
-            </div>
-            <button className={styles.closeBtn} onClick={() => setShowSettings(false)}>
-              ×
-            </button>
-          </div>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>API Key</label>
-            <input
-              type="password"
-              className={styles.input}
-              placeholder="示例：sk-xxxx"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-          </div>
-          <div className={styles.modalActions}>
-            <button className={styles.ghostBtn} onClick={() => setShowSettings(false)}>
-              取消
-            </button>
-            <button className={styles.primaryBtn} onClick={handleSaveApiKey}>
-              保存 Key
-            </button>
-          </div>
-          {savedMessage && <div className={styles.notice}>{savedMessage}</div>}
-          <div className={styles.noticeAlt}>
-            <span className={styles.badge}>小贴士</span>
-            推荐创建按次计费令牌，避免额度超支。
           </div>
         </div>
       </div>
@@ -1750,7 +1720,6 @@ const Dashboard = () => {
 
       {renderTemplateModal()}
       {renderModelModal()}
-      {renderSettingsModal()}
       {renderGuideModal()}
       {renderActivityModal()}
 

@@ -4,9 +4,7 @@ const API_URL =
   "https://api.apiyi.com/v1beta/models/gemini-3-pro-image-preview:generateContent";
 
 // Allow env override but fall back to the provided key for convenience.
-const API_KEY =
-  process.env.NANO_BANANA_API_KEY ||
-  "sk-HTHfXpVZunRRGTnI70F4448c1c8e4e778b9b05A9Df5a380c";
+const API_KEY = "sk-HTHfXpVZunRRGTnI70F4448c1c8e4e778b9b05A9Df5a380c";
 
 type RequestBody = {
   prompt?: string;
