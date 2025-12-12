@@ -250,15 +250,25 @@ const Dashboard = () => {
     });
   }, []);
 
-  const handleImageUpload = (
-    files: FileList | null,
+  const REFERENCE_IMAGE_LIMIT = 3;
+
+  const openFileDialog = (ref: React.RefObject<HTMLInputElement>) => {
+    const input = ref.current;
+    if (!input) return;
+    // Clear any previous selection so choosing the same files again still fires onChange.
+    input.value = "";
+    input.click();
+  };
+
+  const handleImageUploadFiles = (
+    files: File[] | null,
     setter: React.Dispatch<React.SetStateAction<UploadedImage[]>>,
-    limit = 3
+    limit = REFERENCE_IMAGE_LIMIT
   ) => {
     if (!files || files.length === 0) return;
     setter((prev) => {
       const remaining = Math.max(limit - prev.length, 0);
-      const selected = Array.from(files).slice(0, remaining);
+      const selected = files.slice(0, remaining);
       const mapped = selected.map((file) => ({
         id: `${file.name}-${Date.now()}-${Math.random()}`,
         name: file.name,
@@ -273,7 +283,17 @@ const Dashboard = () => {
     id: string,
     setter: React.Dispatch<React.SetStateAction<UploadedImage[]>>
   ) => {
-    setter((prev) => prev.filter((img) => img.id !== id));
+    setter((prev) => {
+      const target = prev.find((img) => img.id === id);
+      if (target) {
+        try {
+          URL.revokeObjectURL(target.url);
+        } catch {
+          // ignore
+        }
+      }
+      return prev.filter((img) => img.id !== id);
+    });
   };
 
   const handleDrop = (
@@ -282,7 +302,8 @@ const Dashboard = () => {
   ) => {
     event.preventDefault();
     setIsDragging(false);
-    handleImageUpload(event.dataTransfer.files, setter, 3);
+    const dropped = Array.from(event.dataTransfer.files || []);
+    handleImageUploadFiles(dropped, setter, REFERENCE_IMAGE_LIMIT);
   };
 
   const downloadImage = (url: string, name?: string) => {
@@ -799,7 +820,7 @@ const Dashboard = () => {
                   className={`${styles.uploadArea} ${
                     isDragging ? styles.uploadAreaActive : ""
                   } ${referenceImages.length ? styles.uploadAreaFilled : ""}`}
-                  onClick={() => referenceInputRef.current?.click()}
+                  onClick={() => openFileDialog(referenceInputRef)}
                   onDragOver={(e) => {
                     e.preventDefault();
                     setIsDragging(true);
@@ -831,12 +852,12 @@ const Dashboard = () => {
                           </button>
                         </div>
                       ))}
-                      {referenceImages.length < 3 && (
+                      {referenceImages.length < REFERENCE_IMAGE_LIMIT && (
                         <button
                           className={styles.uploadAdd}
                           onClick={(e) => {
                             e.stopPropagation();
-                            referenceInputRef.current?.click();
+                            openFileDialog(referenceInputRef);
                           }}
                         >
                           +
@@ -851,8 +872,13 @@ const Dashboard = () => {
                     accept="image/*"
                     multiple
                     onChange={(e) => {
-                      handleImageUpload(e.target.files, setReferenceImages, 3);
-                      if (e.target) e.target.value = "";
+                      const files = Array.from(e.currentTarget.files || []);
+                      if (e.currentTarget) e.currentTarget.value = "";
+                      handleImageUploadFiles(
+                        files,
+                        setReferenceImages,
+                        REFERENCE_IMAGE_LIMIT
+                      );
                     }}
                   />
                 </div>
@@ -1215,14 +1241,14 @@ const Dashboard = () => {
                   </div>
                   <button
                     className={styles.linkBtn}
-                    onClick={() => batchReferenceInputRef.current?.click()}
+                    onClick={() => openFileDialog(batchReferenceInputRef)}
                   >
                     上传
                   </button>
                 </div>
                 <div
                   className={styles.uploadArea}
-                  onClick={() => batchReferenceInputRef.current?.click()}
+                  onClick={() => openFileDialog(batchReferenceInputRef)}
                 >
                   <div className={styles.uploadIcon}>🖇️</div>
                   <div className={styles.uploadTitle}>点击上传或粘贴图片</div>
@@ -1233,9 +1259,15 @@ const Dashboard = () => {
                     className={styles.hiddenInput}
                     multiple
                     accept="image/*"
-                    onChange={(e) =>
-                      handleImageUpload(e.target.files, setBatchReferenceImages, 3)
-                    }
+                    onChange={(e) => {
+                      const files = Array.from(e.currentTarget.files || []);
+                      if (e.currentTarget) e.currentTarget.value = "";
+                      handleImageUploadFiles(
+                        files,
+                        setBatchReferenceImages,
+                        REFERENCE_IMAGE_LIMIT
+                      );
+                    }}
                   />
                 </div>
                 {renderUploadList(batchReferenceImages, (id) =>
@@ -1393,7 +1425,7 @@ const Dashboard = () => {
                 </div>
                 <div
                   className={styles.uploadArea}
-                  onClick={() => compareReferenceInputRef.current?.click()}
+                  onClick={() => openFileDialog(compareReferenceInputRef)}
                 >
                   <div className={styles.uploadIcon}>☁️</div>
                   <div className={styles.uploadTitle}>点击上传或拖拽</div>
@@ -1404,9 +1436,15 @@ const Dashboard = () => {
                     className={styles.hiddenInput}
                     multiple
                     accept="image/*"
-                    onChange={(e) =>
-                      handleImageUpload(e.target.files, setCompareReferenceImages, 3)
-                    }
+                    onChange={(e) => {
+                      const files = Array.from(e.currentTarget.files || []);
+                      if (e.currentTarget) e.currentTarget.value = "";
+                      handleImageUploadFiles(
+                        files,
+                        setCompareReferenceImages,
+                        REFERENCE_IMAGE_LIMIT
+                      );
+                    }}
                   />
                 </div>
                 {renderUploadList(compareReferenceImages, (id) =>
