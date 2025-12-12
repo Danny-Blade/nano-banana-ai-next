@@ -171,6 +171,12 @@ const Dashboard = () => {
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
+  const [resultDisplayMode, setResultDisplayMode] = React.useState<"single" | "all">(
+    "all"
+  );
+  const [activeResultIndex, setActiveResultIndex] = React.useState(0);
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+  const [previewAlt, setPreviewAlt] = React.useState("");
 
   const [batchMode, setBatchMode] = React.useState<"card" | "multi">("card");
   const [cardPrompt, setCardPrompt] = React.useState("");
@@ -195,6 +201,8 @@ const Dashboard = () => {
   >([]);
   const [compareResults, setCompareResults] = React.useState<CompareResult[]>([]);
   const [showEvaluation, setShowEvaluation] = React.useState(false);
+  const [isComparing, setIsComparing] = React.useState(false);
+  const [compareError, setCompareError] = React.useState<string | null>(null);
 
   const [history, setHistory] = React.useState<HistoryEntry[]>([]);
 
@@ -218,6 +226,22 @@ const Dashboard = () => {
     const defaults = resolutionOptions[selectedModel] || ["自动"];
     setResolution(defaults[0]);
   }, [selectedModel]);
+
+  React.useEffect(() => {
+    setActiveResultIndex(0);
+    if (results.length <= 1) {
+      setResultDisplayMode("all");
+    }
+  }, [results.length]);
+
+  React.useEffect(() => {
+    if (!previewUrl) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPreviewUrl(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [previewUrl]);
 
   const [isDragging, setIsDragging] = React.useState(false);
 
@@ -334,6 +358,26 @@ const Dashboard = () => {
     }, durationMs);
   };
 
+  const toDataUrl = async (objectUrl: string) => {
+    const res = await fetch(objectUrl);
+    const blob = await res.blob();
+    return await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () =>
+        reject(reader.error || new Error("Failed to read image"));
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const encodeReferenceImages = async (images: UploadedImage[]) => {
+    if (!images.length) return [];
+    const encoded = await Promise.all(
+      images.map((img) => toDataUrl(img.url).catch(() => null))
+    );
+    return encoded.filter(Boolean) as string[];
+  };
+
   const handleGenerate = () => {
     if (isGenerating) return;
     const targetPrompt = generatePrompt || promptTemplatesByTarget.generate;
@@ -351,42 +395,54 @@ const Dashboard = () => {
     const imageSize = mapResolutionToImageSize(resolution);
     const count = Math.max(1, Math.min(4, parseInt(generateCount, 10) || 1));
 
-    const generateOnce = async () => {
-      const response = await fetch("/api/nano-banana/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: targetPrompt,
-          aspectRatio: ratio,
-          imageSize,
-        }),
-      });
-
-      if (!response.ok) {
-        const info = await response.json().catch(() => ({}));
-        throw new Error(info.error || response.statusText);
-      }
-
-      const data = (await response.json()) as { imageData: string; mimeType?: string };
-      const mime = data.mimeType || "image/png";
-      return `data:${mime};base64,${data.imageData}`;
-    };
-
     const run = async () => {
       setIsGenerating(true);
       setError(null);
       setResultTab("result");
       setProgress(6);
       const generated: GeneratedResult[] = [];
+      const encodedRefs = await encodeReferenceImages(referenceImages);
 
       for (let i = 0; i < count; i += 1) {
         try {
-          const url = await generateOnce();
+          const response = await fetch("/api/image/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: selectedModel,
+              prompt: targetPrompt,
+              aspectRatio: ratio,
+              imageSize,
+              referenceImages: encodedRefs,
+            }),
+          });
+
+          if (!response.ok) {
+            const info = await response.json().catch(() => ({}));
+            throw new Error(info.error || response.statusText);
+          }
+
+          const data = (await response.json()) as {
+            imageData?: string;
+            mimeType?: string;
+            imageUrl?: string;
+          };
+
+          const url =
+            data.imageUrl ||
+            (data.imageData
+              ? `data:${data.mimeType || "image/png"};base64,${data.imageData}`
+              : null);
+
+          if (!url) {
+            throw new Error("No image returned from API");
+          }
+
           generated.push({
             id: `gen-${Date.now()}-${i}`,
             url,
             prompt: targetPrompt,
-            model: "gemini-3-pro-image-preview",
+            model: activeModel.label,
             ratio,
             resolution: imageSize,
           });
@@ -402,7 +458,7 @@ const Dashboard = () => {
         setResults(generated);
         addHistoryEntry({
           type: "generate",
-          title: "Nano Banana Pro 生成完成",
+          title: `${activeModel.label} 生成完成`,
           detail: `${generated.length} 张 · ${ratio} · ${imageSize}`,
           timestamp: new Date(),
           preview: generated[0]?.url,
@@ -461,26 +517,92 @@ const Dashboard = () => {
   };
 
   const handleCompare = () => {
-    if (!compareLeftModel || !compareRightModel) return;
-    const picked = pickImages(2);
-    const newResult: CompareResult = {
-      id: `compare-${Date.now()}`,
-      left: picked[0],
-      right: picked[1] || picked[0],
-      prompt: comparePrompt || promptTemplatesByTarget.compare,
-      ratio: compareRatio,
-      leftModel: compareLeftModel,
-      rightModel: compareRightModel,
+    if (isComparing || !compareLeftModel || !compareRightModel) return;
+    const targetPrompt = comparePrompt || promptTemplatesByTarget.compare;
+
+    const mapResolutionToImageSize = (value: string) => {
+      if (value === "4K") return "4K";
+      if (value === "2K") return "2K";
+      return "1K";
     };
-    setCompareResults([newResult]);
-    setShowEvaluation(true);
-    addHistoryEntry({
-      type: "compare",
-      title: "模型对比完成",
-      detail: `${compareLeftModel} vs ${compareRightModel}`,
-      timestamp: new Date(),
-      preview: picked[0],
-    });
+
+    const imageSize = mapResolutionToImageSize(resolution);
+
+    const generateOne = async (modelValue: string, refs: string[]) => {
+      const response = await fetch("/api/image/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: modelValue,
+          prompt: targetPrompt,
+          aspectRatio: compareRatio,
+          imageSize,
+          referenceImages: refs,
+        }),
+      });
+
+      if (!response.ok) {
+        const info = await response.json().catch(() => ({}));
+        throw new Error(info.error || response.statusText);
+      }
+
+      const data = (await response.json()) as {
+        imageData?: string;
+        mimeType?: string;
+        imageUrl?: string;
+      };
+
+      const url =
+        data.imageUrl ||
+        (data.imageData
+          ? `data:${data.mimeType || "image/png"};base64,${data.imageData}`
+          : null);
+
+      if (!url) throw new Error("No image returned from API");
+      return url;
+    };
+
+    const run = async () => {
+      setIsComparing(true);
+      setCompareError(null);
+      setCompareResults([]);
+      setShowEvaluation(false);
+
+      try {
+        const encodedRefs = await encodeReferenceImages(compareReferenceImages);
+        const [leftUrl, rightUrl] = await Promise.all([
+          generateOne(compareLeftModel, encodedRefs),
+          generateOne(compareRightModel, encodedRefs),
+        ]);
+
+        const newResult: CompareResult = {
+          id: `compare-${Date.now()}`,
+          left: leftUrl,
+          right: rightUrl,
+          prompt: targetPrompt,
+          ratio: compareRatio,
+          leftModel: compareLeftModel,
+          rightModel: compareRightModel,
+        };
+
+        setCompareResults([newResult]);
+        setShowEvaluation(true);
+        addHistoryEntry({
+          type: "compare",
+          title: "模型对比完成",
+          detail: `${compareLeftModel} vs ${compareRightModel}`,
+          timestamp: new Date(),
+          preview: leftUrl,
+        });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "对比失败";
+        setCompareError(message);
+      } finally {
+        setIsComparing(false);
+      }
+    };
+
+    run();
   };
 
   const handleApplyTemplate = (prompt: string) => {
@@ -509,6 +631,11 @@ const Dashboard = () => {
     setShowModelPicker(false);
   };
 
+  const openPreview = React.useCallback((url: string, alt: string) => {
+    setPreviewUrl(url);
+    setPreviewAlt(alt);
+  }, []);
+
   const renderUploadList = (
     items: UploadedImage[],
     removeHandler: (id: string) => void
@@ -535,6 +662,65 @@ const Dashboard = () => {
       </div>
     );
   };
+
+  const renderGeneratedResultCard = (item: GeneratedResult, large = false) => (
+    <div
+      key={item.id}
+      className={`${styles.resultCard} ${large ? styles.resultCardLarge : ""}`}
+    >
+      <div
+        className={`${styles.resultImageFrame} ${
+          large ? styles.resultImageFrameLarge : ""
+        }`}
+      >
+        <img
+          src={item.url}
+          alt={item.prompt}
+          loading="lazy"
+          onClick={() => openPreview(item.url, item.prompt)}
+        />
+      </div>
+      <div className={styles.resultMeta}>
+        <div className={styles.resultTitle}>{item.prompt}</div>
+        <div className={styles.resultInfo}>
+          {item.model} · {item.ratio} · {item.resolution}
+        </div>
+      </div>
+      <div className={styles.resultActions}>
+        <button
+          className={styles.ghostBtn}
+          onClick={() => downloadImage(item.url, `${item.id}.png`)}
+        >
+          下载
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderUploadedResultCard = (img: UploadedImage) => (
+    <div key={img.id} className={styles.resultCard}>
+      <div className={styles.resultImageFrame}>
+        <img
+          src={img.url}
+          alt={img.name}
+          loading="lazy"
+          onClick={() => openPreview(img.url, img.name)}
+        />
+      </div>
+      <div className={styles.resultMeta}>
+        <div className={styles.resultTitle}>{img.name}</div>
+        <div className={styles.resultInfo}>{img.size}</div>
+      </div>
+    </div>
+  );
+
+  const renderSimpleImageCard = (url: string, alt: string, key?: string) => (
+    <div key={key || url} className={styles.resultCard}>
+      <div className={styles.resultImageFrame}>
+        <img src={url} alt={alt} loading="lazy" onClick={() => openPreview(url, alt)} />
+      </div>
+    </div>
+  );
 
   const renderTemplateModal = () => {
     if (!showTemplates) return null;
@@ -928,20 +1114,22 @@ const Dashboard = () => {
                       ))}
                     </select>
                   </div>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>生成数量</label>
-                    <select
-                      className={styles.select}
-                      value={generateCount}
-                      onChange={(e) => setGenerateCount(e.target.value)}
-                    >
-                      <option value="1">1 张</option>
-                      <option value="2">2 张</option>
-                    </select>
-                  </div>
-                </div>
+	                  <div className={styles.inputGroup}>
+	                    <label className={styles.label}>生成数量</label>
+	                    <select
+	                      className={styles.select}
+	                      value={generateCount}
+	                      onChange={(e) => setGenerateCount(e.target.value)}
+	                    >
+	                      <option value="1">1 张</option>
+	                      <option value="2">2 张</option>
+	                      <option value="3">3 张</option>
+	                      <option value="4">4 张</option>
+	                    </select>
+	                  </div>
+	                </div>
 
-                <div className={styles.inputGroup}>
+	                <div className={styles.inputGroup}>
                   <label className={styles.label}>分辨率</label>
                   <select
                     className={styles.select}
@@ -958,130 +1146,154 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className={`${styles.column} ${styles.resultColumn}`}>
-                <div className={styles.resultBox}>
-                  <div className={styles.sectionHeader}>
-                    <div className={styles.sectionTitle}>生成结果</div>
-                    <div className={styles.tabRow}>
-                      {["result", "original", "compare"].map((key) => (
-                        <button
-                          key={key}
-                          className={`${styles.subTab} ${
-                            resultTab === key ? styles.active : ""
-                          }`}
-                          onClick={() => setResultTab(key as ResultTab)}
-                        >
-                          {key === "result" && "生成结果"}
-                          {key === "original" && "原图/参考图"}
-                          {key === "compare" && "前后对比"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+	              <div className={`${styles.column} ${styles.resultColumn}`}>
+	                <div className={styles.resultBox}>
+	                  <div className={styles.sectionHeader}>
+	                    <div className={styles.sectionTitle}>生成结果</div>
+	                    <div className={styles.headerActions}>
+	                      {resultTab === "result" && results.length > 1 && (
+	                        <div className={styles.modeToggle}>
+	                          <button
+	                            type="button"
+	                            className={`${styles.modeBtn} ${
+	                              resultDisplayMode === "single" ? styles.active : ""
+	                            }`}
+	                            onClick={() => setResultDisplayMode("single")}
+	                          >
+	                            单张
+	                          </button>
+	                          <button
+	                            type="button"
+	                            className={`${styles.modeBtn} ${
+	                              resultDisplayMode === "all" ? styles.active : ""
+	                            }`}
+	                            onClick={() => setResultDisplayMode("all")}
+	                          >
+	                            全部
+	                          </button>
+	                        </div>
+	                      )}
+	                      <div className={styles.tabRow}>
+	                        {["result", "original", "compare"].map((key) => (
+	                          <button
+	                            key={key}
+	                            className={`${styles.subTab} ${
+	                              resultTab === key ? styles.active : ""
+	                            }`}
+	                            onClick={() => setResultTab(key as ResultTab)}
+	                          >
+	                            {key === "result" && "生成结果"}
+	                            {key === "original" && "原图/参考图"}
+	                            {key === "compare" && "前后对比"}
+	                          </button>
+	                        ))}
+	                      </div>
+	                    </div>
+	                  </div>
 
-                  <div className={styles.resultArea}>
-                    {resultTab === "result" && (
-                      <div className={styles.resultGrid}>
-                        {results.length ? (
-                          results.map((item) => (
-                            <div key={item.id} className={styles.resultCard}>
-                              <img src={item.url} alt={item.prompt} />
-                              <div className={styles.resultMeta}>
-                                <div className={styles.resultTitle}>{item.prompt}</div>
-                                <div className={styles.resultInfo}>
-                                  {item.model} · {item.ratio} · {item.resolution}
-                                </div>
-                              </div>
-                              <div className={styles.resultActions}>
-                                <button
-                                  className={styles.ghostBtn}
-                                  onClick={() => downloadImage(item.url, `${item.id}.png`)}
-                                >
-                                  下载
-                                </button>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className={styles.placeholder}>
-                            <div className={styles.placeholderIcon}>🎨</div>
-                            <p>生成的图片会出现在这里</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
+	                  <div className={styles.resultArea}>
+	                    {resultTab === "result" &&
+	                      (results.length ? (
+	                        resultDisplayMode === "single" ? (
+	                          <div className={styles.singleResult}>
+	                            {renderGeneratedResultCard(results[activeResultIndex]!, true)}
+	                            <div className={styles.singleNav}>
+	                              <button
+	                                type="button"
+	                                className={styles.singleNavBtn}
+	                                disabled={activeResultIndex === 0}
+	                                onClick={() =>
+	                                  setActiveResultIndex((prev) => Math.max(prev - 1, 0))
+	                                }
+	                              >
+	                                ‹
+	                              </button>
+	                              <div className={styles.singleNavText}>
+	                                {activeResultIndex + 1} / {results.length}
+	                              </div>
+	                              <button
+	                                type="button"
+	                                className={styles.singleNavBtn}
+	                                disabled={activeResultIndex >= results.length - 1}
+	                                onClick={() =>
+	                                  setActiveResultIndex((prev) =>
+	                                    Math.min(prev + 1, results.length - 1)
+	                                  )
+	                                }
+	                              >
+	                                ›
+	                              </button>
+	                            </div>
+	                          </div>
+	                        ) : (
+	                          <div className={styles.resultGrid}>
+	                            {results.map((item) => renderGeneratedResultCard(item))}
+	                          </div>
+	                        )
+	                      ) : (
+	                        <div className={styles.placeholder}>
+	                          <div className={styles.placeholderIcon}>🎨</div>
+	                          <p>生成的图片会出现在这里</p>
+	                        </div>
+	                      ))}
 
-                    {resultTab === "original" && (
-                      <div className={styles.resultGrid}>
-                        {referenceImages.length ? (
-                          referenceImages.map((img) => (
-                            <div key={img.id} className={styles.resultCard}>
-                              <img src={img.url} alt={img.name} />
-                              <div className={styles.resultMeta}>
-                                <div className={styles.resultTitle}>{img.name}</div>
-                                <div className={styles.resultInfo}>{img.size}</div>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className={styles.placeholder}>
-                            <div className={styles.placeholderIcon}>🖼️</div>
-                            <p>还没有参考图</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
+	                    {resultTab === "original" &&
+	                      (referenceImages.length ? (
+	                        <div className={styles.resultGrid}>
+	                          {referenceImages.map((img) => renderUploadedResultCard(img))}
+	                        </div>
+	                      ) : (
+	                        <div className={styles.placeholder}>
+	                          <div className={styles.placeholderIcon}>🖼️</div>
+	                          <p>还没有参考图</p>
+	                        </div>
+	                      ))}
 
-                    {resultTab === "compare" && (
-                      <div className={styles.compareGrid}>
-                        <div>
+	                    {resultTab === "compare" && (
+	                      <div className={styles.compareGrid}>
+	                        <div>
                           <div className={styles.sectionCaption}>参考图</div>
-                          <div className={styles.resultGrid}>
-                            {referenceImages.length ? (
-                              referenceImages.map((img) => (
-                                <div key={img.id} className={styles.resultCard}>
-                                  <img src={img.url} alt={img.name} />
-                                </div>
-                              ))
-                            ) : (
-                              <div className={styles.placeholderSmall}>上传参考图后显示</div>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <div className={styles.sectionCaption}>生成结果</div>
-                          <div className={styles.resultGrid}>
-                            {results.length ? (
-                              results.map((item) => (
-                                <div key={item.id} className={styles.resultCard}>
-                                  <img src={item.url} alt={item.prompt} />
-                                </div>
-                              ))
-                            ) : (
-                              <div className={styles.placeholderSmall}>生成后展示对比</div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {(isGenerating || progress > 0) && (
-                      <div className={styles.progressBlock}>
-                        <div className={styles.progressBar}>
-                          <div
-                            className={styles.progressFill}
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                        <div className={styles.progressText}>
-                          正在生成图片... {progress.toFixed(0)}%
-                        </div>
-                      </div>
-                    )}
-                    {error && <div className={styles.errorNote}>⚠️ {error}</div>}
-                  </div>
-                </div>
-              </div>
+	                          {referenceImages.length ? (
+	                            <div className={styles.resultGrid}>
+	                              {referenceImages.map((img) =>
+	                                renderSimpleImageCard(img.url, img.name, img.id)
+	                              )}
+	                            </div>
+	                          ) : (
+	                            <div className={styles.placeholderSmall}>上传参考图后显示</div>
+	                          )}
+	                        </div>
+	                        <div>
+	                          <div className={styles.sectionCaption}>生成结果</div>
+	                          {results.length ? (
+	                            <div className={styles.resultGrid}>
+	                              {results.map((item) =>
+	                                renderSimpleImageCard(item.url, item.prompt, item.id)
+	                              )}
+	                            </div>
+	                          ) : (
+	                            <div className={styles.placeholderSmall}>生成后展示对比</div>
+	                          )}
+	                        </div>
+	                      </div>
+	                    )}
+	                    {error && <div className={styles.errorNote}>⚠️ {error}</div>}
+	                  </div>
+	                </div>
+	                {(isGenerating || progress > 0) && (
+	                  <div className={styles.progressBlock}>
+	                    <div className={styles.progressBar}>
+	                      <div
+	                        className={styles.progressFill}
+	                        style={{ width: `${progress}%` }}
+	                      />
+	                    </div>
+	                    <div className={styles.progressText}>
+	                      正在生成图片... {progress.toFixed(0)}%
+	                    </div>
+	                  </div>
+	                )}
+	              </div>
             </div>
           </div>
         )}
@@ -1279,15 +1491,22 @@ const Dashboard = () => {
                   <div className={styles.sectionCaption}>完成后自动排列卡片</div>
                 </div>
                 <div className={styles.resultGrid}>
-                  {batchResults.length ? (
-                    batchResults.map((item) => (
-                      <div key={item.id} className={styles.resultCard}>
-                        <img src={item.url} alt={item.prompt} />
-                        <div className={styles.resultMeta}>
-                          <div className={styles.resultTitle}>{item.promptLabel}</div>
-                          <div className={styles.resultInfo}>
-                            {item.ratio} · {item.model}
-                          </div>
+	                  {batchResults.length ? (
+	                    batchResults.map((item) => (
+	                      <div key={item.id} className={styles.resultCard}>
+	                        <div className={styles.resultImageFrame}>
+	                          <img
+	                            src={item.url}
+	                            alt={item.prompt}
+	                            loading="lazy"
+	                            onClick={() => openPreview(item.url, item.promptLabel)}
+	                          />
+	                        </div>
+	                        <div className={styles.resultMeta}>
+	                          <div className={styles.resultTitle}>{item.promptLabel}</div>
+	                          <div className={styles.resultInfo}>
+	                            {item.ratio} · {item.model}
+	                          </div>
                         </div>
                         <div className={styles.resultActions}>
                           <button
@@ -1408,14 +1627,22 @@ const Dashboard = () => {
                       setCompareReferenceImages([]);
                       setCompareResults([]);
                       setShowEvaluation(false);
+                      setCompareError(null);
                     }}
                   >
                     清空
                   </button>
-                  <button className={styles.primaryBtn} onClick={handleCompare}>
-                    开始对比
+                  <button
+                    className={styles.primaryBtn}
+                    onClick={handleCompare}
+                    disabled={isComparing}
+                  >
+                    {isComparing ? "对比中..." : "开始对比"}
                   </button>
                 </div>
+                {compareError && (
+                  <div className={styles.errorNote}>⚠️ {compareError}</div>
+                )}
               </div>
 
               <div className={styles.column}>
@@ -1457,15 +1684,25 @@ const Dashboard = () => {
                 </div>
                 {compareResults.length ? (
                   compareResults.map((item) => (
-                    <div key={item.id} className={styles.compareResult}>
-                      <div className={styles.compareItem}>
-                        <div className={styles.compareLabel}>{item.leftModel}</div>
-                        <img src={item.left} alt={item.leftModel} />
-                      </div>
-                      <div className={styles.compareItem}>
-                        <div className={styles.compareLabel}>{item.rightModel}</div>
-                        <img src={item.right} alt={item.rightModel} />
-                      </div>
+	                    <div key={item.id} className={styles.compareResult}>
+	                      <div className={styles.compareItem}>
+	                        <div className={styles.compareLabel}>{item.leftModel}</div>
+	                        <img
+	                          src={item.left}
+	                          alt={item.leftModel}
+	                          loading="lazy"
+	                          onClick={() => openPreview(item.left, item.leftModel)}
+	                        />
+	                      </div>
+	                      <div className={styles.compareItem}>
+	                        <div className={styles.compareLabel}>{item.rightModel}</div>
+	                        <img
+	                          src={item.right}
+	                          alt={item.rightModel}
+	                          loading="lazy"
+	                          onClick={() => openPreview(item.right, item.rightModel)}
+	                        />
+	                      </div>
                       <div className={styles.resultMeta}>
                         <div className={styles.resultTitle}>{item.prompt}</div>
                         <div className={styles.resultInfo}>比例 {item.ratio}</div>
@@ -1516,6 +1753,34 @@ const Dashboard = () => {
       {renderSettingsModal()}
       {renderGuideModal()}
       {renderActivityModal()}
+
+      {previewUrl && (
+        <div
+          className={styles.previewOverlay}
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setPreviewUrl(null)}
+        >
+          <div
+            className={styles.previewContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className={styles.previewClose}
+              aria-label="关闭预览"
+              onClick={() => setPreviewUrl(null)}
+            >
+              ×
+            </button>
+            <img
+              src={previewUrl}
+              alt={previewAlt}
+              className={styles.previewImage}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 };
