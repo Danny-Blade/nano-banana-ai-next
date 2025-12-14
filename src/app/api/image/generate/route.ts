@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { chargeCredits, getModelCost, refundCredits } from "@/lib/credits";
+import { requireD1, nowSeconds } from "@/lib/d1";
+import { newId } from "@/lib/id";
 
 const API_BASE =
   process.env.APIYI_API_BASE_URL?.replace(/\/+$/, "") || "https://api.apiyi.com";
@@ -7,7 +12,11 @@ const OPENAI_CHAT_URL = `${API_BASE}/v1/chat/completions`;
 const OPENAI_IMAGES_GENERATIONS_URL = `${API_BASE}/v1/images/generations`;
 const OPENAI_IMAGES_EDITS_URL = `${API_BASE}/v1/images/edits`;
 
-const API_KEY = "sk-HTHfXpVZunRRGTnI70F4448c1c8e4e778b9b05A9Df5a380c";
+/**
+ * 上游 API Key（服务端环境变量）。
+ * 注意：不要使用 `NEXT_PUBLIC_` 前缀（否则会打包进前端）。
+ */
+const API_KEY = process.env.APIYI_API_KEY || process.env.NANO_BANANA_API_KEY || "";
 
 type RequestBody = {
   model?: string;
@@ -25,6 +34,24 @@ const GEMINI_MODEL_MAP: Record<string, string> = {
 const SEEDREAM_MODEL_MAP: Record<string, string> = {
   "seedream-4-0": "seedream-4-0-250828",
   "seedream-4-5": "seedream-4-5-251128",
+};
+
+const base64ToBlob = (base64: string, mimeType: string) => {
+  // Cloudflare Workers 不保证存在 Node 的 `Buffer`，优先使用 Web API。
+  if (typeof atob === "function") {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: mimeType });
+  }
+  // 在没有 `atob` 的 Node 环境下做兼容回退。
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const BufferRef = (globalThis as any).Buffer as
+    | { from(data: string, encoding: string): Uint8Array }
+    | undefined;
+  if (!BufferRef) throw new Error("Missing base64 decoder");
+  const bytes = BufferRef.from(base64, "base64");
+  return new Blob([bytes], { type: mimeType });
 };
 
 const parseDataUrl = (dataUrl: string) => {
@@ -123,6 +150,93 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // 必须登录：生图需要扣对应用户的积分。
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  if (!userId) {
+    return NextResponse.json({ error: "请先登录" }, { status: 401 });
+  }
+
+  // 模型价格以服务端为准（防止客户端篡改）。
+  const cost = await getModelCost(model);
+  if (cost == null) {
+    return NextResponse.json(
+      { error: `Unsupported/disabled model pricing: ${model}` },
+      { status: 400, statusText: "Unsupported model" }
+    );
+  }
+
+  const jobId = newId("job");
+  const now = nowSeconds();
+  const db = requireD1();
+
+  const charged = await chargeCredits({
+    userId,
+    amount: cost,
+    reason: "generation_charge",
+    refProvider: null,
+    refId: jobId,
+  });
+
+  if (!charged) {
+    return NextResponse.json({ error: "积分不足" }, { status: 402 });
+  }
+
+  // 记录任务到 DB：用于历史/审计。
+  //（目前是同步返回；长耗时建议迁移到 Queues 异步执行。）
+  try {
+    await db
+      .prepare(
+        `
+        INSERT INTO generation_jobs(
+          id, user_id, model_key, cost_credits, prompt, aspect_ratio, image_size,
+          status, error, output_r2_key, created_at, updated_at
+        ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `.trim()
+      )
+      .bind(
+        jobId,
+        userId,
+        model,
+        cost,
+        prompt,
+        aspectRatio,
+        imageSize,
+        "running",
+        null,
+        null,
+        now,
+        now
+      )
+      .run();
+  } catch (err) {
+    // 如果任务记录写入失败，必须退款，避免用户“扣了积分但无记录”。
+    await refundCredits({
+      userId,
+      amount: cost,
+      reason: "generation_refund",
+      refProvider: null,
+      refId: jobId,
+    });
+    throw err;
+  }
+
+  const markFailed = async (message: string, status?: number) => {
+    await db
+      .prepare(
+        `UPDATE generation_jobs SET status = ?, error = ?, updated_at = ? WHERE id = ?`
+      )
+      .bind("failed", status ? `${status}: ${message}` : message, nowSeconds(), jobId)
+      .run();
+  };
+
+  const markSucceeded = async () => {
+    await db
+      .prepare(`UPDATE generation_jobs SET status = ?, updated_at = ? WHERE id = ?`)
+      .bind("succeeded", nowSeconds(), jobId)
+      .run();
+  };
+
   try {
     if (model in GEMINI_MODEL_MAP) {
       const geminiModel = GEMINI_MODEL_MAP[model];
@@ -161,6 +275,14 @@ export async function POST(req: NextRequest) {
 
       if (!response.ok) {
         const errorText = await readUpstreamError(response);
+        await markFailed(errorText || "Upstream request failed", response.status);
+        await refundCredits({
+          userId,
+          amount: cost,
+          reason: "generation_refund",
+          refProvider: null,
+          refId: jobId,
+        });
         return NextResponse.json(
           { error: errorText || "Upstream request failed" },
           { status: response.status, statusText: response.statusText }
@@ -172,12 +294,21 @@ export async function POST(req: NextRequest) {
         data?.candidates?.[0]?.content?.parts?.[0]?.inlineData || null;
 
       if (!inlineData?.data) {
+        await markFailed("No image returned from API", 502);
+        await refundCredits({
+          userId,
+          amount: cost,
+          reason: "generation_refund",
+          refProvider: null,
+          refId: jobId,
+        });
         return NextResponse.json(
           { error: "No image returned from API" },
           { status: 502, statusText: "Invalid response" }
         );
       }
 
+      await markSucceeded();
       return NextResponse.json({
         imageData: inlineData.data as string,
         mimeType: inlineData.mimeType || "image/png",
@@ -216,6 +347,14 @@ export async function POST(req: NextRequest) {
 
       if (!response.ok) {
         const errorText = await readUpstreamError(response);
+        await markFailed(errorText || "Upstream request failed", response.status);
+        await refundCredits({
+          userId,
+          amount: cost,
+          reason: "generation_refund",
+          refProvider: null,
+          refId: jobId,
+        });
         return NextResponse.json(
           { error: errorText || "Upstream request failed" },
           { status: response.status, statusText: response.statusText }
@@ -230,6 +369,7 @@ export async function POST(req: NextRequest) {
 
       const markdownUrls = extractMarkdownImageUrls(contentText);
       if (markdownUrls.length) {
+        await markSucceeded();
         return NextResponse.json({ imageUrl: markdownUrls[0] });
       }
 
@@ -237,6 +377,7 @@ export async function POST(req: NextRequest) {
       if (dataUrls.length) {
         const parsed = parseDataUrl(dataUrls[0]);
         if (parsed?.data) {
+          await markSucceeded();
           return NextResponse.json({
             imageData: parsed.data,
             mimeType: parsed.mimeType || "image/png",
@@ -244,6 +385,14 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      await markFailed("No image returned from API", 502);
+      await refundCredits({
+        userId,
+        amount: cost,
+        reason: "generation_refund",
+        refProvider: null,
+        refId: jobId,
+      });
       return NextResponse.json(
         { error: "No image returned from API" },
         { status: 502, statusText: "Invalid response" }
@@ -260,14 +409,21 @@ export async function POST(req: NextRequest) {
       if (referenceImages.length > 0) {
         const parsed = parseDataUrl(referenceImages[0]);
         if (!parsed?.data) {
+          await markFailed("Invalid reference image", 400);
+          await refundCredits({
+            userId,
+            amount: cost,
+            reason: "generation_refund",
+            refProvider: null,
+            refId: jobId,
+          });
           return NextResponse.json(
             { error: "Invalid reference image" },
             { status: 400 }
           );
         }
 
-        const buffer = Buffer.from(parsed.data, "base64");
-        const blob = new Blob([buffer], { type: parsed.mimeType });
+        const blob = base64ToBlob(parsed.data, parsed.mimeType);
         const form = new FormData();
         form.append("model", upstreamModel);
         form.append("prompt", prompt);
@@ -290,6 +446,14 @@ export async function POST(req: NextRequest) {
 
         if (!response.ok) {
           const errorText = await readUpstreamError(response);
+          await markFailed(errorText || "Upstream request failed", response.status);
+          await refundCredits({
+            userId,
+            amount: cost,
+            reason: "generation_refund",
+            refProvider: null,
+            refId: jobId,
+          });
           return NextResponse.json(
             { error: errorText || "Upstream request failed" },
             { status: response.status, statusText: response.statusText }
@@ -299,14 +463,24 @@ export async function POST(req: NextRequest) {
         const data = await response.json();
         const item = data?.data?.[0];
         if (item?.b64_json) {
+          await markSucceeded();
           return NextResponse.json({
             imageData: item.b64_json as string,
             mimeType: "image/png",
           });
         }
         if (item?.url) {
+          await markSucceeded();
           return NextResponse.json({ imageUrl: item.url as string });
         }
+        await markFailed("No image returned from API", 502);
+        await refundCredits({
+          userId,
+          amount: cost,
+          reason: "generation_refund",
+          refProvider: null,
+          refId: jobId,
+        });
         return NextResponse.json(
           { error: "No image returned from API" },
           { status: 502, statusText: "Invalid response" }
@@ -336,6 +510,14 @@ export async function POST(req: NextRequest) {
 
       if (!response.ok) {
         const errorText = await readUpstreamError(response);
+        await markFailed(errorText || "Upstream request failed", response.status);
+        await refundCredits({
+          userId,
+          amount: cost,
+          reason: "generation_refund",
+          refProvider: null,
+          refId: jobId,
+        });
         return NextResponse.json(
           { error: errorText || "Upstream request failed" },
           { status: response.status, statusText: response.statusText }
@@ -345,14 +527,24 @@ export async function POST(req: NextRequest) {
       const data = await response.json();
       const item = data?.data?.[0];
       if (item?.b64_json) {
+        await markSucceeded();
         return NextResponse.json({
           imageData: item.b64_json as string,
           mimeType: "image/png",
         });
       }
       if (item?.url) {
+        await markSucceeded();
         return NextResponse.json({ imageUrl: item.url as string });
       }
+      await markFailed("No image returned from API", 502);
+      await refundCredits({
+        userId,
+        amount: cost,
+        reason: "generation_refund",
+        refProvider: null,
+        refId: jobId,
+      });
       return NextResponse.json(
         { error: "No image returned from API" },
         { status: 502, statusText: "Invalid response" }
@@ -383,6 +575,14 @@ export async function POST(req: NextRequest) {
 
       if (!response.ok) {
         const errorText = await readUpstreamError(response);
+        await markFailed(errorText || "Upstream request failed", response.status);
+        await refundCredits({
+          userId,
+          amount: cost,
+          reason: "generation_refund",
+          refProvider: null,
+          refId: jobId,
+        });
         return NextResponse.json(
           { error: errorText || "Upstream request failed" },
           { status: response.status, statusText: response.statusText }
@@ -392,21 +592,39 @@ export async function POST(req: NextRequest) {
       const data = await response.json();
       const item = data?.data?.[0];
       if (item?.b64_json) {
+        await markSucceeded();
         return NextResponse.json({
           imageData: item.b64_json as string,
           mimeType: "image/png",
         });
       }
       if (item?.url) {
+        await markSucceeded();
         return NextResponse.json({ imageUrl: item.url as string });
       }
 
+      await markFailed("No image returned from API", 502);
+      await refundCredits({
+        userId,
+        amount: cost,
+        reason: "generation_refund",
+        refProvider: null,
+        refId: jobId,
+      });
       return NextResponse.json(
         { error: "No image returned from API" },
         { status: 502, statusText: "Invalid response" }
       );
     }
 
+    await markFailed(`Unsupported model: ${model}`, 400);
+    await refundCredits({
+      userId,
+      amount: cost,
+      reason: "generation_refund",
+      refProvider: null,
+      refId: jobId,
+    });
     return NextResponse.json(
       { error: `Unsupported model: ${model}` },
       { status: 400, statusText: "Unsupported model" }
@@ -416,6 +634,18 @@ export async function POST(req: NextRequest) {
       error instanceof Error && error.name === "AbortError"
         ? "Request timed out"
         : (error as Error)?.message || "Unknown error";
+    try {
+      await markFailed(message, 500);
+      await refundCredits({
+        userId,
+        amount: cost,
+        reason: "generation_refund",
+        refProvider: null,
+        refId: jobId,
+      });
+    } catch (refundErr) {
+      console.error("[generate] Failed to refund after error:", refundErr);
+    }
     return NextResponse.json(
       { error: message },
       { status: 500, statusText: "Request failed" }
