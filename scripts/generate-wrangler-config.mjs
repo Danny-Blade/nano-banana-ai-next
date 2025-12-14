@@ -28,6 +28,15 @@ function hasNonEmptyEnv(key) {
 	return typeof value === "string" && value.trim().length > 0;
 }
 
+function isCloudflareBuildEnv() {
+	// Cloudflare Pages/Workers 构建环境通常会注入这些变量（不同产品形态可能略有差异）
+	return (
+		hasNonEmptyEnv("CF_PAGES") ||
+		hasNonEmptyEnv("CF_PAGES_BRANCH") ||
+		hasNonEmptyEnv("CF_PAGES_URL")
+	);
+}
+
 function isUuidLike(value) {
 	// D1 的 database_id 是 UUID（形如 8-4-4-4-12）
 	return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
@@ -92,7 +101,9 @@ function tryDiscoverD1DatabaseIdByName(databaseName) {
 let d1DatabaseId = getEnv("D1_DATABASE_ID", "CF_D1_DATABASE_ID");
 
 // 本地开发允许不配置（不覆盖仓库里的模板配置）；CI/Cloudflare 环境强制要求配置。
-const isCI = ["1", "true", "yes"].includes(String(process.env.CI).toLowerCase());
+const isCI =
+	["1", "true", "yes"].includes(String(process.env.CI).toLowerCase()) ||
+	isCloudflareBuildEnv();
 if (!d1DatabaseId) {
 	printEnvDiagnostics();
 
@@ -125,24 +136,16 @@ if (!d1DatabaseId) {
 	process.exit(0);
 }
 
-// if (!isUuidLike(d1DatabaseId)) {
-// 	printEnvDiagnostics();
-// 	const message = [
-// 		"`D1_DATABASE_ID` 不是有效的 D1 数据库 UUID。",
-// 		"你很可能填成了数据库名称/绑定名（例如 nano_banana / nano_banana_db），但这里必须是 Database ID（UUID）。",
-// 		"获取方式：Cloudflare 控制台 → D1 → 进入数据库详情页 → 复制 Database ID。",
-// 	].join("\n");
-
-// 	if (isCI) {
-// 		throw new Error(message);
-// 	}
-
-// 	process.stdout.write(`[generate-wrangler-config] ${message}\n`);
-// 	process.stdout.write(
-// 		"[generate-wrangler-config] 非 CI 环境：跳过写入 wrangler.jsonc（本地 build 正常）。\n",
-// 	);
-// 	process.exit(0);
-// }
+if (!isUuidLike(d1DatabaseId)) {
+	printEnvDiagnostics();
+	throw new Error(
+		[
+			"`D1_DATABASE_ID` 不是有效的 D1 数据库 UUID。",
+			"你很可能填成了数据库名称/绑定名（例如 nano_banana / nano_banana_db），但这里必须是 Database ID（UUID）。",
+			"获取方式：Cloudflare 控制台 → D1 → 进入数据库详情页 → 复制 Database ID。",
+		].join("\n"),
+	);
+}
 
 const workerName = getEnv("WORKER_NAME", "CF_WORKER_NAME") ?? "nano-banana-ai-next";
 const d1DatabaseName = getEnv("D1_DATABASE_NAME", "CF_D1_DATABASE_NAME") ?? "nano_banana";
@@ -165,4 +168,6 @@ const config = {
 
 const targetPath = path.join(process.cwd(), "wrangler.jsonc");
 fs.writeFileSync(targetPath, JSON.stringify(config, null, 2) + "\n", "utf8");
-process.stdout.write(`[generate-wrangler-config] 已写入 wrangler.jsonc（DB=${d1DatabaseName}）。\n`);
+process.stdout.write(
+	`[generate-wrangler-config] 已写入 wrangler.jsonc（DB=${d1DatabaseName}, id=${d1DatabaseId.slice(0, 8)}...${d1DatabaseId.slice(-4)}）。\n`,
+);
