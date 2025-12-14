@@ -2,9 +2,10 @@
 
 import React from 'react';
 import styles from './WhyChoose.module.css';
-import { siteContent } from '@/config/content';
+import { useSiteContent } from "@/components/useSiteContent";
 
 const WhyChoose = () => {
+    const siteContent = useSiteContent();
     const { title, subtitle, features } = siteContent.whyChoose;
 
     return (

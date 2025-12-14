@@ -2,7 +2,9 @@
 
 import React from "react";
 import styles from "./Dashboard.module.css";
-import { siteContent } from "@/config/content";
+import { useI18n } from "@/components/I18nProvider";
+import { getMessage } from "@/lib/i18n";
+import { useSiteContent } from "@/components/useSiteContent";
 
 type Tab = "generate" | "batch" | "compare" | "history";
 type ResultTab = "result" | "original" | "compare";
@@ -37,70 +39,79 @@ type CompareResult = {
   rightModel: string;
 };
 
-type HistoryEntry = {
-  id: string;
-  type: Tab;
-  title: string;
-  detail: string;
-  timestamp: Date;
-  preview?: string;
-};
-
 type TemplateTarget = "generate" | "batch" | "batch-multi" | "compare";
 
+type DashboardVariant = "full" | "generateOnly";
+
+type DashboardProps = {
+  /**
+   * `full`：Dashboard 完整形态（含 Tab/批量/对比/历史）。
+   * `generateOnly`：仅渲染“图片编辑/生图”模块，用于首页嵌入。
+   */
+  variant?: DashboardVariant;
+};
+
 const modelOptions = [
-  {
-    value: "nano-banana",
-    label: "Nano Banana",
-    description: "极速生成，适合通用场景",
-    points: "消耗 2 积分/张",
-    badge: "新",
-  },
-  {
-    value: "nano-banana-pro",
-    label: "Nano Banana Pro",
-    description: "高质量商业级，细节更强",
-    points: "消耗 4 积分/张",
-    badge: "Pro",
-  },
-  {
-    value: "seedream-4-0",
-    label: "SeeDream 4.0",
-    description: "写实光影，产品与人物一致性好",
-    points: "消耗 5 积分/张",
-  },
-  {
-    value: "sora-image",
-    label: "Sora_image",
-    description: "动态场景、故事感画面",
-    points: "消耗 6 积分/张",
-  },
-  {
-    value: "flux-kontext-pro",
-    label: "Flux Kontext Pro",
-    description: "文生图稳定，场景理解佳",
-    points: "消耗 3 积分/张",
-  },
-  {
-    value: "flux-kontext-max",
-    label: "Flux Kontext Max",
-    description: "超高分辨率与复杂细节",
-    points: "消耗 8 积分/张",
-  },
-];
+  { value: "nano-banana", creditsPerImage: 2 },
+  { value: "nano-banana-pro", creditsPerImage: 4 },
+  { value: "seedream-4-0", creditsPerImage: 5 },
+  { value: "sora-image", creditsPerImage: 6 },
+  { value: "flux-kontext-pro", creditsPerImage: 3 },
+  { value: "flux-kontext-max", creditsPerImage: 8 },
+] as const;
 
 const ratioOptions = [
-  { value: "1:1", label: "方形 1:1" },
-  { value: "16:9", label: "横版 16:9" },
-  { value: "9:16", label: "竖版 9:16" },
-  { value: "4:3", label: "横版 4:3" },
-  { value: "3:4", label: "竖版 3:4" },
-  { value: "3:2", label: "横版 3:2" },
-  { value: "2:3", label: "竖版 2:3" },
-  { value: "21:9", label: "影院 21:9" },
-  { value: "5:4", label: "横版 5:4" },
-  { value: "4:5", label: "竖版 4:5" },
-];
+  { value: "1:1" },
+  { value: "16:9" },
+  { value: "9:16" },
+  { value: "4:3" },
+  { value: "3:4" },
+  { value: "3:2" },
+  { value: "2:3" },
+  { value: "21:9" },
+  { value: "5:4" },
+  { value: "4:5" },
+] as const;
+
+type ModelValue = (typeof modelOptions)[number]["value"];
+type MaybeModelValue = ModelValue | "";
+type RatioValue = (typeof ratioOptions)[number]["value"];
+type BatchRatioValue = "auto" | RatioValue;
+
+type HistoryEntry =
+  | {
+      id: string;
+      type: "generate";
+      timestamp: Date;
+      preview?: string;
+      payload: {
+        model: ModelValue;
+        count: number;
+        ratio: RatioValue;
+        imageSize: string;
+      };
+    }
+  | {
+      id: string;
+      type: "batch";
+      timestamp: Date;
+      preview?: string;
+      payload: {
+        mode: "card" | "multi";
+        count: number;
+        ratio: BatchRatioValue;
+      };
+    }
+  | {
+      id: string;
+      type: "compare";
+      timestamp: Date;
+      preview?: string;
+      payload: {
+        leftModel: ModelValue;
+        rightModel: ModelValue;
+      };
+    };
 
 const resolutionOptions: Record<string, string[]> = {
   "nano-banana": ["2K", "1K"],
@@ -112,43 +123,13 @@ const resolutionOptions: Record<string, string[]> = {
 };
 
 const templateCategories = [
-  {
-    key: "hot",
-    label: "热门",
-    prompts: [
-      "一只可爱的小猫咪坐在花园里，油画风格，高清，细节丰富，阳光洒落在身上",
-      "年轻女性的商业人像，干净背景，柔和光线，胶片质感",
-      "未来感的城市夜景，霓虹灯、高楼、雨夜倒影，赛博朋克氛围",
-    ],
-  },
-  {
-    key: "ecommerce",
-    label: "电商",
-    prompts: [
-      "设计一张图文店促销活动海报，橙红色主色调，包含折扣标签和明亮的光效",
-      "一双跑鞋的产品海报，悬浮在烟雾里，黑色背景，光影突出轮廓，附带文案：极速回弹",
-    ],
-  },
-  {
-    key: "video",
-    label: "视频封面",
-    prompts: [
-      "科技感直播封面，蓝紫渐变背景，抽象光线元素，标题位置预留",
-      "烘焙教程视频封面，温暖色调，厨房背景，手工蛋糕特写",
-    ],
-  },
+  { key: "hot" as const },
+  { key: "ecommerce" as const },
+  { key: "cover" as const },
 ];
 
-const promptTemplatesByTarget: Record<TemplateTarget, string> = {
-  generate: "例如：打造一张高端时尚杂志封面，冷色调摄影棚灯光，保持自然肤色",
-  batch: "一条街头潮流穿搭海报，突出质感与纹理，背景虚化",
-  "batch-multi":
-    "产品展示：一双白色运动鞋摆放在光洁的石面上，顶部柔光\n\n场景展示：模特穿着运动鞋在篮球场起跳，动感模糊背景",
-  compare: "同一场景下的两个灯光方案，对比柔光与硬光的细节表现",
-};
-
-const formatTime = (timestamp: Date) => {
-  return timestamp.toLocaleString("zh-CN", {
+const formatTime = (timestamp: Date, locale: string) => {
+  return timestamp.toLocaleString(locale, {
     month: "short",
     day: "numeric",
     hour: "2-digit",
@@ -156,14 +137,38 @@ const formatTime = (timestamp: Date) => {
   });
 };
 
-const Dashboard = () => {
+const Dashboard = ({ variant = "full" }: DashboardProps) => {
+  const { locale, t } = useI18n();
+  const siteContent = useSiteContent();
+
+  const intlLocale = React.useMemo(() => {
+    if (locale === "zh") return "zh-CN";
+    if (locale === "ja") return "ja-JP";
+    if (locale === "ko") return "ko-KR";
+    return "en-US";
+  }, [locale]);
+
+  const localizedModelOptions = React.useMemo(() => {
+    return modelOptions.map((model) => {
+      const badgeValue = getMessage(locale, `dashboard.models.${model.value}.badge`);
+      const badge = typeof badgeValue === "string" ? badgeValue : undefined;
+      return {
+        ...model,
+        label: t(`dashboard.models.${model.value}.label`),
+        description: t(`dashboard.models.${model.value}.description`),
+        badge,
+        points: t("dashboard.model.points", { credits: model.creditsPerImage }),
+      };
+    });
+  }, [locale, t]);
+
   const [activeTab, setActiveTab] = React.useState<Tab>("generate");
   const [resultTab, setResultTab] = React.useState<ResultTab>("result");
-  const [selectedModel, setSelectedModel] = React.useState(modelOptions[0].value);
+  const [selectedModel, setSelectedModel] = React.useState<ModelValue>(modelOptions[0].value);
   const [resolution, setResolution] = React.useState(
     resolutionOptions[modelOptions[0].value][0]
   );
-  const [ratio, setRatio] = React.useState(ratioOptions[0].value);
+  const [ratio, setRatio] = React.useState<RatioValue>(ratioOptions[0].value);
   const [generatePrompt, setGeneratePrompt] = React.useState("");
   const [generateCount, setGenerateCount] = React.useState("1");
   const [referenceImages, setReferenceImages] = React.useState<UploadedImage[]>([]);
@@ -182,7 +187,7 @@ const Dashboard = () => {
   const [cardPrompt, setCardPrompt] = React.useState("");
   const [cardCount, setCardCount] = React.useState(5);
   const [batchPrompts, setBatchPrompts] = React.useState("");
-  const [batchRatio, setBatchRatio] = React.useState("auto");
+  const [batchRatio, setBatchRatio] = React.useState<BatchRatioValue>("auto");
   const [batchCount, setBatchCount] = React.useState("1");
   const [batchConcurrency, setBatchConcurrency] = React.useState("3");
   const [batchReferenceImages, setBatchReferenceImages] = React.useState<UploadedImage[]>(
@@ -192,10 +197,14 @@ const Dashboard = () => {
   const [isBatching, setIsBatching] = React.useState(false);
   const [batchProgress, setBatchProgress] = React.useState(0);
 
-  const [compareLeftModel, setCompareLeftModel] = React.useState(modelOptions[0].value);
-  const [compareRightModel, setCompareRightModel] = React.useState(modelOptions[1].value);
+  const [compareLeftModel, setCompareLeftModel] = React.useState<MaybeModelValue>(
+    modelOptions[0].value
+  );
+  const [compareRightModel, setCompareRightModel] = React.useState<MaybeModelValue>(
+    modelOptions[1].value
+  );
   const [comparePrompt, setComparePrompt] = React.useState("");
-  const [compareRatio, setCompareRatio] = React.useState(ratioOptions[0].value);
+  const [compareRatio, setCompareRatio] = React.useState<RatioValue>(ratioOptions[0].value);
   const [compareReferenceImages, setCompareReferenceImages] = React.useState<
     UploadedImage[]
   >([]);
@@ -215,12 +224,12 @@ const Dashboard = () => {
   const [showGuide, setShowGuide] = React.useState(false);
   const [showActivity, setShowActivity] = React.useState(false);
 
-  const referenceInputRef = React.useRef<HTMLInputElement>(null);
-  const batchReferenceInputRef = React.useRef<HTMLInputElement>(null);
-  const compareReferenceInputRef = React.useRef<HTMLInputElement>(null);
+  const referenceInputRef = React.useRef<HTMLInputElement | null>(null);
+  const batchReferenceInputRef = React.useRef<HTMLInputElement | null>(null);
+  const compareReferenceInputRef = React.useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
-    const defaults = resolutionOptions[selectedModel] || ["自动"];
+    const defaults = resolutionOptions[selectedModel] || ["Auto"];
     setResolution(defaults[0]);
   }, [selectedModel]);
 
@@ -242,7 +251,7 @@ const Dashboard = () => {
 
   const [isDragging, setIsDragging] = React.useState(false);
 
-  const imagePool = React.useMemo(() => siteContent.explore.images || [], []);
+  const imagePool = React.useMemo(() => siteContent.explore.images || [], [siteContent]);
 
   const pickImages = React.useCallback(
     (count: number) => {
@@ -260,20 +269,18 @@ const Dashboard = () => {
 
   const addHistoryEntry = React.useCallback((entry: Omit<HistoryEntry, "id">) => {
     setHistory((prev) => {
-      const next = [
-        {
-          ...entry,
-          id: `history-${Date.now()}-${prev.length}`,
-        },
-        ...prev,
-      ];
+      const item = {
+        ...(entry as Omit<HistoryEntry, "id">),
+        id: `history-${Date.now()}-${prev.length}`,
+      } as HistoryEntry;
+      const next = [item, ...prev];
       return next.slice(0, 12);
     });
   }, []);
 
   const REFERENCE_IMAGE_LIMIT = 3;
 
-  const openFileDialog = (ref: React.RefObject<HTMLInputElement>) => {
+  const openFileDialog = (ref: React.RefObject<HTMLInputElement | null>) => {
     const input = ref.current;
     if (!input) return;
     // Clear any previous selection so choosing the same files again still fires onChange.
@@ -398,9 +405,9 @@ const Dashboard = () => {
 
   const handleGenerate = () => {
     if (isGenerating) return;
-    const targetPrompt = generatePrompt || promptTemplatesByTarget.generate;
+    const targetPrompt = generatePrompt || t("dashboard.templatePrompts.generate");
     if (!targetPrompt.trim()) {
-      setError("请输入提示词");
+      setError(t("dashboard.generate.promptRequired"));
       return;
     }
 
@@ -477,7 +484,8 @@ const Dashboard = () => {
           });
           setProgress(Math.min(98, Math.round(((i + 1) / count) * 90 + 8)));
         } catch (err) {
-          const message = err instanceof Error ? err.message : "生成失败";
+          const message =
+            err instanceof Error ? err.message : t("dashboard.generate.generationFailed");
           setError(message);
           break;
         }
@@ -487,10 +495,14 @@ const Dashboard = () => {
         setResults(generated);
         addHistoryEntry({
           type: "generate",
-          title: `${activeModel.label} 生成完成`,
-          detail: `${generated.length} 张 · ${ratio} · ${imageSize}`,
           timestamp: new Date(),
           preview: generated[0]?.url,
+          payload: {
+            model: selectedModel,
+            count: generated.length,
+            ratio,
+            imageSize,
+          },
         });
       }
 
@@ -516,20 +528,23 @@ const Dashboard = () => {
     runFakeProgress(setBatchProgress, 1600, () => {
       const prompts =
         batchMode === "card"
-          ? [cardPrompt || promptTemplatesByTarget.batch]
+          ? [cardPrompt || t("dashboard.templatePrompts.batch")]
           : batchPrompts
               .split(/\n\s*\n/)
               .map((p) => p.trim())
               .filter(Boolean);
       const count = Math.max(1, Math.min(6, prompts.length * parseInt(batchCount, 10)));
       const picked = pickImages(count);
+      const modelLabel =
+        localizedModelOptions.find((m) => m.value === selectedModel)?.label || selectedModel;
       const newBatchResults: BatchResult[] = picked.map((url, idx) => ({
         id: `batch-${Date.now()}-${idx}`,
         url,
         prompt: prompts[idx % prompts.length],
-        promptLabel: prompts[idx % prompts.length]?.slice(0, 26) || "批量生成",
-        model: selectedModel,
-        ratio: batchRatio === "auto" ? "自适应" : batchRatio,
+        promptLabel:
+          prompts[idx % prompts.length]?.slice(0, 26) || t("dashboard.tabs.batch"),
+        model: modelLabel,
+        ratio: batchRatio === "auto" ? t("dashboard.batch.sizeAuto") : batchRatio,
         resolution,
       }));
       setBatchResults(newBatchResults);
@@ -537,17 +552,22 @@ const Dashboard = () => {
       setBatchProgress(0);
       addHistoryEntry({
         type: "batch",
-        title: batchMode === "card" ? "抽卡模式完成" : "批量生成完成",
-        detail: `${newBatchResults.length} 张 · ${batchRatio === "auto" ? "自适应" : batchRatio}`,
         timestamp: new Date(),
         preview: newBatchResults[0]?.url,
+        payload: {
+          mode: batchMode,
+          count: newBatchResults.length,
+          ratio: batchRatio,
+        },
       });
     });
   };
 
   const handleCompare = () => {
     if (isComparing || !compareLeftModel || !compareRightModel) return;
-    const targetPrompt = comparePrompt || promptTemplatesByTarget.compare;
+    const targetPrompt = comparePrompt || t("dashboard.templatePrompts.compare");
+    const leftModel = compareLeftModel as ModelValue;
+    const rightModel = compareRightModel as ModelValue;
 
     const mapResolutionToImageSize = (value: string) => {
       if (value === "4K") return "4K";
@@ -611,8 +631,8 @@ const Dashboard = () => {
       try {
         const encodedRefs = await encodeReferenceImages(compareReferenceImages);
         const [leftUrl, rightUrl] = await Promise.all([
-          generateOne(compareLeftModel, encodedRefs),
-          generateOne(compareRightModel, encodedRefs),
+          generateOne(leftModel, encodedRefs),
+          generateOne(rightModel, encodedRefs),
         ]);
 
         const newResult: CompareResult = {
@@ -621,21 +641,20 @@ const Dashboard = () => {
           right: rightUrl,
           prompt: targetPrompt,
           ratio: compareRatio,
-          leftModel: compareLeftModel,
-          rightModel: compareRightModel,
+          leftModel,
+          rightModel,
         };
 
         setCompareResults([newResult]);
         setShowEvaluation(true);
         addHistoryEntry({
           type: "compare",
-          title: "模型对比完成",
-          detail: `${compareLeftModel} vs ${compareRightModel}`,
           timestamp: new Date(),
           preview: leftUrl,
+          payload: { leftModel, rightModel },
         });
       } catch (err) {
-        const message = err instanceof Error ? err.message : "对比失败";
+        const message = err instanceof Error ? err.message : t("dashboard.compare.failed");
         setCompareError(message);
       } finally {
         setIsComparing(false);
@@ -658,10 +677,10 @@ const Dashboard = () => {
     setShowTemplates(false);
   };
 
-  const currentModel = modelOptions.find((m) => m.value === selectedModel);
-  const activeModel = currentModel || modelOptions[0];
+  const currentModel = localizedModelOptions.find((m) => m.value === selectedModel);
+  const activeModel = currentModel || localizedModelOptions[0];
 
-  const handleModelSelect = (modelValue: string) => {
+  const handleModelSelect = (modelValue: ModelValue) => {
     setSelectedModel(modelValue);
     setShowModelPicker(false);
   };
@@ -687,7 +706,7 @@ const Dashboard = () => {
             </div>
             <button
               className={styles.removeBtn}
-              aria-label="移除图片"
+              aria-label={t("dashboard.common.removeImage")}
               onClick={() => removeHandler(img.id)}
             >
               ×
@@ -726,7 +745,7 @@ const Dashboard = () => {
           className={styles.ghostBtn}
           onClick={() => downloadImage(item.url, `${item.id}.png`)}
         >
-          下载
+          {t("dashboard.result.download")}
         </button>
       </div>
     </div>
@@ -759,16 +778,16 @@ const Dashboard = () => {
 
   const renderTemplateModal = () => {
     if (!showTemplates) return null;
-    const currentCategory = templateCategories.find((c) => c.key === templateCategory);
+    const currentPrompts =
+      (getMessage(locale, `dashboard.templateItems.${templateCategory}`) as string[]) ||
+      [];
     return (
       <div className={styles.modalOverlay} role="dialog" aria-modal="true">
         <div className={styles.modalCard}>
           <div className={styles.modalHeader}>
             <div>
-              <div className={styles.modalTitle}>提示词模板库</div>
-              <div className={styles.modalCaption}>
-                选择模板快速填充当前场景的提示词
-              </div>
+              <div className={styles.modalTitle}>{t("dashboard.templates.title")}</div>
+              <div className={styles.modalCaption}>{t("dashboard.templates.caption")}</div>
             </div>
             <button className={styles.closeBtn} onClick={() => setShowTemplates(false)}>
               ×
@@ -783,18 +802,20 @@ const Dashboard = () => {
                 }`}
                 onClick={() => setTemplateCategory(cat.key)}
               >
-                {cat.label}
+                {t(`dashboard.templates.${cat.key}`)}
               </button>
             ))}
           </div>
           <div className={styles.templateGrid}>
-            {currentCategory?.prompts.map((prompt, idx) => (
+            {currentPrompts.map((prompt, idx) => (
               <button
                 key={idx}
                 className={styles.templateCard}
                 onClick={() => handleApplyTemplate(prompt)}
               >
-                <div className={styles.templateTitle}>模板 {idx + 1}</div>
+                <div className={styles.templateTitle}>
+                  {t("dashboard.templates.template", { n: idx + 1 })}
+                </div>
                 <p className={styles.templateText}>{prompt}</p>
               </button>
             ))}
@@ -811,15 +832,17 @@ const Dashboard = () => {
         <div className={styles.modalCard}>
           <div className={styles.modalHeader}>
             <div>
-              <div className={styles.modalTitle}>Choose Model</div>
-              <div className={styles.modalCaption}>不同模型速度、质量与积分消耗各有侧重</div>
+              <div className={styles.modalTitle}>{t("dashboard.model.pickerTitle")}</div>
+              <div className={styles.modalCaption}>
+                {t("dashboard.model.pickerCaption")}
+              </div>
             </div>
             <button className={styles.closeBtn} onClick={() => setShowModelPicker(false)}>
               ×
             </button>
           </div>
           <div className={styles.modelGrid}>
-            {modelOptions.map((model) => (
+            {localizedModelOptions.map((model) => (
               <button
                 key={model.value}
                 className={`${styles.modelOption} ${
@@ -835,7 +858,7 @@ const Dashboard = () => {
                 <div className={styles.modelOptionDesc}>{model.description}</div>
                 <div className={styles.modelOptionMeta}>
                   {model.badge && <span className={styles.badge}>{model.badge}</span>}
-                  <span className={styles.modelOptionHint}>适配垫图与文生图</span>
+                  <span className={styles.modelOptionHint}>{t("dashboard.model.hint")}</span>
                 </div>
               </button>
             ))}
@@ -852,26 +875,22 @@ const Dashboard = () => {
         <div className={styles.modalCard}>
           <div className={styles.modalHeader}>
             <div>
-              <div className={styles.modalTitle}>使用说明</div>
-              <div className={styles.modalCaption}>
-                抽卡 / 批量 / 模型对比，与参考站一致的操作流
-              </div>
+              <div className={styles.modalTitle}>{t("dashboard.guide.title")}</div>
+              <div className={styles.modalCaption}>{t("dashboard.guide.caption")}</div>
             </div>
             <button className={styles.closeBtn} onClick={() => setShowGuide(false)}>
               ×
             </button>
           </div>
           <ul className={styles.list}>
-            <li>图片编辑：上传参考图或直接填提示词，选择比例后生成。</li>
-            <li>
-              批量生成：切换抽卡或多提示词模式，可共用参考图，控制并发与数量。
-            </li>
-            <li>模型对比：左右选择模型，输入同一提示词并对比输出。</li>
-            <li>历史记录：最新生成自动入库，便于复用与下载。</li>
+            <li>{t("dashboard.guide.items.generate")}</li>
+            <li>{t("dashboard.guide.items.batch")}</li>
+            <li>{t("dashboard.guide.items.compare")}</li>
+            <li>{t("dashboard.guide.items.history")}</li>
           </ul>
           <div className={styles.noticeAlt}>
-            <span className={styles.badge}>提示</span>
-            生成按钮会模拟进度条，方便演示前端交互。
+            <span className={styles.badge}>{t("dashboard.guide.tipBadge")}</span>
+            {t("dashboard.guide.tipText")}
           </div>
         </div>
       </div>
@@ -885,25 +904,25 @@ const Dashboard = () => {
         <div className={styles.modalCard}>
           <div className={styles.modalHeader}>
             <div>
-              <div className={styles.modalTitle}>新用户福利</div>
-              <div className={styles.modalCaption}>站内同款活动提示区</div>
+              <div className={styles.modalTitle}>{t("dashboard.activity.title")}</div>
+              <div className={styles.modalCaption}>{t("dashboard.activity.caption")}</div>
             </div>
             <button className={styles.closeBtn} onClick={() => setShowActivity(false)}>
               ×
             </button>
           </div>
           <div className={styles.activityBlock}>
-            <div className={styles.activityTitle}>🎉 注册即送 10 张测试图</div>
+            <div className={styles.activityTitle}>{t("dashboard.activity.headline")}</div>
             <p className={styles.activityText}>
-              体验 gpt-4o-image / Gemini 2.5 Flash，批量、垫图、对比等功能一次到位。
+              {t("dashboard.activity.text")}
             </p>
             <div className={styles.activityGrid}>
-              <div className={styles.activityItem}>极速出图 · 低延迟</div>
-              <div className={styles.activityItem}>支持批量与模型对比</div>
-              <div className={styles.activityItem}>历史留存 · 方便复现</div>
+              <div className={styles.activityItem}>{t("dashboard.activity.item1")}</div>
+              <div className={styles.activityItem}>{t("dashboard.activity.item2")}</div>
+              <div className={styles.activityItem}>{t("dashboard.activity.item3")}</div>
             </div>
             <button className={styles.primaryBtn} onClick={() => setShowActivity(false)}>
-              了解了
+              {t("dashboard.activity.ok")}
             </button>
           </div>
         </div>
@@ -916,23 +935,61 @@ const Dashboard = () => {
       return (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>🕒</div>
-          <p>暂无历史记录，先生成一张吧。</p>
+          <p>{t("dashboard.history.empty")}</p>
         </div>
       );
     }
+
+    const renderHistoryTitle = (item: HistoryEntry) => {
+      if (item.type === "generate") {
+        const modelLabel =
+          localizedModelOptions.find((m) => m.value === item.payload.model)?.label ||
+          item.payload.model;
+        return t("dashboard.history.generateDone", { model: modelLabel });
+      }
+      if (item.type === "batch") {
+        return item.payload.mode === "card"
+          ? t("dashboard.history.batchDoneCard")
+          : t("dashboard.history.batchDoneMulti");
+      }
+      return t("dashboard.history.compareDone");
+    };
+
+    const renderHistoryDetail = (item: HistoryEntry) => {
+      if (item.type === "generate") {
+        return `${t("dashboard.generate.countItem", { n: item.payload.count })} · ${
+          item.payload.ratio
+        } · ${item.payload.imageSize}`;
+      }
+      if (item.type === "batch") {
+        return `${t("dashboard.generate.countItem", { n: item.payload.count })} · ${
+          item.payload.ratio === "auto" ? t("dashboard.batch.sizeAuto") : item.payload.ratio
+        }`;
+      }
+      const leftLabel =
+        localizedModelOptions.find((m) => m.value === item.payload.leftModel)?.label ||
+        item.payload.leftModel;
+      const rightLabel =
+        localizedModelOptions.find((m) => m.value === item.payload.rightModel)?.label ||
+        item.payload.rightModel;
+      return `${leftLabel} vs ${rightLabel}`;
+    };
+
     return (
       <div className={styles.historyGrid}>
         {history.map((item) => (
           <div key={item.id} className={styles.historyCard}>
             <div className={styles.historyHead}>
-              <span className={styles.badge}>{item.type}</span>
-              <span className={styles.historyTime}>{formatTime(item.timestamp)}</span>
+              <span className={styles.badge}>{t(`dashboard.tabs.${item.type}`)}</span>
+              <span className={styles.historyTime}>
+                {formatTime(item.timestamp, intlLocale)}
+              </span>
             </div>
-            <div className={styles.historyTitle}>{item.title}</div>
-            <div className={styles.historyDetail}>{item.detail}</div>
+            <div className={styles.historyTitle}>{renderHistoryTitle(item)}</div>
+            <div className={styles.historyDetail}>{renderHistoryDetail(item)}</div>
             {item.preview && (
               <div className={styles.historyPreview}>
-                <img src={item.preview} alt={item.title} />
+                <img src={item.preview} alt={renderHistoryTitle(item)} />
               </div>
             )}
           </div>
@@ -941,37 +998,45 @@ const Dashboard = () => {
     );
   };
 
-  return (
-    <section className={styles.dashboard}>
-      <div className={styles.gradient} />
-      <div className={styles.inner}>
-        <div className={styles.tabBar}>
-          {[
-            { key: "generate", label: "图片编辑", icon: "✨" },
-            { key: "batch", label: "批量生成", icon: "🧩" },
-            { key: "compare", label: "模型对比", icon: "⚖️" },
-            { key: "history", label: "历史记录", icon: "📜" },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              className={`${styles.tabButton} ${
-                activeTab === tab.key ? styles.active : ""
-              }`}
-              onClick={() => setActiveTab(tab.key as Tab)}
-            >
-              <span className={styles.tabIcon}>{tab.icon}</span>
-              {tab.label}
-            </button>
-          ))}
-        </div>
+  const Wrapper = variant === "generateOnly" ? "div" : "section";
 
-        {activeTab === "generate" && (
+  return (
+    <Wrapper
+      className={`${styles.dashboard} ${
+        variant === "generateOnly" ? styles.embedded : ""
+      }`}
+    >
+      {variant !== "generateOnly" && <div className={styles.gradient} />}
+      <div className={styles.inner}>
+        {variant !== "generateOnly" && (
+          <div className={styles.tabBar}>
+            {[
+              { key: "generate", label: t("dashboard.tabs.generate"), icon: "✨" },
+              { key: "batch", label: t("dashboard.tabs.batch"), icon: "🧩" },
+              { key: "compare", label: t("dashboard.tabs.compare"), icon: "⚖️" },
+              { key: "history", label: t("dashboard.tabs.history"), icon: "📜" },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                className={`${styles.tabButton} ${
+                  activeTab === tab.key ? styles.active : ""
+                }`}
+                onClick={() => setActiveTab(tab.key as Tab)}
+              >
+                <span className={styles.tabIcon}>{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {(variant === "generateOnly" || activeTab === "generate") && (
           <div className={styles.panel}>
             <div className={`${styles.panelGrid} ${styles.generateGrid}`}>
               <div className={styles.column}>
                 <div className={styles.modelBar}>
                   <div>
-                    <div className={styles.modelLabel}>Selected Model</div>
+                    <div className={styles.modelLabel}>{t("dashboard.model.selected")}</div>
                     <div className={styles.modelCurrent}>
                       <span className={styles.modelName}>{activeModel.label}</span>
                       <span className={styles.modelPoints}>{activeModel.points}</span>
@@ -983,14 +1048,16 @@ const Dashboard = () => {
                     type="button"
                     onClick={() => setShowModelPicker(true)}
                   >
-                    Change Model
+                    {t("dashboard.model.change")}
                   </button>
                 </div>
 
                 <div className={styles.sectionHeader}>
                   <div>
-                    <div className={styles.sectionTitle}>图生图 / 文生图</div>
-                    <div className={styles.sectionCaption}>支持垫图，最多 3 张</div>
+                    <div className={styles.sectionTitle}>{t("dashboard.generate.title")}</div>
+                    <div className={styles.sectionCaption}>
+                      {t("dashboard.generate.caption", { max: REFERENCE_IMAGE_LIMIT })}
+                    </div>
                   </div>
                 </div>
                 <div
@@ -1008,8 +1075,12 @@ const Dashboard = () => {
                   <div className={styles.uploadHeader}>
                     <div className={styles.uploadIcon}>📁</div>
                     <div>
-                      <div className={styles.uploadTitle}>点击或拖拽上传参考图片</div>
-                      <div className={styles.uploadHint}>支持 JPG / PNG · 最多 3 张</div>
+                      <div className={styles.uploadTitle}>
+                        {t("dashboard.generate.uploadTitle")}
+                      </div>
+                      <div className={styles.uploadHint}>
+                        {t("dashboard.generate.uploadHint", { max: REFERENCE_IMAGE_LIMIT })}
+                      </div>
                     </div>
                   </div>
                   {referenceImages.length > 0 && (
@@ -1019,7 +1090,7 @@ const Dashboard = () => {
                           <img src={img.url} alt={img.name} />
                           <button
                             className={styles.removeInlineBtn}
-                            aria-label="移除图片"
+                            aria-label={t("dashboard.common.removeImage")}
                             onClick={(e) => {
                               e.stopPropagation();
                               removeImage(img.id, setReferenceImages);
@@ -1062,29 +1133,41 @@ const Dashboard = () => {
 
                 <div className={styles.inputGroup}>
                   <div className={styles.sectionHeader}>
-                    <label className={styles.label}>提示词</label>
+                    <label className={styles.label}>{t("dashboard.generate.prompt")}</label>
                     <button
                       className={styles.linkBtn}
-                      onClick={() => setTemplateTarget("generate") || setShowTemplates(true)}
+                      onClick={() => {
+                        setTemplateTarget("generate");
+                        setShowTemplates(true);
+                      }}
                     >
-                      提示词模板
+                      {t("dashboard.generate.promptTemplates")}
                     </button>
                   </div>
                   <textarea
                     className={styles.textarea}
                     rows={4}
-                    placeholder={promptTemplatesByTarget.generate}
+                    placeholder={t("dashboard.templatePrompts.generate")}
                     value={generatePrompt}
                     onChange={(e) => setGeneratePrompt(e.target.value)}
                   />
                   <div className={styles.promptActions}>
-                    <button className={`${styles.ghostBtn} ${styles.clearBtn}`} onClick={handleClearGenerate}>
-                      清空
+                    <button
+                      className={`${styles.ghostBtn} ${styles.clearBtn}`}
+                      onClick={handleClearGenerate}
+                    >
+                      {t("dashboard.generate.clear")}
                     </button>
                     <div className={styles.generateWrap}>
-                      <div className={styles.generateMeta}>预计消耗：{activeModel.points}</div>
+                      <div className={styles.generateMeta}>
+                        {t("dashboard.model.pointsEstimated", {
+                          points:
+                            Math.max(1, parseInt(generateCount, 10) || 1) *
+                            activeModel.creditsPerImage,
+                        })}
+                      </div>
                       <button className={styles.primaryBtn} onClick={handleGenerate}>
-                        开始生成
+                        {t("dashboard.generate.start")}
                       </button>
                     </div>
                   </div>
@@ -1092,41 +1175,41 @@ const Dashboard = () => {
 
                 <div className={styles.gridTwo}>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>比例</label>
+                    <label className={styles.label}>{t("dashboard.generate.ratio")}</label>
                     <select
                       className={styles.select}
                       value={ratio}
-                      onChange={(e) => setRatio(e.target.value)}
+                      onChange={(e) => setRatio(e.target.value as RatioValue)}
                     >
                       {ratioOptions.map((opt) => (
                         <option key={opt.value} value={opt.value}>
-                          {opt.label}
+                          {t(`dashboard.ratios.${opt.value}`)}
                         </option>
                       ))}
                     </select>
                   </div>
-	                  <div className={styles.inputGroup}>
-	                    <label className={styles.label}>生成数量</label>
-	                    <select
-	                      className={styles.select}
-	                      value={generateCount}
-	                      onChange={(e) => setGenerateCount(e.target.value)}
-	                    >
-	                      <option value="1">1 张</option>
-	                      <option value="2">2 张</option>
-	                      <option value="3">3 张</option>
-	                      <option value="4">4 张</option>
-	                    </select>
-	                  </div>
-	                </div>
+		                  <div className={styles.inputGroup}>
+		                    <label className={styles.label}>{t("dashboard.generate.count")}</label>
+		                    <select
+		                      className={styles.select}
+		                      value={generateCount}
+		                      onChange={(e) => setGenerateCount(e.target.value)}
+		                    >
+		                      <option value="1">{t("dashboard.generate.countItem", { n: 1 })}</option>
+		                      <option value="2">{t("dashboard.generate.countItem", { n: 2 })}</option>
+		                      <option value="3">{t("dashboard.generate.countItem", { n: 3 })}</option>
+		                      <option value="4">{t("dashboard.generate.countItem", { n: 4 })}</option>
+		                    </select>
+		                  </div>
+		                </div>
 
-	                <div className={styles.inputGroup}>
-                  <label className={styles.label}>分辨率</label>
-                  <select
-                    className={styles.select}
-                    value={resolution}
-                    onChange={(e) => setResolution(e.target.value)}
-                  >
+		                <div className={styles.inputGroup}>
+	                  <label className={styles.label}>{t("dashboard.generate.resolution")}</label>
+	                  <select
+	                    className={styles.select}
+	                    value={resolution}
+	                    onChange={(e) => setResolution(e.target.value)}
+	                  >
                     {(resolutionOptions[selectedModel] || []).map((res) => (
                       <option key={res} value={res}>
                         {res}
@@ -1137,50 +1220,50 @@ const Dashboard = () => {
                 </div>
               </div>
 
-	              <div className={`${styles.column} ${styles.resultColumn}`}>
-	                <div className={styles.resultBox}>
-	                  <div className={styles.sectionHeader}>
-	                    <div className={styles.sectionTitle}>生成结果</div>
-	                    <div className={styles.headerActions}>
-	                      {resultTab === "result" && results.length > 1 && (
-	                        <div className={styles.modeToggle}>
-	                          <button
-	                            type="button"
+		              <div className={`${styles.column} ${styles.resultColumn}`}>
+		                <div className={styles.resultBox}>
+		                  <div className={styles.sectionHeader}>
+		                    <div className={styles.sectionTitle}>{t("dashboard.result.title")}</div>
+		                    <div className={styles.headerActions}>
+		                      {resultTab === "result" && results.length > 1 && (
+		                        <div className={styles.modeToggle}>
+		                          <button
+		                            type="button"
 	                            className={`${styles.modeBtn} ${
 	                              resultDisplayMode === "single" ? styles.active : ""
-	                            }`}
-	                            onClick={() => setResultDisplayMode("single")}
-	                          >
-	                            单张
-	                          </button>
-	                          <button
-	                            type="button"
-	                            className={`${styles.modeBtn} ${
-	                              resultDisplayMode === "all" ? styles.active : ""
-	                            }`}
-	                            onClick={() => setResultDisplayMode("all")}
-	                          >
-	                            全部
-	                          </button>
-	                        </div>
-	                      )}
-	                      <div className={styles.tabRow}>
-	                        {["result", "original", "compare"].map((key) => (
-	                          <button
+		                            }`}
+		                            onClick={() => setResultDisplayMode("single")}
+		                          >
+		                            {t("dashboard.result.modeSingle")}
+		                          </button>
+		                          <button
+		                            type="button"
+		                            className={`${styles.modeBtn} ${
+		                              resultDisplayMode === "all" ? styles.active : ""
+		                            }`}
+		                            onClick={() => setResultDisplayMode("all")}
+		                          >
+		                            {t("dashboard.result.modeAll")}
+		                          </button>
+		                        </div>
+		                      )}
+		                      <div className={styles.tabRow}>
+		                        {["result", "original", "compare"].map((key) => (
+		                          <button
 	                            key={key}
 	                            className={`${styles.subTab} ${
 	                              resultTab === key ? styles.active : ""
-	                            }`}
-	                            onClick={() => setResultTab(key as ResultTab)}
-	                          >
-	                            {key === "result" && "生成结果"}
-	                            {key === "original" && "原图/参考图"}
-	                            {key === "compare" && "前后对比"}
-	                          </button>
-	                        ))}
-	                      </div>
-	                    </div>
-	                  </div>
+		                            }`}
+		                            onClick={() => setResultTab(key as ResultTab)}
+		                          >
+		                            {key === "result" && t("dashboard.result.tabResult")}
+		                            {key === "original" && t("dashboard.result.tabOriginal")}
+		                            {key === "compare" && t("dashboard.result.tabCompare")}
+		                          </button>
+		                        ))}
+		                      </div>
+		                    </div>
+		                  </div>
 
 	                  <div className={styles.resultArea}>
 	                    {resultTab === "result" &&
@@ -1224,7 +1307,7 @@ const Dashboard = () => {
 	                      ) : (
 	                        <div className={styles.placeholder}>
 	                          <div className={styles.placeholderIcon}>🎨</div>
-	                          <p>生成的图片会出现在这里</p>
+	                          <p>{t("dashboard.result.emptyResult")}</p>
 	                        </div>
 	                      ))}
 
@@ -1236,14 +1319,16 @@ const Dashboard = () => {
 	                      ) : (
 	                        <div className={styles.placeholder}>
 	                          <div className={styles.placeholderIcon}>🖼️</div>
-	                          <p>还没有参考图</p>
+	                          <p>{t("dashboard.result.emptyOriginal")}</p>
 	                        </div>
 	                      ))}
 
 	                    {resultTab === "compare" && (
 	                      <div className={styles.compareGrid}>
 	                        <div>
-                          <div className={styles.sectionCaption}>参考图</div>
+                          <div className={styles.sectionCaption}>
+                            {t("dashboard.result.tabOriginal")}
+                          </div>
 	                          {referenceImages.length ? (
 	                            <div className={styles.resultGrid}>
 	                              {referenceImages.map((img) =>
@@ -1251,11 +1336,15 @@ const Dashboard = () => {
 	                              )}
 	                            </div>
 	                          ) : (
-	                            <div className={styles.placeholderSmall}>上传参考图后显示</div>
+	                            <div className={styles.placeholderSmall}>
+                                {t("dashboard.result.emptyCompareLeft")}
+                              </div>
 	                          )}
 	                        </div>
 	                        <div>
-	                          <div className={styles.sectionCaption}>生成结果</div>
+	                          <div className={styles.sectionCaption}>
+                              {t("dashboard.result.tabResult")}
+                            </div>
 	                          {results.length ? (
 	                            <div className={styles.resultGrid}>
 	                              {results.map((item) =>
@@ -1263,7 +1352,9 @@ const Dashboard = () => {
 	                              )}
 	                            </div>
 	                          ) : (
-	                            <div className={styles.placeholderSmall}>生成后展示对比</div>
+	                            <div className={styles.placeholderSmall}>
+                                {t("dashboard.result.emptyCompareRight")}
+                              </div>
 	                          )}
 	                        </div>
 	                      </div>
@@ -1280,7 +1371,9 @@ const Dashboard = () => {
 	                      />
 	                    </div>
 	                    <div className={styles.progressText}>
-	                      正在生成图片... {progress.toFixed(0)}%
+	                      {t("dashboard.generate.progress", {
+                          percent: progress.toFixed(0),
+                        })}
 	                    </div>
 	                  </div>
 	                )}
@@ -1289,13 +1382,11 @@ const Dashboard = () => {
           </div>
         )}
 
-        {activeTab === "batch" && (
+        {variant !== "generateOnly" && activeTab === "batch" && (
           <div className={styles.panel}>
             <div className={styles.sectionHeader}>
-              <div className={styles.sectionTitle}>批量生成 / 抽卡模式</div>
-              <div className={styles.sectionCaption}>
-                参考站同款：抽卡模式或多提示词批量生成
-              </div>
+              <div className={styles.sectionTitle}>{t("dashboard.batch.title")}</div>
+              <div className={styles.sectionCaption}>{t("dashboard.batch.caption")}</div>
             </div>
 
             <div className={styles.panelGrid}>
@@ -1307,7 +1398,7 @@ const Dashboard = () => {
                     }`}
                     onClick={() => setBatchMode("card")}
                   >
-                    🎰 抽卡模式
+                    {t("dashboard.batch.modeCard")}
                   </button>
                   <button
                     className={`${styles.toggleBtn} ${
@@ -1315,41 +1406,46 @@ const Dashboard = () => {
                     }`}
                     onClick={() => setBatchMode("multi")}
                   >
-                    📋 多提示词
+                    {t("dashboard.batch.modeMulti")}
                   </button>
                 </div>
 
                 {batchMode === "card" && (
                   <>
                     <div className={styles.inputGroup}>
-                      <div className={styles.sectionHeader}>
-                        <label className={styles.label}>提示词</label>
+	                      <div className={styles.sectionHeader}>
+	                        <label className={styles.label}>{t("dashboard.batch.prompt")}</label>
                         <button
                           className={styles.linkBtn}
-                          onClick={() =>
-                            setTemplateTarget("batch") || setShowTemplates(true)
-                          }
+                          onClick={() => {
+                            setTemplateTarget("batch");
+                            setShowTemplates(true);
+                          }}
                         >
-                          模板
+                          {t("dashboard.generate.promptTemplates")}
                         </button>
-                      </div>
+	                      </div>
                       <textarea
-                        className={styles.textarea}
-                        rows={5}
-                        value={cardPrompt}
-                        placeholder={promptTemplatesByTarget.batch}
-                        onChange={(e) => setCardPrompt(e.target.value)}
-                      />
-                      <div className={styles.inputNote}>一条提示词，生成多张风格相近的图片</div>
-                    </div>
+	                        className={styles.textarea}
+	                        rows={5}
+	                        value={cardPrompt}
+	                        placeholder={t("dashboard.templatePrompts.batch")}
+	                        onChange={(e) => setCardPrompt(e.target.value)}
+	                      />
+	                      <div className={styles.inputNote}>
+                          {t("dashboard.batch.noteSinglePrompt")}
+                        </div>
+	                    </div>
 
-                    <div className={styles.sliderRow}>
-                      <label className={styles.label}>生成数量（抽卡张数）</label>
-                      <div className={styles.sliderValue}>{cardCount} 张</div>
-                      <input
-                        type="range"
-                        min={2}
-                        max={10}
+	                    <div className={styles.sliderRow}>
+	                      <label className={styles.label}>{t("dashboard.batch.countLabel")}</label>
+	                      <div className={styles.sliderValue}>
+                          {t("dashboard.batch.countSuffix", { n: cardCount })}
+                        </div>
+	                      <input
+	                        type="range"
+	                        min={2}
+	                        max={10}
                         value={cardCount}
                         onChange={(e) => setCardCount(parseInt(e.target.value, 10))}
                       />
@@ -1359,63 +1455,64 @@ const Dashboard = () => {
 
                 {batchMode === "multi" && (
                   <div className={styles.inputGroup}>
-                    <div className={styles.sectionHeader}>
-                      <label className={styles.label}>批量提示词（空行分隔）</label>
+	                    <div className={styles.sectionHeader}>
+	                      <label className={styles.label}>{t("dashboard.batch.multiPrompt")}</label>
                       <button
                         className={styles.linkBtn}
-                        onClick={() =>
-                          setTemplateTarget("batch-multi") || setShowTemplates(true)
-                        }
+                        onClick={() => {
+                          setTemplateTarget("batch-multi");
+                          setShowTemplates(true);
+                        }}
                       >
-                        模板
+                        {t("dashboard.generate.promptTemplates")}
                       </button>
-                    </div>
+	                    </div>
                     <textarea
-                      className={styles.textarea}
-                      rows={7}
-                      value={batchPrompts}
-                      placeholder={promptTemplatesByTarget["batch-multi"]}
-                      onChange={(e) => setBatchPrompts(e.target.value)}
-                    />
-                    <div className={styles.inputNote}>
-                      用空行分隔不同提示词，支持多行描述
-                    </div>
-                  </div>
-                )}
+	                      className={styles.textarea}
+	                      rows={7}
+	                      value={batchPrompts}
+	                      placeholder={t("dashboard.templatePrompts.batchMulti")}
+	                      onChange={(e) => setBatchPrompts(e.target.value)}
+	                    />
+	                    <div className={styles.inputNote}>
+	                      {t("dashboard.batch.noteMultiPrompt")}
+	                    </div>
+	                  </div>
+	                )}
 
-                <div className={styles.gridThree}>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>尺寸</label>
-                    <select
-                      className={styles.select}
-                      value={batchRatio}
-                      onChange={(e) => setBatchRatio(e.target.value)}
-                    >
-                      <option value="auto">自适应</option>
-                      {ratioOptions.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>每条数量</label>
-                    <select
-                      className={styles.select}
-                      value={batchCount}
-                      onChange={(e) => setBatchCount(e.target.value)}
-                    >
-                      <option value="1">1 张</option>
-                      <option value="2">2 张</option>
-                    </select>
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>并发</label>
-                    <select
-                      className={styles.select}
-                      value={batchConcurrency}
-                      onChange={(e) => setBatchConcurrency(e.target.value)}
+	                <div className={styles.gridThree}>
+	                  <div className={styles.inputGroup}>
+	                    <label className={styles.label}>{t("dashboard.batch.size")}</label>
+	                    <select
+	                      className={styles.select}
+	                      value={batchRatio}
+	                      onChange={(e) => setBatchRatio(e.target.value as BatchRatioValue)}
+	                    >
+	                      <option value="auto">{t("dashboard.batch.sizeAuto")}</option>
+	                      {ratioOptions.map((opt) => (
+	                        <option key={opt.value} value={opt.value}>
+	                          {t(`dashboard.ratios.${opt.value}`)}
+	                        </option>
+	                      ))}
+	                    </select>
+	                  </div>
+	                  <div className={styles.inputGroup}>
+	                    <label className={styles.label}>{t("dashboard.batch.perPrompt")}</label>
+	                    <select
+	                      className={styles.select}
+	                      value={batchCount}
+	                      onChange={(e) => setBatchCount(e.target.value)}
+	                    >
+	                      <option value="1">{t("dashboard.generate.countItem", { n: 1 })}</option>
+	                      <option value="2">{t("dashboard.generate.countItem", { n: 2 })}</option>
+	                    </select>
+	                  </div>
+	                  <div className={styles.inputGroup}>
+	                    <label className={styles.label}>{t("dashboard.batch.concurrency")}</label>
+	                    <select
+	                      className={styles.select}
+	                      value={batchConcurrency}
+	                      onChange={(e) => setBatchConcurrency(e.target.value)}
                     >
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -1426,39 +1523,43 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className={styles.buttonRow}>
-                  <button className={styles.ghostBtn} onClick={() => setBatchResults([])}>
-                    清空
-                  </button>
-                  <button className={styles.primaryBtn} onClick={handleBatchGenerate}>
-                    开始批量
-                  </button>
-                </div>
-              </div>
+	                <div className={styles.buttonRow}>
+	                  <button className={styles.ghostBtn} onClick={() => setBatchResults([])}>
+	                    {t("dashboard.batch.clear")}
+	                  </button>
+	                  <button className={styles.primaryBtn} onClick={handleBatchGenerate}>
+	                    {t("dashboard.batch.start")}
+	                  </button>
+	                </div>
+	              </div>
 
-              <div className={styles.column}>
-                <div className={styles.sectionHeader}>
-                  <div>
-                    <div className={styles.sectionTitle}>批量参考图</div>
-                    <div className={styles.sectionCaption}>与参考站一致的垫图体验</div>
-                  </div>
-                  <button
-                    className={styles.linkBtn}
-                    onClick={() => openFileDialog(batchReferenceInputRef)}
-                  >
-                    上传
-                  </button>
-                </div>
-                <div
-                  className={styles.uploadArea}
-                  onClick={() => openFileDialog(batchReferenceInputRef)}
-                >
-                  <div className={styles.uploadIcon}>🖇️</div>
-                  <div className={styles.uploadTitle}>点击上传或粘贴图片</div>
-                  <div className={styles.uploadHint}>可选 · 最多 3 张</div>
-                  <input
-                    ref={batchReferenceInputRef}
-                    type="file"
+	              <div className={styles.column}>
+	                <div className={styles.sectionHeader}>
+	                  <div>
+	                    <div className={styles.sectionTitle}>{t("dashboard.batch.refsTitle")}</div>
+	                    <div className={styles.sectionCaption}>
+                        {t("dashboard.batch.refsCaption", { max: REFERENCE_IMAGE_LIMIT })}
+                      </div>
+	                  </div>
+	                  <button
+	                    className={styles.linkBtn}
+	                    onClick={() => openFileDialog(batchReferenceInputRef)}
+	                  >
+	                    {t("dashboard.batch.upload")}
+	                  </button>
+	                </div>
+	                <div
+	                  className={styles.uploadArea}
+	                  onClick={() => openFileDialog(batchReferenceInputRef)}
+	                >
+	                  <div className={styles.uploadIcon}>🖇️</div>
+	                  <div className={styles.uploadTitle}>{t("dashboard.batch.paste")}</div>
+	                  <div className={styles.uploadHint}>
+                      {t("dashboard.batch.pasteHint", { max: REFERENCE_IMAGE_LIMIT })}
+                    </div>
+	                  <input
+	                    ref={batchReferenceInputRef}
+	                    type="file"
                     className={styles.hiddenInput}
                     multiple
                     accept="image/*"
@@ -1477,11 +1578,11 @@ const Dashboard = () => {
                   removeImage(id, setBatchReferenceImages)
                 )}
 
-                <div className={styles.sectionHeader}>
-                  <div className={styles.sectionTitle}>生成结果</div>
-                  <div className={styles.sectionCaption}>完成后自动排列卡片</div>
-                </div>
-                <div className={styles.resultGrid}>
+	                <div className={styles.sectionHeader}>
+	                  <div className={styles.sectionTitle}>{t("dashboard.batch.resultsTitle")}</div>
+	                  <div className={styles.sectionCaption}>{t("dashboard.batch.resultsCaption")}</div>
+	                </div>
+	                <div className={styles.resultGrid}>
 	                  {batchResults.length ? (
 	                    batchResults.map((item) => (
 	                      <div key={item.id} className={styles.resultCard}>
@@ -1499,60 +1600,62 @@ const Dashboard = () => {
 	                            {item.ratio} · {item.model}
 	                          </div>
                         </div>
-                        <div className={styles.resultActions}>
-                          <button
-                            className={styles.ghostBtn}
-                            onClick={() => downloadImage(item.url, `${item.id}.png`)}
-                          >
-                            下载
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className={styles.placeholder}>
-                      <div className={styles.placeholderIcon}>🧩</div>
-                      <p>批量结果将在这里显示</p>
-                    </div>
-                  )}
-                </div>
+	                        <div className={styles.resultActions}>
+	                          <button
+	                            className={styles.ghostBtn}
+	                            onClick={() => downloadImage(item.url, `${item.id}.png`)}
+	                          >
+	                            {t("dashboard.result.download")}
+	                          </button>
+	                        </div>
+	                      </div>
+	                    ))
+	                  ) : (
+	                    <div className={styles.placeholder}>
+	                      <div className={styles.placeholderIcon}>🧩</div>
+	                      <p>{t("dashboard.batch.empty")}</p>
+	                    </div>
+	                  )}
+	                </div>
 
-                {(isBatching || batchProgress > 0) && (
+	                {(isBatching || batchProgress > 0) && (
                   <div className={styles.progressBlock}>
                     <div className={styles.progressBar}>
                       <div
                         className={styles.progressFill}
                         style={{ width: `${batchProgress}%` }}
                       />
-                    </div>
-                    <div className={styles.progressText}>
-                      批量进行中... {batchProgress.toFixed(0)}%
-                    </div>
-                  </div>
-                )}
-              </div>
+	                    </div>
+	                    <div className={styles.progressText}>
+	                      {t("dashboard.batch.progress", {
+                          percent: batchProgress.toFixed(0),
+                        })}
+	                    </div>
+	                  </div>
+	                )}
+	              </div>
             </div>
           </div>
         )}
 
-        {activeTab === "compare" && (
+        {variant !== "generateOnly" && activeTab === "compare" && (
           <div className={styles.panel}>
             <div className={styles.sectionHeader}>
-              <div className={styles.sectionTitle}>模型对比</div>
-              <div className={styles.sectionCaption}>左右选择模型，输出并行对比</div>
+              <div className={styles.sectionTitle}>{t("dashboard.compare.title")}</div>
+              <div className={styles.sectionCaption}>{t("dashboard.compare.caption")}</div>
             </div>
             <div className={styles.panelGrid}>
               <div className={styles.column}>
                 <div className={styles.gridTwo}>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>左侧模型</label>
+                    <label className={styles.label}>{t("dashboard.compare.leftModel")}</label>
                     <select
                       className={styles.select}
                       value={compareLeftModel}
-                      onChange={(e) => setCompareLeftModel(e.target.value)}
+                      onChange={(e) => setCompareLeftModel(e.target.value as MaybeModelValue)}
                     >
-                      <option value="">选择模型</option>
-                      {modelOptions.map((m) => (
+                      <option value="">{t("dashboard.compare.selectModel")}</option>
+                      {localizedModelOptions.map((m) => (
                         <option key={m.value} value={m.value}>
                           {m.label}
                         </option>
@@ -1560,14 +1663,14 @@ const Dashboard = () => {
                     </select>
                   </div>
                   <div className={styles.inputGroup}>
-                    <label className={styles.label}>右侧模型</label>
+                    <label className={styles.label}>{t("dashboard.compare.rightModel")}</label>
                     <select
                       className={styles.select}
                       value={compareRightModel}
-                      onChange={(e) => setCompareRightModel(e.target.value)}
+                      onChange={(e) => setCompareRightModel(e.target.value as MaybeModelValue)}
                     >
-                      <option value="">选择模型</option>
-                      {modelOptions.map((m) => (
+                      <option value="">{t("dashboard.compare.selectModel")}</option>
+                      {localizedModelOptions.map((m) => (
                         <option key={m.value} value={m.value}>
                           {m.label}
                         </option>
@@ -1578,33 +1681,36 @@ const Dashboard = () => {
 
                 <div className={styles.inputGroup}>
                   <div className={styles.sectionHeader}>
-                    <label className={styles.label}>提示词</label>
+                    <label className={styles.label}>{t("dashboard.compare.prompt")}</label>
                     <button
                       className={styles.linkBtn}
-                      onClick={() => setTemplateTarget("compare") || setShowTemplates(true)}
+                      onClick={() => {
+                        setTemplateTarget("compare");
+                        setShowTemplates(true);
+                      }}
                     >
-                      模板
+                      {t("dashboard.generate.promptTemplates")}
                     </button>
                   </div>
                   <textarea
                     className={styles.textarea}
                     rows={4}
                     value={comparePrompt}
-                    placeholder={promptTemplatesByTarget.compare}
+                    placeholder={t("dashboard.templatePrompts.compare")}
                     onChange={(e) => setComparePrompt(e.target.value)}
                   />
                 </div>
 
                 <div className={styles.inputGroup}>
-                  <label className={styles.label}>共同支持尺寸</label>
+                  <label className={styles.label}>{t("dashboard.compare.size")}</label>
                   <select
                     className={styles.select}
                     value={compareRatio}
-                    onChange={(e) => setCompareRatio(e.target.value)}
+                    onChange={(e) => setCompareRatio(e.target.value as RatioValue)}
                   >
                     {ratioOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
-                        {opt.label}
+                        {t(`dashboard.ratios.${opt.value}`)}
                       </option>
                     ))}
                   </select>
@@ -1621,14 +1727,14 @@ const Dashboard = () => {
                       setCompareError(null);
                     }}
                   >
-                    清空
+                    {t("dashboard.compare.clear")}
                   </button>
                   <button
                     className={styles.primaryBtn}
                     onClick={handleCompare}
                     disabled={isComparing}
                   >
-                    {isComparing ? "对比中..." : "开始对比"}
+                    {isComparing ? t("dashboard.compare.comparing") : t("dashboard.compare.start")}
                   </button>
                 </div>
                 {compareError && (
@@ -1638,16 +1744,18 @@ const Dashboard = () => {
 
               <div className={styles.column}>
                 <div className={styles.sectionHeader}>
-                  <div className={styles.sectionTitle}>参考图（可选）</div>
-                  <div className={styles.sectionCaption}>最多 3 张</div>
+                  <div className={styles.sectionTitle}>{t("dashboard.compare.refsTitle")}</div>
+                  <div className={styles.sectionCaption}>
+                    {t("dashboard.compare.refsCaption", { max: REFERENCE_IMAGE_LIMIT })}
+                  </div>
                 </div>
                 <div
                   className={styles.uploadArea}
                   onClick={() => openFileDialog(compareReferenceInputRef)}
                 >
                   <div className={styles.uploadIcon}>☁️</div>
-                  <div className={styles.uploadTitle}>点击上传或拖拽</div>
-                  <div className={styles.uploadHint}>JPG / PNG / GIF</div>
+                  <div className={styles.uploadTitle}>{t("dashboard.compare.uploadTitle")}</div>
+                  <div className={styles.uploadHint}>{t("dashboard.compare.uploadHint")}</div>
                   <input
                     ref={compareReferenceInputRef}
                     type="file"
@@ -1670,64 +1778,72 @@ const Dashboard = () => {
                 )}
 
                 <div className={styles.sectionHeader}>
-                  <div className={styles.sectionTitle}>对比结果</div>
-                  <div className={styles.sectionCaption}>按参考站布局展示</div>
+                  <div className={styles.sectionTitle}>{t("dashboard.compare.resultsTitle")}</div>
+                  <div className={styles.sectionCaption}>{t("dashboard.compare.resultsCaption")}</div>
                 </div>
                 {compareResults.length ? (
                   compareResults.map((item) => (
-	                    <div key={item.id} className={styles.compareResult}>
-	                      <div className={styles.compareItem}>
-	                        <div className={styles.compareLabel}>{item.leftModel}</div>
-	                        <img
-	                          src={item.left}
-	                          alt={item.leftModel}
-	                          loading="lazy"
-	                          onClick={() => openPreview(item.left, item.leftModel)}
-	                        />
-	                      </div>
-	                      <div className={styles.compareItem}>
-	                        <div className={styles.compareLabel}>{item.rightModel}</div>
-	                        <img
-	                          src={item.right}
-	                          alt={item.rightModel}
-	                          loading="lazy"
-	                          onClick={() => openPreview(item.right, item.rightModel)}
-	                        />
-	                      </div>
-                      <div className={styles.resultMeta}>
-                        <div className={styles.resultTitle}>{item.prompt}</div>
-                        <div className={styles.resultInfo}>比例 {item.ratio}</div>
-                      </div>
-                      <div className={styles.resultActions}>
-                        <button
-                          className={styles.ghostBtn}
-                          onClick={() => downloadImage(item.left, `${item.id}-left.png`)}
-                        >
-                          下载左侧
-                        </button>
-                        <button
-                          className={styles.ghostBtn}
-                          onClick={() => downloadImage(item.right, `${item.id}-right.png`)}
-                        >
-                          下载右侧
-                        </button>
-                      </div>
-                    </div>
+		                    <div key={item.id} className={styles.compareResult}>
+		                      <div className={styles.compareItem}>
+		                        <div className={styles.compareLabel}>
+                              {localizedModelOptions.find((m) => m.value === item.leftModel)
+                                ?.label || item.leftModel}
+                            </div>
+		                        <img
+		                          src={item.left}
+		                          alt={item.leftModel}
+		                          loading="lazy"
+		                          onClick={() => openPreview(item.left, item.leftModel)}
+		                        />
+		                      </div>
+		                      <div className={styles.compareItem}>
+		                        <div className={styles.compareLabel}>
+                              {localizedModelOptions.find((m) => m.value === item.rightModel)
+                                ?.label || item.rightModel}
+                            </div>
+		                        <img
+		                          src={item.right}
+		                          alt={item.rightModel}
+		                          loading="lazy"
+		                          onClick={() => openPreview(item.right, item.rightModel)}
+		                        />
+		                      </div>
+		                      <div className={styles.resultMeta}>
+		                        <div className={styles.resultTitle}>{item.prompt}</div>
+		                        <div className={styles.resultInfo}>
+                              {t("dashboard.compare.ratio", { ratio: item.ratio })}
+                            </div>
+		                      </div>
+		                      <div className={styles.resultActions}>
+		                        <button
+		                          className={styles.ghostBtn}
+		                          onClick={() => downloadImage(item.left, `${item.id}-left.png`)}
+		                        >
+		                          {t("dashboard.compare.downloadLeft")}
+		                        </button>
+		                        <button
+		                          className={styles.ghostBtn}
+		                          onClick={() => downloadImage(item.right, `${item.id}-right.png`)}
+		                        >
+		                          {t("dashboard.compare.downloadRight")}
+		                        </button>
+		                      </div>
+		                    </div>
                   ))
                 ) : (
                   <div className={styles.placeholder}>
                     <div className={styles.placeholderIcon}>⚖️</div>
-                    <p>对比结果将在这里显示</p>
+                    <p>{t("dashboard.compare.empty")}</p>
                   </div>
                 )}
 
                 {showEvaluation && (
                   <div className={styles.evaluationBar}>
-                    <span>觉得哪一侧更好？</span>
+                    <span>{t("dashboard.compare.vote")}</span>
                     <div className={styles.buttonRow}>
-                      <button className={styles.ghostBtn}>左侧更好</button>
-                      <button className={styles.ghostBtn}>一样好</button>
-                      <button className={styles.primaryBtn}>右侧更好</button>
+                      <button className={styles.ghostBtn}>{t("dashboard.compare.voteLeft")}</button>
+                      <button className={styles.ghostBtn}>{t("dashboard.compare.voteSame")}</button>
+                      <button className={styles.primaryBtn}>{t("dashboard.compare.voteRight")}</button>
                     </div>
                   </div>
                 )}
@@ -1736,7 +1852,9 @@ const Dashboard = () => {
           </div>
         )}
 
-        {activeTab === "history" && <div className={styles.panel}>{renderHistory()}</div>}
+        {variant !== "generateOnly" && activeTab === "history" && (
+          <div className={styles.panel}>{renderHistory()}</div>
+        )}
       </div>
 
       {renderTemplateModal()}
@@ -1758,7 +1876,7 @@ const Dashboard = () => {
             <button
               type="button"
               className={styles.previewClose}
-              aria-label="关闭预览"
+              aria-label={t("dashboard.result.closePreview")}
               onClick={() => setPreviewUrl(null)}
             >
               ×
@@ -1771,7 +1889,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-    </section>
+    </Wrapper>
   );
 };
 

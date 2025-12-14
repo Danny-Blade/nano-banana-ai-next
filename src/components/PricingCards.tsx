@@ -2,9 +2,10 @@
 
 import React from 'react';
 import styles from './PricingCards.module.css';
-import { siteContent } from '@/config/content';
+import { useSiteContent } from "@/components/useSiteContent";
 
 const PricingCards = () => {
+    const siteContent = useSiteContent();
     const { title, subtitle, plans, addons } = siteContent.pricing;
 
     return (
@@ -35,7 +36,7 @@ const PricingCards = () => {
                             </div>
 
                             <button className={styles.selectBtn}>
-                                Select Payment Method
+                                {siteContent.pricing.selectPaymentMethod}
                             </button>
 
                             <ul className={styles.featuresList}>
@@ -53,7 +54,7 @@ const PricingCards = () => {
                 {/* Add-on Packages */}
                 {addons && addons.length > 0 && (
                     <div className={styles.addonsSection}>
-                        <h3 className={styles.addonsTitle}>Add-on Packages</h3>
+                        <h3 className={styles.addonsTitle}>{siteContent.pricing.addonsTitle}</h3>
                         <div className={styles.addonsGrid}>
                             {addons.map((addon, index) => (
                                 <div key={index} className={styles.addonCard}>
@@ -75,7 +76,7 @@ const PricingCards = () => {
                                     </ul>
 
                                     <button className={styles.addonBtn}>
-                                        Select Payment Method
+                                        {siteContent.pricing.selectPaymentMethod}
                                     </button>
                                 </div>
                             ))}

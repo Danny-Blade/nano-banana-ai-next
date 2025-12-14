@@ -23,6 +23,16 @@
     justify-content: center;
 }
 
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
 .announcement {
     background: rgba(96, 165, 250, 0.1);
     color: var(--primary);

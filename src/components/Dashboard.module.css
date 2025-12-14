@@ -6,6 +6,12 @@
     overflow: hidden;
 }
 
+.embedded {
+    padding: 0;
+    background: transparent;
+    overflow: visible;
+}
+
 .gradient {
     position: absolute;
     inset: 0;

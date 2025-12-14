@@ -1,5 +1,5 @@
 import LegalPage from "@/components/LegalPage";
 
 export default function TermsPage() {
-    return <LegalPage title="Terms of Service" />;
+    return <LegalPage kind="tos" />;
 }

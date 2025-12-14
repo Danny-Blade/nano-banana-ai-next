@@ -1,12 +1,19 @@
+"use client";
+
 import React from 'react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useSiteContent } from "@/components/useSiteContent";
+
+type LegalPageKind = "support" | "tos" | "privacy" | "refund";
 
 interface LegalPageProps {
-    title: string;
+    kind: LegalPageKind;
 }
 
-const LegalPage: React.FC<LegalPageProps> = ({ title }) => {
+const LegalPage: React.FC<LegalPageProps> = ({ kind }) => {
+    const siteContent = useSiteContent();
+    const title = siteContent.legal.titles[kind];
     return (
         <main style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Header />
@@ -28,7 +35,7 @@ const LegalPage: React.FC<LegalPageProps> = ({ title }) => {
                     {title}
                 </h1>
                 <div style={{ lineHeight: '1.8', color: '#ccc' }}>
-                    <p>Content coming soon...</p>
+                    <p>{siteContent.legal.contentComingSoon}</p>
                 </div>
             </div>
             <Footer />

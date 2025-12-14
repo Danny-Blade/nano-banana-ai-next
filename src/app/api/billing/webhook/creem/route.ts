@@ -19,5 +19,5 @@ export async function POST(req: NextRequest) {
   }
 
   const result = await handleBillingEvent(event);
-  return NextResponse.json({ ok: true, ...result });
+  return NextResponse.json({ ...result, ok: true });
 }

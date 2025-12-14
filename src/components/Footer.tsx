@@ -1,9 +1,12 @@
+"use client";
+
 import React from 'react';
 import styles from './Footer.module.css';
-import { siteContent } from '@/config/content';
 import Link from 'next/link';
+import { useSiteContent } from "@/components/useSiteContent";
 
 const Footer = () => {
+    const siteContent = useSiteContent();
     const { logo, copyright, links } = siteContent.footer;
 
     return (

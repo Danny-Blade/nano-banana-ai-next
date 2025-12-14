@@ -1,9 +1,12 @@
+"use client";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { siteContent } from "@/config/content";
 import styles from './history.module.css';
+import { useSiteContent } from "@/components/useSiteContent";
 
 export default function HistoryPage() {
+    const siteContent = useSiteContent();
     const { title, subtitle, emptyMessage } = siteContent.history;
 
     return (

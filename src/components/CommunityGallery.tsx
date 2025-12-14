@@ -2,10 +2,11 @@
 
 import React from 'react';
 import styles from './CommunityGallery.module.css';
-import { siteContent } from '@/config/content';
+import { useSiteContent } from "@/components/useSiteContent";
 
 const CommunityGallery = () => {
-    const { title, subtitle, showcases } = siteContent.communityGallery;
+    const siteContent = useSiteContent();
+    const { title, subtitle, showcases, promptLabel, videoPromptLabel } = siteContent.communityGallery;
 
     return (
         <section className={styles.gallerySection}>
@@ -36,12 +37,12 @@ const CommunityGallery = () => {
                             <div className={styles.content}>
                                 <h3 className={styles.cardTitle}>{item.title}</h3>
 
-                                <span className={styles.promptLabel}>Prompt</span>
+                                <span className={styles.promptLabel}>{promptLabel}</span>
                                 <p className={styles.promptText}>{item.prompt}</p>
 
                                 {item.videoPrompt && (
                                     <>
-                                        <span className={styles.promptLabel}>Video Prompt</span>
+                                        <span className={styles.promptLabel}>{videoPromptLabel}</span>
                                         <p className={styles.promptText}>{item.videoPrompt}</p>
                                     </>
                                 )}

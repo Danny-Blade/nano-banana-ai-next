@@ -1,9 +1,12 @@
+"use client";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { siteContent } from "@/config/content";
 import styles from './explore.module.css';
+import { useSiteContent } from "@/components/useSiteContent";
 
 export default function ExplorePage() {
+    const siteContent = useSiteContent();
     const { title, subtitle, images } = siteContent.explore;
 
     return (
@@ -19,13 +22,13 @@ export default function ExplorePage() {
                             <div key={index} className={styles.galleryItem}>
                                 <img
                                     src={imgUrl}
-                                    alt={`Explore item ${index + 1}`}
+                                    alt={`${siteContent.explore.imageAltPrefix} ${index + 1}`}
                                     className={styles.image}
                                     loading="lazy"
                                 />
                                 <div className={styles.overlay}>
-                                    <div className={styles.overlayModel}>Nano Banana AI</div>
-                                    <div className={styles.overlayPrompt}>Creative image generation...</div>
+                                    <div className={styles.overlayModel}>{siteContent.explore.overlayModel}</div>
+                                    <div className={styles.overlayPrompt}>{siteContent.explore.overlayPrompt}</div>
                                 </div>
                             </div>
                         ))}

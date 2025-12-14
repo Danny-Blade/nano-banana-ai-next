@@ -20,7 +20,9 @@ type RequestBody = {
   imageSize?: "1K" | "2K" | "4K";
 };
 
-const TIMEOUT_MS: Record<RequestBody["imageSize"], number> = {
+type ImageSize = NonNullable<RequestBody["imageSize"]>;
+
+const TIMEOUT_MS: Record<ImageSize, number> = {
   "1K": 180_000,
   "2K": 300_000,
   "4K": 360_000,

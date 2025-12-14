@@ -2,10 +2,11 @@
 
 import React from 'react';
 import styles from './Examples.module.css';
-import { siteContent } from '@/config/content';
+import { useSiteContent } from "@/components/useSiteContent";
 
 const Examples = () => {
-    const { title, items } = siteContent.examples;
+    const siteContent = useSiteContent();
+    const { title, items, resultAlt, afterLabel, promptUsedLabel } = siteContent.examples;
 
     return (
         <section className={styles.examplesSection}>
@@ -18,11 +19,11 @@ const Examples = () => {
                             <div className={styles.imageComparison}>
                                 {/* For simplicity, showing the 'after' image as the result. 
                                     In a real comparison, we'd have a slider or toggle. */}
-                                <img src={item.after} alt="Result" className={styles.image} />
-                                <span className={styles.label}>After</span>
+                                <img src={item.after} alt={resultAlt} className={styles.image} />
+                                <span className={styles.label}>{afterLabel}</span>
                             </div>
                             <div className={styles.prompt}>
-                                <span className={styles.promptLabel}>Prompt used:</span>
+                                <span className={styles.promptLabel}>{promptUsedLabel}</span>
                                 <p className={styles.promptText}>{item.prompt}</p>
                             </div>
                         </div>

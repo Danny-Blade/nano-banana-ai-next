@@ -51,7 +51,10 @@ const base64ToBlob = (base64: string, mimeType: string) => {
     | undefined;
   if (!BufferRef) throw new Error("Missing base64 decoder");
   const bytes = BufferRef.from(base64, "base64");
-  return new Blob([bytes], { type: mimeType });
+  // 复制到普通 `Uint8Array<ArrayBuffer>`，避免 TS 在 BlobPart 类型上报错。
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  return new Blob([copy], { type: mimeType });
 };
 
 const parseDataUrl = (dataUrl: string) => {
