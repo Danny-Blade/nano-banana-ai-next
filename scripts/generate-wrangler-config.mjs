@@ -28,6 +28,13 @@ function hasNonEmptyEnv(key) {
 	return typeof value === "string" && value.trim().length > 0;
 }
 
+function isUuidLike(value) {
+	// D1 的 database_id 是 UUID（形如 8-4-4-4-12）
+	return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+		value,
+	);
+}
+
 function printEnvDiagnostics() {
 	const interestingKeys = [
 		"D1_DATABASE_ID",
@@ -114,6 +121,25 @@ if (!d1DatabaseId) {
 	// 非 CI：不改动配置，方便本地 build
 	process.stdout.write(
 		"[generate-wrangler-config] 未设置 D1_DATABASE_ID，跳过写入 wrangler.jsonc（本地 build 正常）。\n",
+	);
+	process.exit(0);
+}
+
+if (!isUuidLike(d1DatabaseId)) {
+	printEnvDiagnostics();
+	const message = [
+		"`D1_DATABASE_ID` 不是有效的 D1 数据库 UUID。",
+		"你很可能填成了数据库名称/绑定名（例如 nano_banana / nano_banana_db），但这里必须是 Database ID（UUID）。",
+		"获取方式：Cloudflare 控制台 → D1 → 进入数据库详情页 → 复制 Database ID。",
+	].join("\n");
+
+	if (isCI) {
+		throw new Error(message);
+	}
+
+	process.stdout.write(`[generate-wrangler-config] ${message}\n`);
+	process.stdout.write(
+		"[generate-wrangler-config] 非 CI 环境：跳过写入 wrangler.jsonc（本地 build 正常）。\n",
 	);
 	process.exit(0);
 }
