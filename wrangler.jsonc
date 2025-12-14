@@ -23,12 +23,12 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "nano_banana",
+			"database_name": "nanobananapro",
 
 			// 注意：这里必须是「D1 数据库 ID」，不是数据库名称；否则 wrangler deploy 会报 10021
 			// 推荐做法：不要把 ID 提交到仓库，在 Cloudflare 构建环境里设置 `D1_DATABASE_ID`，
 			// 构建时会由 `scripts/generate-wrangler-config.mjs` 自动写入。
-			"database_id": "5a6dc310-2224-4c01-a706-5af50fb33d95"
+			"database_id": "aa2ea96d-f338-4296-aefa-918a8e360899"
 		}
 	]
 }
