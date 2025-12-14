@@ -17,9 +17,9 @@ export const siteContentKo: SiteContent = {
     toggleMenuAriaLabel: "메뉴 토글",
   },
   hero: {
-    title: "Nano Banana AI — Gemini 2.5 Flash Image 기반 생성·편집 스튜디오",
+    title: "Nano Banana AI — Gemini 3.0 Flash Image 기반 생성·편집 스튜디오",
     subtitle:
-      "Google의 혁신적인 Nano Banana AI(Gemini 2.5 Flash Image)로 고급 이미지 생성과 편집을 경험하세요. Nano Banana AI에서 생성, 합성, 보정을 손쉽게 수행할 수 있습니다( Google AI Studio 대안).",
+      "Google의 혁신적인 Nano Banana AI(Gemini 3.0 Flash Image)로 고급 이미지 생성과 편집을 경험하세요. Nano Banana AI에서 생성, 합성, 보정을 손쉽게 수행할 수 있습니다( Google AI Studio 대안).",
     ctaPrimary: "지금 시작하기",
     ctaSecondary: "이미지→비디오",
     ctaPrimaryHref: "/dashboard",
@@ -240,7 +240,7 @@ export const siteContentKo: SiteContent = {
       {
         question: "Nano Banana AI란 무엇인가요?",
         answer:
-          "Nano Banana AI는 Google의 Gemini 2.5 Flash Image 기술로 구동되는 고급 이미지 생성·편집 플랫폼입니다. 간단한 프롬프트로 생성/편집/변환이 가능합니다.",
+          "Nano Banana AI는 Google의 Gemini 3.0 Flash Image 기술로 구동되는 고급 이미지 생성·편집 플랫폼입니다. 간단한 프롬프트로 생성/편집/변환이 가능합니다.",
       },
       {
         question: "생성 속도는 얼마나 빠른가요?",

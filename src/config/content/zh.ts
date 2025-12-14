@@ -17,9 +17,9 @@ export const siteContentZh: SiteContent = {
     toggleMenuAriaLabel: "切换菜单",
   },
   hero: {
-    title: "Nano Banana AI —— 由 Gemini 2.5 Flash Image 驱动的生图与编辑工作室",
+    title: "Nano Banana AI —— 由 Gemini 3.0 Flash Image 驱动的生图与编辑工作室",
     subtitle:
-      "体验 Google 革命性的 Nano Banana AI（Gemini 2.5 Flash Image），用于高级图像生成与编辑。通过先进的 AI 技术在 Nano Banana AI 中创建、融合与增强图片（可替代 Google AI Studio）。",
+      "体验 Google 革命性的 Nano Banana AI（Gemini 3.0 Flash Image），用于高级图像生成与编辑。通过先进的 AI 技术在 Nano Banana AI 中创建、融合与增强图片（可替代 Google AI Studio）。",
     ctaPrimary: "开始体验",
     ctaSecondary: "图转视频",
     ctaPrimaryHref: "/dashboard",
@@ -240,7 +240,7 @@ export const siteContentZh: SiteContent = {
       {
         question: "什么是 Nano Banana AI？",
         answer:
-          "Nano Banana AI 是由 Google 的 Gemini 2.5 Flash Image 技术驱动的高级图像生成与编辑平台。你可以通过简单的提示词来创建、编辑与转换图片。",
+          "Nano Banana AI 是由 Google 的 Gemini 3.0 Flash Image 技术驱动的高级图像生成与编辑平台。你可以通过简单的提示词来创建、编辑与转换图片。",
       },
       {
         question: "出图速度有多快？",

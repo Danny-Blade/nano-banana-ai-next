@@ -141,6 +141,8 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const { locale, t } = useI18n();
   const siteContent = useSiteContent();
 
+  const DEFAULT_MODEL: ModelValue = "nano-banana-pro";
+
   const intlLocale = React.useMemo(() => {
     if (locale === "zh") return "zh-CN";
     if (locale === "ja") return "ja-JP";
@@ -164,9 +166,9 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
   const [activeTab, setActiveTab] = React.useState<Tab>("generate");
   const [resultTab, setResultTab] = React.useState<ResultTab>("result");
-  const [selectedModel, setSelectedModel] = React.useState<ModelValue>(modelOptions[0].value);
+  const [selectedModel, setSelectedModel] = React.useState<ModelValue>(DEFAULT_MODEL);
   const [resolution, setResolution] = React.useState(
-    resolutionOptions[modelOptions[0].value][0]
+    resolutionOptions[DEFAULT_MODEL][0]
   );
   const [ratio, setRatio] = React.useState<RatioValue>(ratioOptions[0].value);
   const [generatePrompt, setGeneratePrompt] = React.useState("");

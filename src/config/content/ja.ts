@@ -17,9 +17,9 @@ export const siteContentJa: SiteContent = {
     toggleMenuAriaLabel: "メニュー切替",
   },
   hero: {
-    title: "Nano Banana AI — Gemini 2.5 Flash Image 搭載の生成・編集スタジオ",
+    title: "Nano Banana AI — Gemini 3.0 Flash Image 搭載の生成・編集スタジオ",
     subtitle:
-      "Google の革新的な Nano Banana AI（Gemini 2.5 Flash Image）で高度な画像生成と編集を体験。Nano Banana AI で画像の作成・合成・強化を行えます（Google AI Studio の代替として）。",
+      "Google の革新的な Nano Banana AI（Gemini 3.0 Flash Image）で高度な画像生成と編集を体験。Nano Banana AI で画像の作成・合成・強化を行えます（Google AI Studio の代替として）。",
     ctaPrimary: "今すぐ試す",
     ctaSecondary: "画像→動画",
     ctaPrimaryHref: "/dashboard",
@@ -250,7 +250,7 @@ export const siteContentJa: SiteContent = {
       {
         question: "Nano Banana AI とは？",
         answer:
-          "Nano Banana AI は Google の Gemini 2.5 Flash Image 技術を搭載した画像生成・編集プラットフォームです。短いプロンプトで作成・編集・変換ができます。",
+          "Nano Banana AI は Google の Gemini 3.0 Flash Image 技術を搭載した画像生成・編集プラットフォームです。短いプロンプトで作成・編集・変換ができます。",
       },
       {
         question: "生成速度は？",

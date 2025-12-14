@@ -16,9 +16,9 @@ export const siteContentEn = {
   },
   hero: {
     title:
-      "Nano Banana AI -- Powered By Gemini 2.5 Flash Image Generation & Editing Studio",
+      "Nano Banana AI -- Powered By Gemini 3.0 Flash Image Generation & Editing Studio",
     subtitle:
-      "Experience Google's revolutionary Nano Banana AI (Gemini 2.5 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana AI （alternative Google AI Studio).",
+      "Experience Google's revolutionary Nano Banana AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana AI （alternative Google AI Studio).",
     ctaPrimary: "Try Nano Banana",
     ctaSecondary: "Image to Video",
     ctaPrimaryHref: "/dashboard",
@@ -265,7 +265,7 @@ export const siteContentEn = {
       {
         question: "What is Nano Banana AI?",
         answer:
-          "Nano Banana AI is an advanced image generation and editing platform powered by Google's Gemini 2.5 Flash Image technology. It allows you to create, edit, and transform images using simple text prompts.",
+          "Nano Banana AI is an advanced image generation and editing platform powered by Google's Gemini 3.0 Flash Image technology. It allows you to create, edit, and transform images using simple text prompts.",
       },
       {
         question: "How fast is image generation?",
