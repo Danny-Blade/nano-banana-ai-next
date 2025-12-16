@@ -4,6 +4,7 @@ import React from 'react';
 import { signIn } from 'next-auth/react';
 import styles from './LoginModal.module.css';
 import { useI18n } from "@/components/I18nProvider";
+import GooglePlatformSignIn from "@/components/GooglePlatformSignIn";
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -11,8 +12,8 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
-    if (!isOpen) return null;
     const { t } = useI18n();
+    if (!isOpen) return null;
 
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
@@ -29,13 +30,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 <p className={styles.subtitle}>{t("auth.subtitle")}</p>
 
                 <div className={styles.socialButtons}>
-                    <button
-                        className={styles.socialBtn}
-                        onClick={() => signIn('google')}
-                    >
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className={styles.icon} />
-                        {t("auth.continueWithGoogle")}
-                    </button>
+                    <div className={styles.googleSignInWrap}>
+                        <GooglePlatformSignIn
+                            onSignedIn={onClose}
+                            label={t("auth.continueWithGoogle")}
+                            buttonClassName={styles.socialBtn}
+                            iconClassName={styles.icon}
+                        />
+                    </div>
 
                     <button
                         className={styles.socialBtn}

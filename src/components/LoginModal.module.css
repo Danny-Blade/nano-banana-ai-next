@@ -55,6 +55,11 @@
     gap: 1rem;
 }
 
+.googleSignInWrap {
+    display: flex;
+    justify-content: center;
+}
+
 .socialBtn {
     display: flex;
     align-items: center;
