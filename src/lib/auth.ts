@@ -1,13 +1,20 @@
 import { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { OAuthConfig, OAuthUserConfig } from "next-auth/providers";
 import { ensureUserFromOAuth, getUserById } from "@/lib/users";
 import { custom } from "openid-client";
 
 type GoogleOAuthJson = {
 	web?: { client_id?: unknown; client_secret?: unknown };
 	installed?: { client_id?: unknown; client_secret?: unknown };
+};
+
+type GoogleProfile = {
+	sub: string;
+	name?: string;
+	email?: string;
+	picture?: string;
 };
 
 // openid-client 默认请求超时是 3500ms；在部分网络环境下（或首次 TLS/DNS 较慢时）
@@ -18,6 +25,49 @@ custom.setHttpOptionsDefaults({ timeout: OAUTH_HTTP_TIMEOUT_MS });
 
 const DEFAULT_GOOGLE_CLIENT_ID =
 	"5783249126-pofhal0pprh4dfguso8u5luhov883jdm.apps.googleusercontent.com";
+
+/**
+ * Google OAuth Provider without OIDC discovery.
+ *
+ * NextAuth's built-in Google provider uses `wellKnown` which triggers a network call
+ * (`Issuer.discover`) on `/api/auth/signin/google`. In some networks (or slow DNS/TLS),
+ * that request can hang, so the browser never gets the authorization URL.
+ *
+ * By providing static endpoints, NextAuth will construct the authorization URL immediately.
+ */
+function GoogleNoDiscovery<P extends GoogleProfile>(
+	options: OAuthUserConfig<P>,
+): OAuthConfig<P> {
+	return {
+		id: "google",
+		name: "Google",
+		type: "oauth",
+		issuer: "https://accounts.google.com",
+		authorization: {
+			url: "https://accounts.google.com/o/oauth2/v2/auth",
+			params: { scope: "openid email profile" },
+		},
+		token: { url: "https://oauth2.googleapis.com/token" },
+		userinfo: { url: "https://openidconnect.googleapis.com/v1/userinfo" },
+		jwks_endpoint: "https://www.googleapis.com/oauth2/v3/certs",
+		idToken: true,
+		checks: ["pkce", "state"],
+		profile(profile) {
+			return {
+				id: profile.sub,
+				name: profile.name,
+				email: profile.email,
+				image: profile.picture,
+			};
+		},
+		style: {
+			logo: "/google.svg",
+			bg: "#fff",
+			text: "#000",
+		},
+		options,
+	};
+}
 
 function getGoogleOAuthCredentials(): { clientId: string; clientSecret: string } {
 	// 推荐：分别配置（更清晰，也更容易在 Cloudflare 控制台管理）
@@ -111,10 +161,14 @@ async function verifyGoogleIdToken(idToken: string): Promise<{
 
 export const authOptions: NextAuthOptions = {
     // 生产环境必须配置。注意不要把 secret 打进前端包。
-    secret: process.env.NEXTAUTH_SECRET,
-    providers: [
-        CredentialsProvider({
-            name: "Google（platform.js）",
+    secret:
+        process.env.NEXTAUTH_SECRET ||
+        (process.env.NODE_ENV === "development" ? "dev-only-secret" : undefined),
+    // @ts-expect-error trustHost is a valid option but missing in types
+	    trustHost: true,
+	    providers: [
+	        CredentialsProvider({
+	            name: "Google（platform.js）",
             credentials: {
                 idToken: { label: "Google ID Token", type: "text" },
             },
@@ -145,17 +199,17 @@ export const authOptions: NextAuthOptions = {
                     if (process.env.NODE_ENV === "production") throw err;
                     console.warn("[auth] Failed to persist user to D1:", err);
                     return { id: `google:${sub}`, name, email, image: picture };
-                }
-            },
-        }),
-        GoogleProvider({
-            ...getGoogleOAuthCredentials(),
-        }),
-        FacebookProvider({
-            clientId: process.env.FACEBOOK_CLIENT_ID || "",
-            clientSecret: process.env.FACEBOOK_CLIENT_SECRET || "",
-        }),
-    ],
+	                }
+	            },
+	        }),
+	        GoogleNoDiscovery({
+	            ...getGoogleOAuthCredentials(),
+	        }),
+	        FacebookProvider({
+	            clientId: process.env.FACEBOOK_CLIENT_ID || "",
+	            clientSecret: process.env.FACEBOOK_CLIENT_SECRET || "",
+	        }),
+	    ],
     pages: {
         signIn: '/login', // 我们用弹窗登录；这里是兜底路由
     },

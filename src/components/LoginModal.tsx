@@ -13,11 +13,34 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     const { t } = useI18n();
+    React.useEffect(() => {
+        if (!isOpen) return;
+
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', onKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', onKeyDown);
+            document.body.style.overflow = prevOverflow;
+        };
+    }, [isOpen, onClose]);
+
     if (!isOpen) return null;
 
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
-            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div
+                className={styles.modalContent}
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="login-modal-title"
+            >
                 <button
                     className={styles.closeButton}
                     onClick={onClose}
@@ -26,8 +49,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                     ×
                 </button>
 
-                <h2 className={styles.title}>{t("auth.welcomeBack")}</h2>
-                <p className={styles.subtitle}>{t("auth.subtitle")}</p>
+                <div className={styles.header}>
+                    <h2 id="login-modal-title" className={styles.title}>{t("auth.welcomeBack")}</h2>
+                    <p className={styles.subtitle}>{t("auth.subtitle")}</p>
+                </div>
 
                 <div className={styles.socialButtons}>
                     <div className={styles.googleSignInWrap}>
