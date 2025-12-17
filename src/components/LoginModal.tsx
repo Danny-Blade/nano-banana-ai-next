@@ -4,7 +4,6 @@ import React from 'react';
 import { signIn } from 'next-auth/react';
 import styles from './LoginModal.module.css';
 import { useI18n } from "@/components/I18nProvider";
-import GooglePlatformSignIn from "@/components/GooglePlatformSignIn";
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -13,8 +12,14 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     const { t } = useI18n();
+    const [oauthError, setOauthError] = React.useState<string | null>(null);
+    const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
+
     React.useEffect(() => {
         if (!isOpen) return;
+
+        setOauthError(null);
+        setIsGoogleLoading(false);
 
         const prevOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
@@ -55,23 +60,45 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 <div className={styles.socialButtons}>
-                    <div className={styles.googleSignInWrap}>
-                        <GooglePlatformSignIn
-                            onSignedIn={onClose}
-                            label={t("auth.continueWithGoogle")}
-                            buttonClassName={styles.socialBtn}
-                            iconClassName={styles.icon}
-                        />
-                    </div>
-
                     <button
                         className={styles.socialBtn}
-                        onClick={() => signIn('facebook')}
+                        onClick={async () => {
+                            setOauthError(null);
+                            setIsGoogleLoading(true);
+                            try {
+                                const result = await signIn("google", {
+                                    redirect: false,
+                                    callbackUrl: window.location.href,
+                                });
+                                if (result?.ok && result.url) {
+                                    window.location.href = result.url;
+                                    return;
+                                }
+                                setOauthError(result?.error || "Google 登录失败，请重试。");
+                            } catch (err) {
+                                console.warn("[auth] google signIn failed:", err);
+                                setOauthError("Google 登录失败，请检查网络后重试。");
+                            } finally {
+                                setIsGoogleLoading(false);
+                            }
+                        }}
+                        disabled={isGoogleLoading}
                     >
-                        <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" className={styles.icon} />
-                        {t("auth.continueWithFacebook")}
+                        <img
+                            src="https://www.svgrepo.com/show/475656/google-color.svg"
+                            alt=""
+                            aria-hidden="true"
+                            className={styles.icon}
+                        />
+                        {isGoogleLoading ? `${t("auth.continueWithGoogle")}…` : t("auth.continueWithGoogle")}
                     </button>
                 </div>
+
+                {oauthError ? (
+                    <div className={styles.error} role="alert">
+                        {oauthError}
+                    </div>
+                ) : null}
             </div>
         </div>
     );

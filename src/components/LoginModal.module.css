@@ -11,15 +11,15 @@
     z-index: 1000;
     backdrop-filter: blur(4px);
     animation: modalFadeIn 160ms ease-out;
-    padding: 1.25rem;
+    padding: 1rem;
 }
 
 .modalContent {
     background: #ffffff;
-    padding: 1.75rem;
+    padding: 1.25rem;
     border-radius: 1.25rem;
     width: 90%;
-    max-width: 440px;
+    max-width: 420px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     position: relative;
     text-align: center;
@@ -56,11 +56,11 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.85rem;
 }
 
 .title {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: #111;
 }
@@ -73,12 +73,7 @@
 .socialButtons {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-}
-
-.googleSignInWrap {
-    display: flex;
-    justify-content: center;
+    gap: 0.75rem;
 }
 
 .socialBtn {
@@ -96,6 +91,11 @@
     background: white;
 }
 
+.socialBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .socialBtn:hover {
     background-color: #f9fafb;
     border-color: #d1d5db;
@@ -106,6 +106,10 @@
     transform: translateY(1px);
 }
 
+.socialBtn:disabled:active {
+    transform: none;
+}
+
 .socialBtn:focus-visible {
     outline: 2px solid rgba(59, 130, 246, 0.8);
     outline-offset: 2px;
@@ -114,6 +118,13 @@
 .icon {
     width: 20px;
     height: 20px;
+}
+
+.error {
+    margin-top: 0.75rem;
+    color: #ef4444;
+    font-size: 0.8rem;
+    text-align: center;
 }
 
 @keyframes modalFadeIn {
