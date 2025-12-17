@@ -251,21 +251,23 @@
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    gap: 0.85rem;
     border-radius: 14px;
     border: 1.5px dashed #cbd5e1;
     background: #f8fafc;
     height: auto;
     max-height: min(60vh, 560px);
+    min-height: 320px;
 }
 
 .resultArea {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.85rem;
     overflow: auto;
     padding-right: 0.25rem;
-    min-height: 320px;
+    min-height: 0;
 }
 
 .column {
@@ -624,6 +626,7 @@
 .tabRow {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .headerActions {
@@ -687,6 +690,8 @@
 
 .resultCardLarge {
     width: 100%;
+    flex: 1;
+    min-height: 0;
 }
 
 .resultImageFrame {
@@ -700,7 +705,9 @@
 }
 
 .resultImageFrameLarge {
-    height: 420px;
+    height: auto;
+    flex: 1;
+    min-height: 320px;
 }
 
 .resultImageFrame img {
@@ -749,7 +756,9 @@
 .singleResult {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.75rem;
+    flex: 1;
+    min-height: 0;
 }
 
 .singleNav {
@@ -757,6 +766,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
+    margin-top: auto;
 }
 
 .singleNavBtn {

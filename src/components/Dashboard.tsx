@@ -178,9 +178,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
-  const [resultDisplayMode, setResultDisplayMode] = React.useState<"single" | "all">(
-    "all"
-  );
   const [activeResultIndex, setActiveResultIndex] = React.useState(0);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [previewAlt, setPreviewAlt] = React.useState("");
@@ -237,9 +234,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
   React.useEffect(() => {
     setActiveResultIndex(0);
-    if (results.length <= 1) {
-      setResultDisplayMode("all");
-    }
   }, [results.length]);
 
   React.useEffect(() => {
@@ -280,7 +274,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     });
   }, []);
 
-  const REFERENCE_IMAGE_LIMIT = 3;
+  const REFERENCE_IMAGE_LIMIT = 5;
 
   const openFileDialog = (ref: React.RefObject<HTMLInputElement | null>) => {
     const input = ref.current;
@@ -1222,33 +1216,11 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
                 </div>
               </div>
 
-		              <div className={`${styles.column} ${styles.resultColumn}`}>
+		                  <div className={`${styles.column} ${styles.resultColumn}`}>
 		                <div className={styles.resultBox}>
 		                  <div className={styles.sectionHeader}>
 		                    <div className={styles.sectionTitle}>{t("dashboard.result.title")}</div>
 		                    <div className={styles.headerActions}>
-		                      {resultTab === "result" && results.length > 1 && (
-		                        <div className={styles.modeToggle}>
-		                          <button
-		                            type="button"
-	                            className={`${styles.modeBtn} ${
-	                              resultDisplayMode === "single" ? styles.active : ""
-		                            }`}
-		                            onClick={() => setResultDisplayMode("single")}
-		                          >
-		                            {t("dashboard.result.modeSingle")}
-		                          </button>
-		                          <button
-		                            type="button"
-		                            className={`${styles.modeBtn} ${
-		                              resultDisplayMode === "all" ? styles.active : ""
-		                            }`}
-		                            onClick={() => setResultDisplayMode("all")}
-		                          >
-		                            {t("dashboard.result.modeAll")}
-		                          </button>
-		                        </div>
-		                      )}
 		                      <div className={styles.tabRow}>
 		                        {["result", "original", "compare"].map((key) => (
 		                          <button
@@ -1270,9 +1242,9 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 	                  <div className={styles.resultArea}>
 	                    {resultTab === "result" &&
 	                      (results.length ? (
-	                        resultDisplayMode === "single" ? (
-	                          <div className={styles.singleResult}>
-	                            {renderGeneratedResultCard(results[activeResultIndex]!, true)}
+	                        <div className={styles.singleResult}>
+	                          {renderGeneratedResultCard(results[activeResultIndex]!, true)}
+	                          {results.length > 1 ? (
 	                            <div className={styles.singleNav}>
 	                              <button
 	                                type="button"
@@ -1300,12 +1272,8 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 	                                ›
 	                              </button>
 	                            </div>
-	                          </div>
-	                        ) : (
-	                          <div className={styles.resultGrid}>
-	                            {results.map((item) => renderGeneratedResultCard(item))}
-	                          </div>
-	                        )
+	                          ) : null}
+	                        </div>
 	                      ) : (
 	                        <div className={styles.placeholder}>
 	                          <div className={styles.placeholderIcon}>🎨</div>
