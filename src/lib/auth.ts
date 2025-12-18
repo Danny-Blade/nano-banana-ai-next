@@ -2,6 +2,8 @@ import { NextAuthOptions } from "next-auth";
 import type { OAuthConfig, OAuthUserConfig } from "next-auth/providers";
 import { ensureUserFromOAuth, getUserById } from "@/lib/users";
 import { custom } from "openid-client";
+import { HttpsProxyAgent } from "next/dist/compiled/https-proxy-agent";
+import { getD1 } from "@/lib/d1";
 
 type GoogleOAuthJson = {
 	web?: { client_id?: unknown; client_secret?: unknown };
@@ -19,7 +21,66 @@ type GoogleProfile = {
 // 会导致 Google OAuth 的 Issuer discovery / token 请求直接超时失败。
 // 这里统一把超时调大（可通过环境变量覆盖）。
 const OAUTH_HTTP_TIMEOUT_MS = Number(process.env.OAUTH_HTTP_TIMEOUT_MS) || 15_000;
-custom.setHttpOptionsDefaults({ timeout: OAUTH_HTTP_TIMEOUT_MS });
+const OAUTH_HTTP_PROXY =
+	process.env.OAUTH_HTTP_PROXY?.trim() ||
+	process.env.HTTPS_PROXY?.trim() ||
+	process.env.HTTP_PROXY?.trim() ||
+	process.env.ALL_PROXY?.trim() ||
+	"";
+const OAUTH_DNS_RESULT_ORDER = process.env.OAUTH_DNS_RESULT_ORDER?.trim() || "";
+
+function redactProxyUrl(proxyUrl: string): string {
+	try {
+		const url = new URL(proxyUrl);
+		if (url.username) url.username = "***";
+		if (url.password) url.password = "***";
+		return url.toString();
+	} catch {
+		return proxyUrl.replace(/\/\/.*@/, "//***:***@");
+	}
+}
+
+// 某些网络环境（例如仅浏览器走代理/VPN，而 Node 进程未走）会导致 NextAuth 在 callback
+// 阶段请求 Google token/userinfo 超时。这里允许通过代理环境变量显式为 openid-client 配置 agent。
+const httpOptionsDefaults: Parameters<typeof custom.setHttpOptionsDefaults>[0] = {
+	timeout: OAUTH_HTTP_TIMEOUT_MS,
+};
+
+if (OAUTH_HTTP_PROXY) {
+	if (OAUTH_HTTP_PROXY.toLowerCase().startsWith("socks")) {
+		// 仅提示：socks 代理需要 socks-proxy-agent；这里先不引入依赖，避免构建与部署复杂度。
+		console.warn(
+			`[auth] OAuth proxy looks like SOCKS (${redactProxyUrl(
+				OAUTH_HTTP_PROXY,
+			)}). Please provide an HTTP(S) proxy url or handle SOCKS agent yourself.`,
+		);
+	} else {
+		httpOptionsDefaults.agent = new HttpsProxyAgent(OAUTH_HTTP_PROXY);
+		if (process.env.NODE_ENV !== "production") {
+			console.info("[auth] OAuth proxy enabled:", redactProxyUrl(OAUTH_HTTP_PROXY));
+		}
+	}
+}
+
+if (OAUTH_DNS_RESULT_ORDER) {
+	try {
+		// eslint-disable-next-line @typescript-eslint/no-require-imports
+		const dns = require("node:dns") as typeof import("node:dns");
+		const order = OAUTH_DNS_RESULT_ORDER.toLowerCase();
+		if (order === "ipv4first" || order === "ipv6first" || order === "verbatim") {
+			dns.setDefaultResultOrder(order as "ipv4first" | "ipv6first" | "verbatim");
+			if (process.env.NODE_ENV !== "production") {
+				console.info("[auth] DNS result order:", order);
+			}
+		} else {
+			console.warn("[auth] Invalid OAUTH_DNS_RESULT_ORDER:", OAUTH_DNS_RESULT_ORDER);
+		}
+	} catch (err) {
+		console.warn("[auth] Failed to set DNS result order:", err);
+	}
+}
+
+custom.setHttpOptionsDefaults(httpOptionsDefaults);
 
 /**
  * Google OAuth Provider without OIDC discovery.
@@ -113,17 +174,32 @@ export const authOptions: NextAuthOptions = {
     // 目前使用 JWT Session，暂不引入服务端 sessions 表。
     // 用户持久化落在我们自己的 D1 表里（见 db/migrations）。
     session: { strategy: "jwt" },
-    callbacks: {
+	callbacks: {
         /**
          * 将 OAuth 用户落库到 D1，并把内部 `userId` 写入 JWT。
          * 这样积分/订阅等业务就有稳定的主键可用。
          */
-        async jwt({ token, account, profile }) {
-            if (account?.provider && account.providerAccountId) {
-                const p = profile as Record<string, unknown> | undefined;
-                const email =
-                    (typeof p?.email === "string" ? (p.email as string) : undefined) ||
-                    (typeof token.email === "string" ? token.email : undefined);
+		async jwt({ token, account, profile }) {
+			if (account?.provider && account.providerAccountId) {
+				const db = getD1();
+				if (!db) {
+					// 本地 Next.js dev 直接跑时通常没有 Cloudflare D1 绑定；这不影响 OAuth 登录，
+					// 但积分/订阅等依赖 DB 的功能无法使用。
+					if (process.env.NODE_ENV === "production") {
+						throw new Error(
+							"未找到 D1 数据库绑定（DB）。请在 Cloudflare 环境绑定 D1 为 `DB`，否则无法持久化用户/积分数据。",
+						);
+					}
+
+					// 给前端一个稳定的 userId，避免 session.user.id 为空导致 UI 逻辑异常。
+					token.userId ??= `${account.provider}:${account.providerAccountId}`;
+					return token;
+				}
+
+				const p = profile as Record<string, unknown> | undefined;
+				const email =
+					(typeof p?.email === "string" ? (p.email as string) : undefined) ||
+					(typeof token.email === "string" ? token.email : undefined);
 
                 // 有些渠道取决于权限配置，可能不会返回 email。
                 if (email) {
@@ -150,27 +226,37 @@ export const authOptions: NextAuthOptions = {
                     } catch (err) {
                         // 本地 Node 直接运行通常没有 D1 绑定。
                         // 生产环境出现这种情况应视为配置错误。
-                        if (process.env.NODE_ENV === "production") throw err;
-                        console.warn("[auth] Failed to persist user to D1:", err);
-                    }
-                }
-            }
-            return token;
+						if (process.env.NODE_ENV === "production") throw err;
+						console.warn("[auth] Failed to persist user to D1:", err);
+					}
+				}
+			}
+			return token;
         },
 
         /**
          * 将内部 `userId` 与 `credits` 挂到客户端 session 上。
          * 这样 UI 可以直接展示积分，减少额外请求。
          */
-        async session({ session, token }) {
-            const userId = typeof token.userId === "string" ? token.userId : null;
-            if (session.user && userId) {
-                session.user.id = userId;
-                try {
-                    const user = await getUserById(userId);
-                    session.user.credits = user?.credits_balance ?? 0;
-                } catch (err) {
-                    if (process.env.NODE_ENV === "production") throw err;
+		async session({ session, token }) {
+			const userId = typeof token.userId === "string" ? token.userId : null;
+			if (session.user && userId) {
+				session.user.id = userId;
+				const db = getD1();
+				if (!db) {
+					if (process.env.NODE_ENV === "production") {
+						throw new Error(
+							"未找到 D1 数据库绑定（DB）。请在 Cloudflare 环境绑定 D1 为 `DB`，否则无法读取用户/积分数据。",
+						);
+					}
+					session.user.credits = 0;
+					return session;
+				}
+				try {
+					const user = await getUserById(userId);
+					session.user.credits = user?.credits_balance ?? 0;
+				} catch (err) {
+					if (process.env.NODE_ENV === "production") throw err;
                     session.user.credits = 0;
                 }
             }

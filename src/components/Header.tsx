@@ -14,12 +14,45 @@ const Header = () => {
     const { logo, logoImage, navLinks, loginButton, logoutButton, toggleMenuAriaLabel } = siteContent.header;
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = React.useState(false);
+    const userMenuRef = React.useRef<HTMLDivElement>(null);
     const { data: session } = useSession();
     const { locale, setLocale, t } = useI18n();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+        setIsUserMenuOpen(false);
     };
+
+    React.useEffect(() => {
+        if (!isUserMenuOpen) return;
+
+        const onMouseDown = (e: MouseEvent) => {
+            const root = userMenuRef.current;
+            if (!root) return;
+            if (e.target instanceof Node && root.contains(e.target)) return;
+            setIsUserMenuOpen(false);
+        };
+
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setIsUserMenuOpen(false);
+        };
+
+        document.addEventListener('mousedown', onMouseDown);
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', onMouseDown);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, [isUserMenuOpen]);
+
+    React.useEffect(() => {
+        if (!session) setIsUserMenuOpen(false);
+    }, [session]);
+
+    const userDisplayName = session?.user?.name || session?.user?.email || '';
+    const userInitial = (userDisplayName.trim().charAt(0) || 'U').toLocaleUpperCase();
+    const credits = session?.user?.credits ?? 0;
 
     return (
         <>
@@ -59,17 +92,51 @@ const Header = () => {
                         </select>
                     </div>
                     {session ? (
-                        <div className="flex items-center gap-4">
-                            <span className="text-sm font-medium hidden md:block">
-                                {session.user?.name || session.user?.email}
-                            </span>
+                        <div className={styles.userMenu} ref={userMenuRef}>
                             <button
-                                onClick={() => signOut()}
-                                className={styles.loginBtn}
-                                style={{ backgroundColor: '#ef4444', borderColor: '#ef4444', color: 'white' }}
+                                type="button"
+                                className={styles.userAvatarBtn}
+                                aria-label={t("common.userMenu")}
+                                aria-haspopup="menu"
+                                aria-expanded={isUserMenuOpen}
+                                onClick={() => {
+                                    setIsUserMenuOpen(!isUserMenuOpen);
+                                    setIsMenuOpen(false);
+                                }}
                             >
-                                {logoutButton}
+                                <span className={styles.userAvatarInitial}>{userInitial}</span>
                             </button>
+
+                            {isUserMenuOpen ? (
+                                <div className={styles.userDropdown} role="menu">
+                                    <div className={styles.userDropdownHeader}>
+                                        <div className={styles.userDropdownAvatar} aria-hidden="true">
+                                            {userInitial}
+                                        </div>
+                                        <div className={styles.userDropdownMeta}>
+                                            <div className={styles.userDropdownName}>
+                                                {session.user?.name || session.user?.email || 'User'}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.userDropdownStats}>
+                                        <div className={styles.userDropdownStatLabel}>{t("common.credits")}</div>
+                                        <div className={styles.userDropdownStatValue}>{credits}</div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className={styles.userDropdownLogout}
+                                        onClick={() => {
+                                            setIsUserMenuOpen(false);
+                                            void signOut();
+                                        }}
+                                    >
+                                        {logoutButton}
+                                    </button>
+                                </div>
+                            ) : null}
                         </div>
                     ) : (
                         <button

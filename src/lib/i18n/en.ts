@@ -3,6 +3,8 @@ import type { Messages } from "@/lib/i18n/types";
 export const messagesEn: Messages = {
   common: {
     language: "Language",
+    credits: "Credits",
+    userMenu: "User menu",
   },
   auth: {
     welcomeBack: "Welcome back",

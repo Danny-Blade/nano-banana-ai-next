@@ -3,6 +3,8 @@ import type { Messages } from "@/lib/i18n/types";
 export const messagesKo: Messages = {
   common: {
     language: "언어",
+    credits: "크레딧",
+    userMenu: "사용자 메뉴",
   },
   auth: {
     welcomeBack: "다시 오신 것을 환영합니다",

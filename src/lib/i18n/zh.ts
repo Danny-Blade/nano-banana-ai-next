@@ -3,6 +3,8 @@ import type { Messages } from "@/lib/i18n/types";
 export const messagesZh: Messages = {
   common: {
     language: "语言",
+    credits: "积分",
+    userMenu: "用户菜单",
   },
   auth: {
     welcomeBack: "欢迎回来",
