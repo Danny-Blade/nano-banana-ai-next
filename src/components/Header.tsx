@@ -130,7 +130,7 @@ const Header = () => {
                                         className={styles.userDropdownLogout}
                                         onClick={() => {
                                             setIsUserMenuOpen(false);
-                                            void signOut();
+                                            void signOut({ redirect: false });
                                         }}
                                     >
                                         {logoutButton}
