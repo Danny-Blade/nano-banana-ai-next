@@ -15,6 +15,22 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     const [oauthError, setOauthError] = React.useState<string | null>(null);
     const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
 
+    const formatAuthError = React.useCallback((code: string | null | undefined) => {
+        switch (code) {
+            case "OAuthSignin":
+            case "OAuthCallback":
+                return "Google 授权失败，请检查网络/代理设置后重试。";
+            case "AccessDenied":
+                return "你已取消授权。";
+            case "Configuration":
+                return "登录配置错误，请联系管理员。";
+            case "Verification":
+                return "验证失败，请重试。";
+            default:
+                return "Google 登录失败，请重试。";
+        }
+    }, []);
+
     React.useEffect(() => {
         if (!isOpen) return;
 
@@ -70,11 +86,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                                     redirect: false,
                                     callbackUrl: window.location.href,
                                 });
-                                if (result?.ok && result.url) {
+                                // next-auth 在发生跳转（例如 provider 不存在）时会返回 undefined。
+                                // 此时不应在弹窗里提示错误，直接等待页面跳转即可。
+                                if (!result) return;
+                                // next-auth 在某些情况下会返回非 2xx，但依然给出可用的 url；
+                                // 只要 url 存在就直接跳转，避免误报“登录失败”。
+                                if (result?.url) {
                                     window.location.href = result.url;
                                     return;
                                 }
-                                setOauthError(result?.error || "Google 登录失败，请重试。");
+                                console.warn("[auth] google signIn returned:", result);
+                                setOauthError(formatAuthError(result?.error));
                             } catch (err) {
                                 console.warn("[auth] google signIn failed:", err);
                                 setOauthError("Google 登录失败，请检查网络后重试。");
