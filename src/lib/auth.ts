@@ -1,5 +1,5 @@
 import { NextAuthOptions } from "next-auth";
-import type { OAuthConfig, OAuthUserConfig } from "next-auth/providers";
+import type { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
 import { ensureUserFromOAuth, getUserById } from "@/lib/users";
 import { custom } from "openid-client";
 import { HttpsProxyAgent } from "next/dist/compiled/https-proxy-agent";

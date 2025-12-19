@@ -180,6 +180,16 @@
     white-space: nowrap;
 }
 
+.userDropdownEmail {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .userDropdownStats {
     margin-top: 10px;
     display: flex;

@@ -77,18 +77,23 @@
 }
 
 .socialBtn {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
     width: 100%;
+    box-sizing: border-box;
     padding: 0.75rem;
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
     font-weight: 500;
     color: #374151;
-    transition: transform 0.08s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
     background: white;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .socialBtn:disabled {
@@ -99,15 +104,14 @@
 .socialBtn:hover {
     background-color: #f9fafb;
     border-color: #d1d5db;
-    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
 }
 
 .socialBtn:active {
-    transform: translateY(1px);
+    background-color: #f3f4f6;
 }
 
 .socialBtn:disabled:active {
-    transform: none;
+    background-color: white;
 }
 
 .socialBtn:focus-visible {
@@ -118,6 +122,8 @@
 .icon {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
+    display: block;
 }
 
 .error {

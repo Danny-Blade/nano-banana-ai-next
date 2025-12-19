@@ -50,9 +50,12 @@ const Header = () => {
         if (!session) setIsUserMenuOpen(false);
     }, [session]);
 
-    const userDisplayName = session?.user?.name || session?.user?.email || '';
+    const userName = session?.user?.name?.trim() ? session.user.name : null;
+    const userEmail = session?.user?.email?.trim() ? session.user.email : null;
+    const userDisplayName = userName ?? userEmail ?? "";
     const userInitial = (userDisplayName.trim().charAt(0) || 'U').toLocaleUpperCase();
     const credits = session?.user?.credits ?? 0;
+    const userEmailToShow = userEmail && userEmail !== userDisplayName ? userEmail : null;
 
     return (
         <>
@@ -115,8 +118,11 @@ const Header = () => {
                                         </div>
                                         <div className={styles.userDropdownMeta}>
                                             <div className={styles.userDropdownName}>
-                                                {session.user?.name || session.user?.email || 'User'}
+                                                {userDisplayName || "User"}
                                             </div>
+                                            {userEmailToShow ? (
+                                                <div className={styles.userDropdownEmail}>{userEmailToShow}</div>
+                                            ) : null}
                                         </div>
                                     </div>
 
