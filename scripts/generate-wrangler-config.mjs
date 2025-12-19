@@ -50,6 +50,7 @@ function printEnvDiagnostics() {
 		"CF_D1_DATABASE_ID",
 		"D1_DATABASE_NAME",
 		"CF_D1_DATABASE_NAME",
+		"NEXTAUTH_URL",
 		"WORKER_NAME",
 		"CF_WORKER_NAME",
 		"CI",
@@ -149,6 +150,10 @@ if (!isUuidLike(d1DatabaseId)) {
 
 const workerName = getEnv("WORKER_NAME", "CF_WORKER_NAME") ?? "nano-banana-ai-next";
 const d1DatabaseName = getEnv("D1_DATABASE_NAME", "CF_D1_DATABASE_NAME") ?? "nano_banana";
+const nextAuthUrl = getEnv("NEXTAUTH_URL");
+const defaultNextAuthUrl =
+	getEnv("DEFAULT_NEXTAUTH_URL") ??
+	"https://nano-banana-ai-next.blusdanny1230.workers.dev";
 
 const config = {
 	$schema: "node_modules/wrangler/config-schema.json",
@@ -165,6 +170,22 @@ const config = {
 		},
 	],
 };
+
+// NextAuth 的 OAuth callback URL 由 NEXTAUTH_URL 决定（例如 /api/auth/callback/google）。
+// - 本地 `yarn dev` 通常是 http://localhost:3000（来自 .env.local）
+// - 部署到 Cloudflare Workers 后建议显式设置为线上域名，避免回调 URL 不匹配
+//
+// 注意：wrangler 的 vars 会写入部署产物；不要把 secret（例如 NEXTAUTH_SECRET）放在这里。
+if (nextAuthUrl && !(nextAuthUrl.includes("localhost") || nextAuthUrl.includes("127.0.0.1"))) {
+	config.vars = { ...(config.vars ?? {}), NEXTAUTH_URL: nextAuthUrl };
+} else if (isCI && !nextAuthUrl) {
+	// 先上兜底：如果 CI/Cloudflare 构建环境未配置 NEXTAUTH_URL，则默认写入 workers.dev。
+	// 如需自定义域名，建议在 Cloudflare 环境变量中设置 NEXTAUTH_URL（或在构建环境设置 DEFAULT_NEXTAUTH_URL）。
+	config.vars = { ...(config.vars ?? {}), NEXTAUTH_URL: defaultNextAuthUrl };
+	process.stdout.write(
+		`[generate-wrangler-config] 未检测到 NEXTAUTH_URL；已写入默认值：${defaultNextAuthUrl}\n`,
+	);
+}
 
 const targetPath = path.join(process.cwd(), "wrangler.jsonc");
 fs.writeFileSync(targetPath, JSON.stringify(config, null, 2) + "\n", "utf8");

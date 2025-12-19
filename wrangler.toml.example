@@ -13,4 +13,11 @@ node_compat = true
 [[d1_databases]]
 binding = "DB"
 database_name = "nano_banana"
-database_id = "REPLACE_ME"
+database_id = "5212d261-a569-41f3-9b44-c6d6620a3deb"
+
+# NextAuth / Google OAuth 回调地址基于 NEXTAUTH_URL（例如 /api/auth/callback/google）
+[vars]
+NEXTAUTH_URL = "http://localhost:3000"
+
+[env.production.vars]
+NEXTAUTH_URL = "https://nano-banana-ai-next.blusdanny1230.workers.dev"
