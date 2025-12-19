@@ -47,6 +47,16 @@ function redactProxyUrl(proxyUrl: string): string {
 	}
 }
 
+function isLocalhostProxy(proxyUrl: string): boolean {
+	try {
+		const url = new URL(proxyUrl);
+		const host = url.hostname.toLowerCase();
+		return host === "localhost" || host === "127.0.0.1" || host === "0.0.0.0" || host === "::1";
+	} catch {
+		return false;
+	}
+}
+
 // 某些网络环境（例如仅浏览器走代理/VPN，而 Node 进程未走）会导致 NextAuth 在 callback
 // 阶段请求 Google token/userinfo 超时。这里允许通过代理环境变量显式为 openid-client 配置 agent。
 const httpOptionsDefaults: Parameters<typeof custom.setHttpOptionsDefaults>[0] = {
@@ -54,6 +64,14 @@ const httpOptionsDefaults: Parameters<typeof custom.setHttpOptionsDefaults>[0] =
 };
 
 if (OAUTH_HTTP_PROXY) {
+	// Cloudflare Workers 无法访问你本机的 127.0.0.1 代理；若线上误配，直接忽略以避免所有 OAuth 请求失败。
+	if (process.env.NODE_ENV === "production" && isLocalhostProxy(OAUTH_HTTP_PROXY)) {
+		console.warn(
+			`[auth] Ignoring localhost OAuth proxy in production: ${redactProxyUrl(
+				OAUTH_HTTP_PROXY,
+			)}. Remove OAUTH_HTTP_PROXY/HTTPS_PROXY from Cloudflare env.`,
+		);
+	} else
 	if (OAUTH_HTTP_PROXY.toLowerCase().startsWith("socks")) {
 		// 仅提示：socks 代理需要 socks-proxy-agent；这里先不引入依赖，避免构建与部署复杂度。
 		console.warn(
@@ -187,6 +205,20 @@ export const authOptions: NextAuthOptions = {
     secret:
         process.env.NEXTAUTH_SECRET ||
         (process.env.NODE_ENV === "development" ? "dev-only-secret" : undefined),
+	debug: process.env.NEXTAUTH_DEBUG === "true",
+	logger: {
+		error(code, metadata) {
+			console.error("[next-auth][error]", code, metadata);
+		},
+		warn(code) {
+			console.warn("[next-auth][warn]", code);
+		},
+		debug(code, metadata) {
+			if (process.env.NEXTAUTH_DEBUG === "true") {
+				console.info("[next-auth][debug]", code, metadata);
+			}
+		},
+	},
     // @ts-expect-error trustHost is a valid option but missing in types
     trustHost: true,
     providers: [
