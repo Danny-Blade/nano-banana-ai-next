@@ -5,6 +5,13 @@ import { custom } from "openid-client";
 import { HttpsProxyAgent } from "next/dist/compiled/https-proxy-agent";
 import { getD1 } from "@/lib/d1";
 
+let printedAuthEnvWarning = false;
+function warnMissingAuthEnvOnce(message: string) {
+	if (printedAuthEnvWarning) return;
+	printedAuthEnvWarning = true;
+	console.error(message);
+}
+
 type GoogleOAuthJson = {
 	web?: { client_id?: unknown; client_secret?: unknown };
 	installed?: { client_id?: unknown; client_secret?: unknown };
@@ -156,6 +163,25 @@ function getGoogleOAuthCredentials(): { clientId: string; clientSecret: string }
 	return { clientId: directClientId ?? "", clientSecret: directClientSecret ?? "" };
 }
 
+if (process.env.NODE_ENV === "production") {
+	const missing: string[] = [];
+	if (!process.env.NEXTAUTH_SECRET?.trim()) missing.push("NEXTAUTH_SECRET");
+	const hasGooglePair =
+		!!process.env.GOOGLE_CLIENT_ID?.trim() && !!process.env.GOOGLE_CLIENT_SECRET?.trim();
+	const hasGoogleJson = !!process.env.GOOGLE_OAUTH_JSON?.trim();
+	if (!hasGooglePair && !hasGoogleJson) {
+		missing.push("GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET (or GOOGLE_OAUTH_JSON)");
+	}
+
+	if (missing.length) {
+		warnMissingAuthEnvOnce(
+			`[auth] 生产环境缺少关键环境变量：${missing.join(
+				", ",
+			)}。Google 登录会失败并跳转到 /api/auth/error。请在 Cloudflare Workers 的 Variables/Secrets 中配置。`,
+		);
+	}
+}
+
 export const authOptions: NextAuthOptions = {
     // 生产环境必须配置。注意不要把 secret 打进前端包。
     secret:
@@ -183,11 +209,11 @@ export const authOptions: NextAuthOptions = {
 			if (account?.provider && account.providerAccountId) {
 				const db = getD1();
 				if (!db) {
-					// 本地 Next.js dev 直接跑时通常没有 Cloudflare D1 绑定；这不影响 OAuth 登录，
-					// 但积分/订阅等依赖 DB 的功能无法使用。
+					// 允许在未绑定 DB 的情况下继续登录（例如早期线上联调）。
+					// 但用户/积分等功能会不可用；生产环境会打日志提醒。
 					if (process.env.NODE_ENV === "production") {
-						throw new Error(
-							"未找到 D1 数据库绑定（DB）。请在 Cloudflare 环境绑定 D1 为 `DB`，否则无法持久化用户/积分数据。",
+						warnMissingAuthEnvOnce(
+							"[auth] 未找到 D1 数据库绑定（DB）。将跳过用户落库与积分读取；请在 Cloudflare 环境绑定 D1 为 `DB`。",
 						);
 					}
 
@@ -245,8 +271,8 @@ export const authOptions: NextAuthOptions = {
 				const db = getD1();
 				if (!db) {
 					if (process.env.NODE_ENV === "production") {
-						throw new Error(
-							"未找到 D1 数据库绑定（DB）。请在 Cloudflare 环境绑定 D1 为 `DB`，否则无法读取用户/积分数据。",
+						warnMissingAuthEnvOnce(
+							"[auth] 未找到 D1 数据库绑定（DB）。将返回 credits=0；请在 Cloudflare 环境绑定 D1 为 `DB`。",
 						);
 					}
 					session.user.credits = 0;
