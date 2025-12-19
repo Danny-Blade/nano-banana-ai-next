@@ -40,6 +40,19 @@ export const getD1 = (): D1Database | null => {
   const globalDb = (globalThis as unknown as { DB?: D1Database }).DB;
   if (globalDb) return globalDb;
 
+  // OpenNext/Cloudflare: runtime bindings live on the Cloudflare context `env`.
+  // We try to read it opportunistically; in plain `next dev` this may throw,
+  // so we swallow errors and behave like "no binding".
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { getCloudflareContext } = require("@opennextjs/cloudflare") as typeof import("@opennextjs/cloudflare");
+    const ctx = getCloudflareContext?.();
+    const db = (ctx?.env as unknown as { DB?: D1Database } | undefined)?.DB;
+    if (db) return db;
+  } catch {
+    // ignore
+  }
+
   return null;
 };
 
