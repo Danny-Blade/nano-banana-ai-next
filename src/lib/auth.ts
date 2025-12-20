@@ -215,6 +215,15 @@ export const authOptions: NextAuthOptions = {
 	logger: {
 		error(code, metadata) {
 			console.error("[next-auth][error]", code, metadata);
+			const err =
+				metadata instanceof Error
+					? metadata
+					: metadata && typeof metadata === "object" && "error" in metadata
+						? (metadata as { error?: unknown }).error
+						: undefined;
+			if (err instanceof Error && err.stack) {
+				console.error("[next-auth][error][stack]", err.stack);
+			}
 		},
 		warn(code) {
 			console.warn("[next-auth][warn]", code);
@@ -225,7 +234,7 @@ export const authOptions: NextAuthOptions = {
 			}
 		},
 	},
-    // @ts-expect-error trustHost is a valid option but missing in types
+	// @ts-expect-error trustHost is supported by NextAuth runtime but missing in its types
     trustHost: true,
     providers: [
         GoogleNoDiscovery({

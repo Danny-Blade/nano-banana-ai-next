@@ -31,6 +31,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
         switch (code) {
             case "OAuthSignin":
             case "OAuthCallback":
+            case "Callback":
                 return "Google 授权失败，请检查网络/代理设置后重试。";
             case "AccessDenied":
                 return "你已取消授权。";
