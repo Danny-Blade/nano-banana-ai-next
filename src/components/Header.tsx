@@ -52,6 +52,7 @@ const Header = () => {
 
     const userName = session?.user?.name?.trim() ? session.user.name : null;
     const userEmail = session?.user?.email?.trim() ? session.user.email : null;
+    const userImage = session?.user?.image?.trim() ? session.user.image : null;
     const userDisplayName = userName ?? userEmail ?? "";
     const userInitial = (userDisplayName.trim().charAt(0) || 'U').toLocaleUpperCase();
     const credits = session?.user?.credits ?? 0;
@@ -107,14 +108,32 @@ const Header = () => {
                                     setIsMenuOpen(false);
                                 }}
                             >
-                                <span className={styles.userAvatarInitial}>{userInitial}</span>
+                                {userImage ? (
+                                    <img
+                                        className={styles.userAvatarImage}
+                                        src={userImage}
+                                        alt={userDisplayName || "User"}
+                                        referrerPolicy="no-referrer"
+                                    />
+                                ) : (
+                                    <span className={styles.userAvatarInitial}>{userInitial}</span>
+                                )}
                             </button>
 
                             {isUserMenuOpen ? (
                                 <div className={styles.userDropdown} role="menu">
                                     <div className={styles.userDropdownHeader}>
                                         <div className={styles.userDropdownAvatar} aria-hidden="true">
-                                            {userInitial}
+                                            {userImage ? (
+                                                <img
+                                                    className={styles.userDropdownAvatarImage}
+                                                    src={userImage}
+                                                    alt=""
+                                                    referrerPolicy="no-referrer"
+                                                />
+                                            ) : (
+                                                userInitial
+                                            )}
                                         </div>
                                         <div className={styles.userDropdownMeta}>
                                             <div className={styles.userDropdownName}>

@@ -5,6 +5,8 @@ import styles from "./Dashboard.module.css";
 import { useI18n } from "@/components/I18nProvider";
 import { getMessage } from "@/lib/i18n";
 import { useSiteContent } from "@/components/useSiteContent";
+import { useSession } from "next-auth/react";
+import LoginModal from "@/components/LoginModal";
 
 type Tab = "generate" | "batch" | "compare" | "history";
 type ResultTab = "result" | "original" | "compare";
@@ -140,6 +142,7 @@ const formatTime = (timestamp: Date, locale: string) => {
 const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const { locale, t } = useI18n();
   const siteContent = useSiteContent();
+  const { data: session, status: sessionStatus } = useSession();
 
   const DEFAULT_MODEL: ModelValue = "nano-banana-pro";
 
@@ -222,6 +225,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const [showModelPicker, setShowModelPicker] = React.useState(false);
   const [showGuide, setShowGuide] = React.useState(false);
   const [showActivity, setShowActivity] = React.useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
 
   const referenceInputRef = React.useRef<HTMLInputElement | null>(null);
   const batchReferenceInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -248,6 +252,37 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const [isDragging, setIsDragging] = React.useState(false);
 
   const imagePool = React.useMemo(() => siteContent.explore.images || [], [siteContent]);
+
+  const getSelfCallbackUrl = React.useCallback(() => {
+    if (typeof window === "undefined") return "/";
+    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  }, []);
+
+  const ensureAuthenticatedWithCredits = React.useCallback(
+    (requiredCredits: number, onError: (message: string) => void): boolean => {
+      if (sessionStatus === "loading") {
+        onError(t("dashboard.generate.loginChecking"));
+        return false;
+      }
+      if (!session?.user?.id) {
+        onError(t("dashboard.generate.loginRequired"));
+        setIsLoginModalOpen(true);
+        return false;
+      }
+      const credits = typeof session.user.credits === "number" ? session.user.credits : 0;
+      if (credits < requiredCredits) {
+        onError(
+          t("dashboard.generate.insufficientCredits", {
+            credits,
+            required: requiredCredits,
+          }),
+        );
+        return false;
+      }
+      return true;
+    },
+    [session, sessionStatus, t],
+  );
 
   const pickImages = React.useCallback(
     (count: number) => {
@@ -415,6 +450,8 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
     const imageSize = mapResolutionToImageSize(resolution);
     const count = Math.max(1, Math.min(4, parseInt(generateCount, 10) || 1));
+    const requiredCredits = count * activeModel.creditsPerImage;
+    if (!ensureAuthenticatedWithCredits(requiredCredits, (m) => setError(m))) return;
 
     const run = async () => {
       setIsGenerating(true);
@@ -438,6 +475,15 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             }),
           });
 
+          if (response.status === 401) {
+            setError(t("dashboard.generate.loginRequired"));
+            setIsLoginModalOpen(true);
+            break;
+          }
+          if (response.status === 402) {
+            setError(t("dashboard.generate.insufficientCreditsShort"));
+            break;
+          }
           if (!response.ok) {
             const info: unknown = await response.json().catch(() => ({}));
             let err: string | undefined;
@@ -520,16 +566,19 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
   const handleBatchGenerate = () => {
     if (isBatching) return;
+    const prompts =
+      batchMode === "card"
+        ? [cardPrompt || t("dashboard.templatePrompts.batch")]
+        : batchPrompts
+            .split(/\n\s*\n/)
+            .map((p) => p.trim())
+            .filter(Boolean);
+    const count = Math.max(1, Math.min(6, prompts.length * parseInt(batchCount, 10)));
+    const requiredCredits = count * activeModel.creditsPerImage;
+    if (!ensureAuthenticatedWithCredits(requiredCredits, (m) => setError(m))) return;
+
     setIsBatching(true);
     runFakeProgress(setBatchProgress, 1600, () => {
-      const prompts =
-        batchMode === "card"
-          ? [cardPrompt || t("dashboard.templatePrompts.batch")]
-          : batchPrompts
-              .split(/\n\s*\n/)
-              .map((p) => p.trim())
-              .filter(Boolean);
-      const count = Math.max(1, Math.min(6, prompts.length * parseInt(batchCount, 10)));
       const picked = pickImages(count);
       const modelLabel =
         localizedModelOptions.find((m) => m.value === selectedModel)?.label || selectedModel;
@@ -564,6 +613,15 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     const targetPrompt = comparePrompt || t("dashboard.templatePrompts.compare");
     const leftModel = compareLeftModel as ModelValue;
     const rightModel = compareRightModel as ModelValue;
+    const leftCost =
+      modelOptions.find((m) => m.value === leftModel)?.creditsPerImage ??
+      activeModel.creditsPerImage;
+    const rightCost =
+      modelOptions.find((m) => m.value === rightModel)?.creditsPerImage ??
+      activeModel.creditsPerImage;
+    if (!ensureAuthenticatedWithCredits(leftCost + rightCost, (m) => setCompareError(m))) {
+      return;
+    }
 
     const mapResolutionToImageSize = (value: string) => {
       if (value === "4K") return "4K";
@@ -586,6 +644,13 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
         }),
       });
 
+      if (response.status === 401) {
+        setIsLoginModalOpen(true);
+        throw new Error(t("dashboard.generate.loginRequired"));
+      }
+      if (response.status === 402) {
+        throw new Error(t("dashboard.generate.insufficientCreditsShort"));
+      }
       if (!response.ok) {
         const info: unknown = await response.json().catch(() => ({}));
         let err: string | undefined;
@@ -675,6 +740,9 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
   const currentModel = localizedModelOptions.find((m) => m.value === selectedModel);
   const activeModel = currentModel || localizedModelOptions[0];
+  const estimatedGenerateCost =
+    Math.max(1, Math.min(4, parseInt(generateCount, 10) || 1)) *
+    activeModel.creditsPerImage;
 
   const handleModelSelect = (modelValue: ModelValue) => {
     setSelectedModel(modelValue);
@@ -1154,18 +1222,17 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
                     >
                       {t("dashboard.generate.clear")}
                     </button>
-                    <div className={styles.generateWrap}>
-                      <div className={styles.generateMeta}>
-                        {t("dashboard.model.pointsEstimated", {
-                          points:
-                            Math.max(1, parseInt(generateCount, 10) || 1) *
-                            activeModel.creditsPerImage,
-                        })}
-                      </div>
-                      <button className={styles.primaryBtn} onClick={handleGenerate}>
-                        {t("dashboard.generate.start")}
-                      </button>
-                    </div>
+                    <button
+                      className={styles.primaryBtn}
+                      onClick={handleGenerate}
+                      disabled={isGenerating}
+                    >
+                      {isGenerating
+                        ? t("dashboard.generate.generating")
+                        : t("dashboard.generate.startWithCost", {
+                            points: estimatedGenerateCost,
+                          })}
+                    </button>
                   </div>
                 </div>
 
@@ -1831,6 +1898,12 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
       {renderModelModal()}
       {renderGuideModal()}
       {renderActivityModal()}
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        callbackUrl={getSelfCallbackUrl()}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
 
       {previewUrl && (
         <div

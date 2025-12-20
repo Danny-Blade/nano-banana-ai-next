@@ -517,7 +517,7 @@
 .promptActions {
     display: flex;
     gap: 0.75rem;
-    align-items: stretch;
+    align-items: center;
     margin-top: 0.75rem;
     flex-wrap: wrap;
 }
@@ -526,24 +526,9 @@
     min-width: 96px;
 }
 
-.generateWrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
-.generateMeta {
-    color: #475569;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.generateWrap .primaryBtn {
-    width: 100%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.promptActions .ghostBtn,
+.promptActions .primaryBtn {
+    height: 44px;
 }
 
 .ratioRow {
