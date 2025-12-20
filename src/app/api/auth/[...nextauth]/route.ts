@@ -14,6 +14,25 @@ async function safeHandler(...args: unknown[]) {
 			console.error(msg);
 			return Response.json({ ok: false, error: msg }, { status: 500 });
 		}
+
+		// Google OAuth 登录依赖 client id/secret；若线上未配置，会导致 /api/auth/session 等也报 500。
+		if (
+			process.env.NODE_ENV === "production" &&
+			!hasRuntimeEnv("GOOGLE_OAUTH_JSON") &&
+			(!hasRuntimeEnv("GOOGLE_CLIENT_ID") || !hasRuntimeEnv("GOOGLE_CLIENT_SECRET"))
+		) {
+			const msg =
+				"[auth] Missing Google OAuth env vars in production. Set GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET (or GOOGLE_OAUTH_JSON) in Cloudflare Workers Secrets.";
+			console.error(msg);
+			return Response.json({ ok: false, error: msg }, { status: 500 });
+		}
+
+		// NEXTAUTH_URL 强烈建议线上配置（避免 Host 推导错误）；这里不给 500，但会提示。
+		if (process.env.NODE_ENV === "production" && !hasRuntimeEnv("NEXTAUTH_URL")) {
+			console.warn(
+				"[auth] NEXTAUTH_URL is not set in production. NextAuth will infer host from request headers; set NEXTAUTH_URL in Cloudflare Variables to avoid callback mismatch.",
+			);
+		}
 		return await (handler as (...a: unknown[]) => Promise<Response>)(...args);
 	} catch (err) {
 		console.error("[auth] NextAuth route crashed:", err);

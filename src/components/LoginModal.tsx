@@ -8,12 +8,24 @@ import { useI18n } from "@/components/I18nProvider";
 interface LoginModalProps {
     isOpen: boolean;
     onClose: () => void;
+    callbackUrl?: string;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl }) => {
     const { t } = useI18n();
     const [oauthError, setOauthError] = React.useState<string | null>(null);
     const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
+
+    const getSafeCallbackUrl = React.useCallback(() => {
+        try {
+            const raw = callbackUrl?.trim() || "/";
+            const url = new URL(raw, window.location.origin);
+            if (url.origin !== window.location.origin) return "/";
+            return `${url.pathname}${url.search}${url.hash}`;
+        } catch {
+            return "/";
+        }
+    }, [callbackUrl]);
 
     const formatAuthError = React.useCallback((code: string | null | undefined) => {
         switch (code) {
@@ -84,7 +96,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                             try {
                                 const result = await signIn("google", {
                                     redirect: false,
-                                    callbackUrl: window.location.href,
+                                    // 必须是干净的站内地址；不要用 window.location.href，
+                                    // 否则在 /login?callbackUrl=... 场景会出现递归 callbackUrl，导致 cookie 过长/回调失败。
+                                    callbackUrl: getSafeCallbackUrl(),
                                 });
                                 // next-auth 在发生跳转（例如 provider 不存在）时会返回 undefined。
                                 // 此时不应在弹窗里提示错误，直接等待页面跳转即可。

@@ -20,6 +20,7 @@ export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
 	return (
 		<LoginModal
 			isOpen
+			callbackUrl={callbackUrl}
 			onClose={() => {
 				router.replace(getSafeCallbackUrl());
 			}}

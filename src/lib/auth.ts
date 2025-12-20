@@ -239,6 +239,16 @@ export const authOptions: NextAuthOptions = {
     // 用户持久化落在我们自己的 D1 表里（见 db/migrations）。
     session: { strategy: "jwt" },
 	callbacks: {
+		async redirect({ url, baseUrl }) {
+			try {
+				const target = new URL(url, baseUrl);
+				// 仅允许站内跳转，避免 callbackUrl 被污染导致循环或 open redirect。
+				if (target.origin !== baseUrl) return baseUrl;
+				return target.toString();
+			} catch {
+				return baseUrl;
+			}
+		},
         /**
          * 将 OAuth 用户落库到 D1，并把内部 `userId` 写入 JWT。
          * 这样积分/订阅等业务就有稳定的主键可用。
