@@ -67,9 +67,21 @@ if (!fs.existsSync(fromPath)) {
 }
 
 const envMap = parseDotEnv(fs.readFileSync(fromPath, "utf8"));
-const keys = ["NEXTAUTH_SECRET", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"];
+const requiredKeys = ["NEXTAUTH_SECRET", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"];
+const apiKeyValue =
+  (typeof envMap.APIYI_API_KEY === "string" && envMap.APIYI_API_KEY.trim()
+    ? envMap.APIYI_API_KEY.trim()
+    : undefined) ??
+  (typeof envMap.NANO_BANANA_API_KEY === "string" && envMap.NANO_BANANA_API_KEY.trim()
+    ? envMap.NANO_BANANA_API_KEY.trim()
+    : undefined);
 
-const missing = keys.filter((k) => !(typeof envMap[k] === "string" && envMap[k].trim().length));
+const keys = [...requiredKeys, "APIYI_API_KEY"];
+
+const missing = requiredKeys.filter(
+  (k) => !(typeof envMap[k] === "string" && envMap[k].trim().length)
+);
+if (!apiKeyValue) missing.push("APIYI_API_KEY (or NANO_BANANA_API_KEY)");
 if (missing.length) {
   throw new Error(`Missing keys in ${from}: ${missing.join(", ")}`);
 }
@@ -87,8 +99,8 @@ process.stdout.write(
 
 for (const key of keys) {
   process.stdout.write(`[sync-secrets] Putting secret: ${key}\n`);
-  putSecret({ wranglerBin, name: key, value: String(envMap[key]), envName });
+  const value = key === "APIYI_API_KEY" ? apiKeyValue : String(envMap[key]);
+  putSecret({ wranglerBin, name: key, value, envName });
 }
 
 process.stdout.write("[sync-secrets] Done.\n");
-

@@ -5,6 +5,7 @@
  * 自动设置为 Cloudflare Workers 的 secrets。
  *
  * 支持的 secrets：
+ * - APIYI_API_KEY: 上游生图 API Key（可用 NANO_BANANA_API_KEY 作为别名）
  * - GOOGLE_CLIENT_SECRET: Google OAuth 客户端密钥
  * - NEXTAUTH_SECRET: NextAuth 会话加密密钥
  *
@@ -71,14 +72,20 @@ if (!isCI) {
 // 需要同步的 secrets 列表
 const secretsToSync = [
 	{
+		name: "APIYI_API_KEY",
+		envKeyCandidates: ["APIYI_API_KEY", "NANO_BANANA_API_KEY"],
+		required: true,
+		description: "上游生图 API Key",
+	},
+	{
 		name: "GOOGLE_CLIENT_SECRET",
-		envKey: "GOOGLE_CLIENT_SECRET",
+		envKeyCandidates: ["GOOGLE_CLIENT_SECRET"],
 		required: true,
 		description: "Google OAuth 客户端密钥",
 	},
 	{
 		name: "NEXTAUTH_SECRET",
-		envKey: "NEXTAUTH_SECRET",
+		envKeyCandidates: ["NEXTAUTH_SECRET"],
 		required: true,
 		description: "NextAuth 会话加密密钥",
 	},
@@ -91,7 +98,7 @@ let failureCount = 0;
 const missingSecrets = [];
 
 for (const secret of secretsToSync) {
-	const value = getEnv(secret.envKey);
+	const value = secret.envKeyCandidates.map((k) => getEnv(k)).find(Boolean);
 	if (value) {
 		if (setSecret(secret.name, value)) {
 			successCount++;
@@ -99,7 +106,7 @@ for (const secret of secretsToSync) {
 			failureCount++;
 		}
 	} else if (secret.required) {
-		missingSecrets.push(secret.envKey);
+		missingSecrets.push(secret.envKeyCandidates.join(" / "));
 		failureCount++;
 	}
 }

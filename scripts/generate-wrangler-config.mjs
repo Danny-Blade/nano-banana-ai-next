@@ -56,6 +56,7 @@ function printEnvDiagnostics() {
 		"GOOGLE_CLIENT_ID",
 		"GOOGLE_CLIENT_SECRET",
 		"NEXTAUTH_SECRET",
+		"APIYI_API_BASE_URL",
 		"CI",
 		"CF_PAGES",
 		"CF_PAGES_BRANCH",
@@ -161,6 +162,7 @@ const defaultNextAuthUrl =
 // Google OAuth 凭据
 const googleClientId = getEnv("GOOGLE_CLIENT_ID");
 const googleClientSecret = getEnv("GOOGLE_CLIENT_SECRET");
+const apiyiApiBaseUrl = getEnv("APIYI_API_BASE_URL")?.replace(/\/+$/, "");
 
 // 在 CI 环境验证 OAuth 凭据（避免部署后才发现配置错误）
 if (isCI) {
@@ -214,15 +216,25 @@ if (nextAuthUrl && !(nextAuthUrl.includes("localhost") || nextAuthUrl.includes("
 	);
 }
 
-// Google OAuth Client ID（非敏感信息，可写入 wrangler vars）
-if (googleClientId) {
-	config.vars = { ...(config.vars ?? {}), GOOGLE_CLIENT_ID: googleClientId };
-	if (process.env.NODE_ENV !== "production") {
-		process.stdout.write(
-			`[generate-wrangler-config] 已配置 GOOGLE_CLIENT_ID: ${googleClientId.slice(0, 20)}...\n`,
-		);
+	// Google OAuth Client ID（非敏感信息，可写入 wrangler vars）
+	if (googleClientId) {
+		config.vars = { ...(config.vars ?? {}), GOOGLE_CLIENT_ID: googleClientId };
+		if (process.env.NODE_ENV !== "production") {
+			process.stdout.write(
+				`[generate-wrangler-config] 已配置 GOOGLE_CLIENT_ID: ${googleClientId.slice(0, 20)}...\n`,
+			);
+		}
 	}
-}
+
+	// APIYI API Base URL（非敏感信息，可写入 wrangler vars）
+	if (apiyiApiBaseUrl) {
+		config.vars = { ...(config.vars ?? {}), APIYI_API_BASE_URL: apiyiApiBaseUrl };
+		if (process.env.NODE_ENV !== "production") {
+			process.stdout.write(
+				`[generate-wrangler-config] 已配置 APIYI_API_BASE_URL: ${apiyiApiBaseUrl}\n`,
+			);
+		}
+	}
 
 const targetPath = path.join(process.cwd(), "wrangler.jsonc");
 fs.writeFileSync(targetPath, JSON.stringify(config, null, 2) + "\n", "utf8");

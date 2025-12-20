@@ -269,7 +269,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
         setIsLoginModalOpen(true);
         return false;
       }
-      const credits = typeof session.user.credits === "number" ? session.user.credits : 0;
+      const credits = Number(session?.user?.credits ?? 0);
       if (credits < requiredCredits) {
         onError(
           t("dashboard.generate.insufficientCredits", {

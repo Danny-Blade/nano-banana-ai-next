@@ -151,6 +151,10 @@ TODO（接真实渠道前必须做）：
 - `APIYI_API_KEY`（或 `NANO_BANANA_API_KEY`）
 - `APIYI_API_BASE_URL`（可选）
 
+本地/预览环境快捷同步（需要已登录 wrangler 且有权限）：
+- `npm run secrets:sync`（从 `.env.local` 同步到 Cloudflare Workers Secrets）
+- 会同步：`NEXTAUTH_SECRET`、`GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`、`APIYI_API_KEY`（或 `NANO_BANANA_API_KEY`）
+
 支付（后续接入时补齐）：
 - `CREEM_API_KEY` / `CREEM_WEBHOOK_SECRET`（命名可按实际文档调整）
 - `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET`
@@ -185,4 +189,3 @@ wrangler d1 execute <YOUR_DB_NAME> --file=./db/migrations/0001_init.sql
    - 队列消费者调用上游并写回 job 状态，必要时退款
 4) 增加“积分/订阅”展示与历史：
    - `/api/me` + `/api/jobs` + `/api/billing/status` 等
-
