@@ -53,6 +53,9 @@ function printEnvDiagnostics() {
 		"NEXTAUTH_URL",
 		"WORKER_NAME",
 		"CF_WORKER_NAME",
+		"GOOGLE_CLIENT_ID",
+		"GOOGLE_CLIENT_SECRET",
+		"NEXTAUTH_SECRET",
 		"CI",
 		"CF_PAGES",
 		"CF_PAGES_BRANCH",
@@ -155,6 +158,30 @@ const defaultNextAuthUrl =
 	getEnv("DEFAULT_NEXTAUTH_URL") ??
 	"https://nano-banana-ai-next.blusdanny1230.workers.dev";
 
+// Google OAuth 凭据
+const googleClientId = getEnv("GOOGLE_CLIENT_ID");
+const googleClientSecret = getEnv("GOOGLE_CLIENT_SECRET");
+
+// 在 CI 环境验证 OAuth 凭据（避免部署后才发现配置错误）
+if (isCI) {
+	const missingOAuthVars = [];
+	if (!googleClientId) missingOAuthVars.push("GOOGLE_CLIENT_ID");
+	if (!googleClientSecret) missingOAuthVars.push("GOOGLE_CLIENT_SECRET");
+
+	if (missingOAuthVars.length > 0) {
+		printEnvDiagnostics();
+		throw new Error(
+			[
+				`缺少 Google OAuth 环境变量：${missingOAuthVars.join(", ")}。`,
+				"请检查：",
+				"1) 是否把变量加在了正确的环境（Production / Preview）",
+				"2) 是否加在\"构建环境变量/Build variables\"（GOOGLE_CLIENT_ID）和 Secrets（GOOGLE_CLIENT_SECRET）",
+				"3) 是否保存后重新触发了一次部署",
+			].join("\n"),
+		);
+	}
+}
+
 const config = {
 	$schema: "node_modules/wrangler/config-schema.json",
 	name: workerName,
@@ -175,7 +202,7 @@ const config = {
 // - 本地 `yarn dev` 通常是 http://localhost:3000（来自 .env.local）
 // - 部署到 Cloudflare Workers 后建议显式设置为线上域名，避免回调 URL 不匹配
 //
-// 注意：wrangler 的 vars 会写入部署产物；不要把 secret（例如 NEXTAUTH_SECRET）放在这里。
+// 注意：wrangler 的 vars 会写入部署产物；不要把 secret（例如 NEXTAUTH_SECRET, GOOGLE_CLIENT_SECRET）放在这里。
 if (nextAuthUrl && !(nextAuthUrl.includes("localhost") || nextAuthUrl.includes("127.0.0.1"))) {
 	config.vars = { ...(config.vars ?? {}), NEXTAUTH_URL: nextAuthUrl };
 } else if (isCI && !nextAuthUrl) {
@@ -187,8 +214,20 @@ if (nextAuthUrl && !(nextAuthUrl.includes("localhost") || nextAuthUrl.includes("
 	);
 }
 
+// Google OAuth Client ID（非敏感信息，可写入 wrangler vars）
+if (googleClientId) {
+	config.vars = { ...(config.vars ?? {}), GOOGLE_CLIENT_ID: googleClientId };
+	if (process.env.NODE_ENV !== "production") {
+		process.stdout.write(
+			`[generate-wrangler-config] 已配置 GOOGLE_CLIENT_ID: ${googleClientId.slice(0, 20)}...\n`,
+		);
+	}
+}
+
 const targetPath = path.join(process.cwd(), "wrangler.jsonc");
 fs.writeFileSync(targetPath, JSON.stringify(config, null, 2) + "\n", "utf8");
+
+const oauthStatus = googleClientId ? "已配置" : "未配置";
 process.stdout.write(
-	`[generate-wrangler-config] 已写入 wrangler.jsonc（DB=${d1DatabaseName}, id=${d1DatabaseId.slice(0, 8)}...${d1DatabaseId.slice(-4)}）。\n`,
+	`[generate-wrangler-config] 已写入 wrangler.jsonc（DB=${d1DatabaseName}, id=${d1DatabaseId.slice(0, 8)}...${d1DatabaseId.slice(-4)}, OAuth=${oauthStatus}）。\n`,
 );
