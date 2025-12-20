@@ -1,50 +1,24 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-
-	// Worker 名称：建议与 Cloudflare Workers 项目名保持一致
-	"name": "nano-banana-ai-next",
-
-	// OpenNext for Cloudflare 的产物入口（由 `opennextjs-cloudflare build` 生成）
-	"main": ".open-next/worker.js",
-
-	// 兼容性日期（可按需更新）
-	"compatibility_date": "2025-12-01",
-
-	// Next.js / NextAuth 等通常需要 Node.js 兼容层
-	"compatibility_flags": ["nodejs_compat"],
-
-	// 静态资源目录（由 `opennextjs-cloudflare build` 生成）
-	"assets": {
-		"directory": ".open-next/assets",
-		"binding": "ASSETS"
-	},
-
-	// D1 数据库绑定（将 `database_id` 替换为你 Cloudflare 控制台里的真实值）
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "nano_banana",
-
-			// 注意：这里必须是「D1 数据库 ID」，不是数据库名称；否则 wrangler deploy 会报 10021
-			// 推荐做法：不要把 ID 提交到仓库，在 Cloudflare 构建环境里设置 `D1_DATABASE_ID`，
-			// 构建时会由 `scripts/generate-wrangler-config.mjs` 自动写入。
-			"database_id": "5212d261-a569-41f3-9b44-c6d6620a3deb"
-		}
-	],
-	"observability": {
-		"enabled": false,
-		"head_sampling_rate": 1,
-		"logs": {
-			"enabled": true,
-			"head_sampling_rate": 1,
-			"persist": true,
-			"invocation_logs": true
-		},
-		"traces": {
-			"enabled": true,
-			"persist": true,
-			"head_sampling_rate": 1
-		}
-	}
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nano-banana-ai-next",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-12-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nano_banana",
+      "database_id": "5212d261-a569-41f3-9b44-c6d6620a3deb"
+    }
+  ],
+  "vars": {
+    "NEXTAUTH_URL": "https://nano-banana-ai-next.blusdanny1230.workers.dev",
+    "GOOGLE_CLIENT_ID": "5783249126-pofhal0pprh4dfguso8u5luhov883jdm.apps.googleusercontent.com"
+  }
 }
-

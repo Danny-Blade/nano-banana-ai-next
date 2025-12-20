@@ -7,7 +7,9 @@
       "Bash(yarn dev:*)",
       "Bash(pkill:*)",
       "Bash(ls:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(D1_DATABASE_ID=5212d261-a569-41f3-9b44-c6d6620a3deb NEXTAUTH_URL=https://nano-banana-ai-next.blusdanny1230.workers.dev GOOGLE_CLIENT_ID=5783249126-pofhal0pprh4dfguso8u5luhov883jdm.apps.googleusercontent.com GOOGLE_CLIENT_SECRET=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 NEXTAUTH_SECRET=ycjQupsOGxVMy0Ro4c8C0gNn3CoTNsZgy3nt6fUnaXI= CI=true node scripts/generate-wrangler-config.mjs)",
+      "Bash(GOOGLE_CLIENT_SECRET=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 NEXTAUTH_SECRET=ycjQupsOGxVMy0Ro4c8C0gNn3CoTNsZgy3nt6fUnaXI= CI=true node:*)"
     ],
     "deny": [],
     "ask": []
