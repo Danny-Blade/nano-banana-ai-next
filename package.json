@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build --webpack && opennextjs-cloudflare build --skipNextBuild --skipWranglerConfigCheck && node scripts/generate-wrangler-config.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync:secrets": "node scripts/sync-wrangler-secrets.mjs --from .env.local"
   },
   "dependencies": {
     "next": "16.0.3",
