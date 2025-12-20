@@ -154,6 +154,7 @@ TODO（接真实渠道前必须做）：
 本地/预览环境快捷同步（需要已登录 wrangler 且有权限）：
 - `npm run secrets:sync`（从 `.env.local` 同步到 Cloudflare Workers Secrets）
 - 会同步：`NEXTAUTH_SECRET`、`GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`、`APIYI_API_KEY`（或 `NANO_BANANA_API_KEY`）
+- 生产/CI 自动同步：`APIYI_API_KEY` 默认非必需（避免阻断构建）；如需强制要求配置，设置 `REQUIRE_APIYI_API_KEY=true`
 
 支付（后续接入时补齐）：
 - `CREEM_API_KEY` / `CREEM_WEBHOOK_SECRET`（命名可按实际文档调整）

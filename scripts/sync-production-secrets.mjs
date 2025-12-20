@@ -22,6 +22,12 @@ function getEnv(key) {
 	return typeof value === "string" && value.trim() ? value.trim() : undefined;
 }
 
+function isTruthyEnv(key) {
+	const raw = getEnv(key);
+	if (!raw) return false;
+	return ["1", "true", "yes", "y", "on"].includes(raw.toLowerCase());
+}
+
 function hasNonEmptyEnv(key) {
 	const value = process.env[key];
 	return typeof value === "string" && value.trim().length > 0;
@@ -70,11 +76,14 @@ if (!isCI) {
 }
 
 // 需要同步的 secrets 列表
+const requireApiYiKey = isTruthyEnv("REQUIRE_APIYI_API_KEY");
 const secretsToSync = [
 	{
 		name: "APIYI_API_KEY",
 		envKeyCandidates: ["APIYI_API_KEY", "NANO_BANANA_API_KEY"],
-		required: true,
+		// 默认不强制：避免在未配置生图 Key 的环境里阻断构建/部署。
+		// 如需强制（例如生产必须可生图），在构建环境设置：REQUIRE_APIYI_API_KEY=true
+		required: requireApiYiKey,
 		description: "上游生图 API Key",
 	},
 	{
@@ -96,6 +105,7 @@ process.stdout.write("[sync-secrets] 开始同步生产环境 secrets...\n");
 let successCount = 0;
 let failureCount = 0;
 const missingSecrets = [];
+const skippedOptionalSecrets = [];
 
 for (const secret of secretsToSync) {
 	const value = secret.envKeyCandidates.map((k) => getEnv(k)).find(Boolean);
@@ -108,6 +118,8 @@ for (const secret of secretsToSync) {
 	} else if (secret.required) {
 		missingSecrets.push(secret.envKeyCandidates.join(" / "));
 		failureCount++;
+	} else {
+		skippedOptionalSecrets.push(secret.envKeyCandidates.join(" / "));
 	}
 }
 
@@ -115,6 +127,11 @@ for (const secret of secretsToSync) {
 if (missingSecrets.length > 0) {
 	process.stderr.write(`[sync-secrets] ❌ 缺少必需的 secrets: ${missingSecrets.join(", ")}\n`);
 	process.stderr.write("[sync-secrets] 请在 Cloudflare 构建环境中配置这些 secrets，或检查环境变量设置\n");
+}
+if (skippedOptionalSecrets.length > 0) {
+	process.stdout.write(
+		`[sync-secrets] ℹ️ 未配置可选 secrets（已跳过，不影响构建）：${skippedOptionalSecrets.join(", ")}\n`,
+	);
 }
 
 process.stdout.write(`\n[sync-secrets] 同步完成: ✅ ${successCount} 成功, ❌ ${failureCount} 失败\n`);
