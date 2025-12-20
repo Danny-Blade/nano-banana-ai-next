@@ -307,10 +307,10 @@ export const authOptions: NextAuthOptions = {
                         });
                         token.userId = user.id;
                     } catch (err) {
-                        // 本地 Node 直接运行通常没有 D1 绑定。
-                        // 生产环境出现这种情况应视为配置错误。
-						if (process.env.NODE_ENV === "production") throw err;
-						console.warn("[auth] Failed to persist user to D1:", err);
+						// 不让「用户落库失败」阻断 OAuth callback，否则会直接跳回 /login?error=Callback。
+						// 常见原因：D1 未绑定、未执行 migrations（表不存在）、或 D1 暂时不可用。
+						console.error("[auth] Failed to persist user to D1:", err);
+						token.userId ??= `${account.provider}:${account.providerAccountId}`;
 					}
 				}
 			}
@@ -339,8 +339,9 @@ export const authOptions: NextAuthOptions = {
 					const user = await getUserById(userId);
 					session.user.credits = user?.credits_balance ?? 0;
 				} catch (err) {
-					if (process.env.NODE_ENV === "production") throw err;
-                    session.user.credits = 0;
+					// 不阻断 session 获取，否则前端会报 /api/auth/session 500 并导致登录态异常。
+					console.error("[auth] Failed to load user credits from D1:", err);
+					session.user.credits = 0;
                 }
             }
             return session;

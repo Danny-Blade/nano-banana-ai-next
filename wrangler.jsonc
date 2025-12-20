@@ -12,7 +12,7 @@
   },
   "d1_databases": [
     {
-      "binding": "DB",
+      "binding": "nano_banana",
       "database_name": "nano_banana",
       "database_id": "5212d261-a569-41f3-9b44-c6d6620a3deb"
     }
