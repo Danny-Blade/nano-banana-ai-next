@@ -4,6 +4,7 @@ import { ensureUserFromOAuth, getUserById } from "@/lib/users";
 import { custom } from "openid-client";
 import { HttpsProxyAgent } from "next/dist/compiled/https-proxy-agent";
 import { getD1 } from "@/lib/d1";
+import { getRuntimeEnv } from "@/lib/runtime-env";
 
 let printedAuthEnvWarning = false;
 function warnMissingAuthEnvOnce(message: string) {
@@ -11,6 +12,11 @@ function warnMissingAuthEnvOnce(message: string) {
 	printedAuthEnvWarning = true;
 	console.error(message);
 }
+
+const env = (key: string): string | undefined => {
+	const value = getRuntimeEnv(key);
+	return typeof value === "string" ? value : undefined;
+};
 
 type GoogleOAuthJson = {
 	web?: { client_id?: unknown; client_secret?: unknown };
@@ -27,14 +33,14 @@ type GoogleProfile = {
 // openid-client 默认请求超时是 3500ms；在部分网络环境下（或首次 TLS/DNS 较慢时）
 // 会导致 Google OAuth 的 Issuer discovery / token 请求直接超时失败。
 // 这里统一把超时调大（可通过环境变量覆盖）。
-const OAUTH_HTTP_TIMEOUT_MS = Number(process.env.OAUTH_HTTP_TIMEOUT_MS) || 15_000;
+const OAUTH_HTTP_TIMEOUT_MS = Number(env("OAUTH_HTTP_TIMEOUT_MS")) || 15_000;
 const OAUTH_HTTP_PROXY =
-	process.env.OAUTH_HTTP_PROXY?.trim() ||
-	process.env.HTTPS_PROXY?.trim() ||
-	process.env.HTTP_PROXY?.trim() ||
-	process.env.ALL_PROXY?.trim() ||
+	env("OAUTH_HTTP_PROXY")?.trim() ||
+	env("HTTPS_PROXY")?.trim() ||
+	env("HTTP_PROXY")?.trim() ||
+	env("ALL_PROXY")?.trim() ||
 	"";
-const OAUTH_DNS_RESULT_ORDER = process.env.OAUTH_DNS_RESULT_ORDER?.trim() || "";
+const OAUTH_DNS_RESULT_ORDER = env("OAUTH_DNS_RESULT_ORDER")?.trim() || "";
 
 function redactProxyUrl(proxyUrl: string): string {
 	try {
@@ -152,15 +158,15 @@ function GoogleNoDiscovery<P extends GoogleProfile>(
 
 function getGoogleOAuthCredentials(): { clientId: string; clientSecret: string } {
 	// 推荐：分别配置（更清晰，也更容易在 Cloudflare 控制台管理）
-	const directClientId = process.env.GOOGLE_CLIENT_ID?.trim();
-	const directClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+	const directClientId = env("GOOGLE_CLIENT_ID")?.trim();
+	const directClientSecret = env("GOOGLE_CLIENT_SECRET")?.trim();
 	if (directClientId && directClientSecret) {
 		return { clientId: directClientId, clientSecret: directClientSecret };
 	}
 
 	// 兼容：把 Google 下载的 OAuth JSON（你发的那份结构）整体放到环境变量里（建议用 Secret）
 	// 例如：GOOGLE_OAUTH_JSON='{"web":{"client_id":"...","client_secret":"...","javascript_origins":[...]}}'
-	const jsonText = process.env.GOOGLE_OAUTH_JSON?.trim();
+	const jsonText = env("GOOGLE_OAUTH_JSON")?.trim();
 	if (jsonText) {
 		try {
 			const parsed = JSON.parse(jsonText) as GoogleOAuthJson;
@@ -183,10 +189,10 @@ function getGoogleOAuthCredentials(): { clientId: string; clientSecret: string }
 
 if (process.env.NODE_ENV === "production") {
 	const missing: string[] = [];
-	if (!process.env.NEXTAUTH_SECRET?.trim()) missing.push("NEXTAUTH_SECRET");
+	if (!env("NEXTAUTH_SECRET")?.trim()) missing.push("NEXTAUTH_SECRET");
 	const hasGooglePair =
-		!!process.env.GOOGLE_CLIENT_ID?.trim() && !!process.env.GOOGLE_CLIENT_SECRET?.trim();
-	const hasGoogleJson = !!process.env.GOOGLE_OAUTH_JSON?.trim();
+		!!env("GOOGLE_CLIENT_ID")?.trim() && !!env("GOOGLE_CLIENT_SECRET")?.trim();
+	const hasGoogleJson = !!env("GOOGLE_OAUTH_JSON")?.trim();
 	if (!hasGooglePair && !hasGoogleJson) {
 		missing.push("GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET (or GOOGLE_OAUTH_JSON)");
 	}
@@ -203,9 +209,9 @@ if (process.env.NODE_ENV === "production") {
 export const authOptions: NextAuthOptions = {
     // 生产环境必须配置。注意不要把 secret 打进前端包。
     secret:
-        process.env.NEXTAUTH_SECRET ||
+        env("NEXTAUTH_SECRET") ||
         (process.env.NODE_ENV === "development" ? "dev-only-secret" : undefined),
-	debug: process.env.NEXTAUTH_DEBUG === "true",
+	debug: env("NEXTAUTH_DEBUG") === "true",
 	logger: {
 		error(code, metadata) {
 			console.error("[next-auth][error]", code, metadata);
@@ -214,7 +220,7 @@ export const authOptions: NextAuthOptions = {
 			console.warn("[next-auth][warn]", code);
 		},
 		debug(code, metadata) {
-			if (process.env.NEXTAUTH_DEBUG === "true") {
+			if (env("NEXTAUTH_DEBUG") === "true") {
 				console.info("[next-auth][debug]", code, metadata);
 			}
 		},
