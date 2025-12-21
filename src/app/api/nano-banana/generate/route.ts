@@ -30,32 +30,33 @@ const TIMEOUT_MS: Record<ImageSize, number> = {
 };
 
 export async function POST(req: NextRequest) {
-  const { prompt, aspectRatio = "1:1", imageSize = "2K" } =
-    (await req.json()) as RequestBody;
+  try {
+    const { prompt, aspectRatio = "1:1", imageSize = "2K" } =
+      (await req.json()) as RequestBody;
 
-  if (!prompt || !prompt.trim()) {
-    return NextResponse.json(
-      { error: "Prompt is required" },
-      { status: 400, statusText: "Missing prompt" }
-    );
-  }
+    if (!prompt || !prompt.trim()) {
+      return NextResponse.json(
+        { error: "Prompt is required" },
+        { status: 400, statusText: "Missing prompt" }
+      );
+    }
 
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    return NextResponse.json(
-      {
-        error:
-          "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重新部署/重启服务。",
-      },
-      { status: 500, statusText: "Missing API key" }
-    );
-  }
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          error:
+            "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重新部署/重启服务。",
+        },
+        { status: 500, statusText: "Missing API key" }
+      );
+    }
 
-  const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
-  if (!userId) {
-    return NextResponse.json({ error: "请先登录" }, { status: 401 });
-  }
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json({ error: "请先登录" }, { status: 401 });
+    }
 
   // 该接口固定调用 gemini-3-pro-image-preview，对应我们的 nano-banana-pro 定价。
   const modelKey = "nano-banana-pro";
@@ -79,53 +80,53 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "积分不足" }, { status: 402 });
   }
 
-  const db = requireD1();
-  const now = nowSeconds();
-  await db
-    .prepare(
-      `
+    const db = requireD1();
+    const now = nowSeconds();
+    await db
+      .prepare(
+        `
       INSERT INTO generation_jobs(
         id, user_id, model_key, cost_credits, prompt, aspect_ratio, image_size,
         status, error, output_r2_key, created_at, updated_at
       ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `.trim()
-    )
-    .bind(
-      jobId,
-      userId,
-      modelKey,
-      cost,
-      prompt,
-      aspectRatio,
-      imageSize,
-      "running",
-      null,
-      null,
-      now,
-      now
-    )
-    .run();
+      )
+      .bind(
+        jobId,
+        userId,
+        modelKey,
+        cost,
+        prompt,
+        aspectRatio,
+        imageSize,
+        "running",
+        null,
+        null,
+        now,
+        now
+      )
+      .run();
 
   const timeout = TIMEOUT_MS[imageSize] ?? TIMEOUT_MS["2K"];
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
 
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }], role: "user" }],
-        generationConfig: {
-          responseModalities: ["IMAGE"],
-          imageConfig: { aspectRatio, imageSize },
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
         },
-      }),
-      signal: controller.signal,
-    });
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }], role: "user" }],
+          generationConfig: {
+            responseModalities: ["IMAGE"],
+            imageConfig: { aspectRatio, imageSize },
+          },
+        }),
+        signal: controller.signal,
+      });
 
     clearTimeout(timer);
 
@@ -187,28 +188,36 @@ export async function POST(req: NextRequest) {
       imageData: inlineData.data as string,
       mimeType: inlineData.mimeType || "image/png",
     });
+    } catch (error) {
+      clearTimeout(timer);
+      const message =
+        error instanceof Error && error.name === "AbortError"
+          ? "Request timed out"
+          : (error as Error)?.message || "Unknown error";
+      await db
+        .prepare(
+          `UPDATE generation_jobs SET status = ?, error = ?, updated_at = ? WHERE id = ?`
+        )
+        .bind("failed", `500: ${message}`, nowSeconds(), jobId)
+        .run();
+      await refundCredits({
+        userId,
+        amount: cost,
+        reason: "generation_refund",
+        refProvider: null,
+        refId: jobId,
+      });
+      return NextResponse.json(
+        { error: message },
+        { status: 500, statusText: "Request failed" }
+      );
+    }
   } catch (error) {
-    clearTimeout(timer);
-    const message =
-      error instanceof Error && error.name === "AbortError"
-        ? "Request timed out"
-        : (error as Error)?.message || "Unknown error";
-    await db
-      .prepare(
-        `UPDATE generation_jobs SET status = ?, error = ?, updated_at = ? WHERE id = ?`
-      )
-      .bind("failed", `500: ${message}`, nowSeconds(), jobId)
-      .run();
-    await refundCredits({
-      userId,
-      amount: cost,
-      reason: "generation_refund",
-      refProvider: null,
-      refId: jobId,
-    });
+    console.error("[api/nano-banana/generate] Unhandled error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
       { error: message },
-      { status: 500, statusText: "Request failed" }
+      { status: 500, statusText: "Internal Server Error" }
     );
   }
 }

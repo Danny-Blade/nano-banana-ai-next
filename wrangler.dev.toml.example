@@ -1,0 +1,27 @@
+# Local dev config for Cloudflare Wrangler (D1 is bound as `DB`).
+# Copy to `wrangler.dev.toml` and fill in the dev D1 `database_id`.
+#
+# Recommended: create a separate dev DB so local testing never touches production:
+#   wrangler d1 create nano_banana_dev
+# Then use `--local` so reads/writes go to your local SQLite:
+#   wrangler d1 execute nano_banana_dev --local --file=./db/migrations/0001_init.sql
+#   npm run build:local
+#   npx wrangler dev --local --config wrangler.dev.toml
+
+name = "nano-banana-ai-next"
+main = ".open-next/worker.js"
+compatibility_date = "2025-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nano_banana_dev"
+database_id = "71ba9245-2592-4976-9c04-69860d269fda"
+
+[vars]
+# For local auth callbacks
+NEXTAUTH_URL = "http://localhost:8787"

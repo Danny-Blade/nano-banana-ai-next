@@ -123,126 +123,134 @@ const readUpstreamError = async (response: Response) => {
 };
 
 export async function POST(req: NextRequest) {
-  const body = (await req.json()) as RequestBody;
-  const {
-    model,
-    prompt,
-    aspectRatio = "1:1",
-    imageSize = "2K",
-    referenceImages = [],
-  } = body;
-
-  if (!prompt || !prompt.trim()) {
-    return NextResponse.json(
-      { error: "Prompt is required" },
-      { status: 400, statusText: "Missing prompt" }
-    );
-  }
-  if (!model) {
-    return NextResponse.json(
-      { error: "Model is required" },
-      { status: 400, statusText: "Missing model" }
-    );
-  }
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    return NextResponse.json(
-      {
-        error:
-          "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重新部署/重启服务。",
-      },
-      { status: 500, statusText: "Missing API key" }
-    );
-  }
-
-  // 必须登录：生图需要扣对应用户的积分。
-  const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
-  if (!userId) {
-    return NextResponse.json({ error: "请先登录" }, { status: 401 });
-  }
-
-  // 模型价格以服务端为准（防止客户端篡改）。
-  const cost = await getModelCost(model);
-  if (cost == null) {
-    return NextResponse.json(
-      { error: `Unsupported/disabled model pricing: ${model}` },
-      { status: 400, statusText: "Unsupported model" }
-    );
-  }
-
-  const jobId = newId("job");
-  const now = nowSeconds();
-  const db = requireD1();
-
-  const charged = await chargeCredits({
-    userId,
-    amount: cost,
-    reason: "generation_charge",
-    refProvider: null,
-    refId: jobId,
-  });
-
-  if (!charged) {
-    return NextResponse.json({ error: "积分不足" }, { status: 402 });
-  }
-
-  // 记录任务到 DB：用于历史/审计。
-  //（目前是同步返回；长耗时建议迁移到 Queues 异步执行。）
   try {
-    await db
-      .prepare(
-        `
+    const body = (await req.json()) as RequestBody;
+    const {
+      model,
+      prompt,
+      aspectRatio = "1:1",
+      imageSize = "2K",
+      referenceImages = [],
+    } = body;
+
+    if (!prompt || !prompt.trim()) {
+      return NextResponse.json(
+        { error: "Prompt is required" },
+        { status: 400, statusText: "Missing prompt" }
+      );
+    }
+    if (!model) {
+      return NextResponse.json(
+        { error: "Model is required" },
+        { status: 400, statusText: "Missing model" }
+      );
+    }
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          error:
+            "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重新部署/重启服务。",
+        },
+        { status: 500, statusText: "Missing API key" }
+      );
+    }
+
+    // 必须登录：生图需要扣对应用户的积分。
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json({ error: "请先登录" }, { status: 401 });
+    }
+
+    // 模型价格以服务端为准（防止客户端篡改）。
+    const cost = await getModelCost(model);
+    if (cost == null) {
+      return NextResponse.json(
+        { error: `Unsupported/disabled model pricing: ${model}` },
+        { status: 400, statusText: "Unsupported model" }
+      );
+    }
+
+    const jobId = newId("job");
+    const now = nowSeconds();
+    const db = requireD1();
+
+    const charged = await chargeCredits({
+      userId,
+      amount: cost,
+      reason: "generation_charge",
+      refProvider: null,
+      refId: jobId,
+    });
+
+    if (!charged) {
+      return NextResponse.json({ error: "积分不足" }, { status: 402 });
+    }
+
+    // 记录任务到 DB：用于历史/审计。
+    //（目前是同步返回；长耗时建议迁移到 Queues 异步执行。）
+    try {
+      await db
+        .prepare(
+          `
         INSERT INTO generation_jobs(
           id, user_id, model_key, cost_credits, prompt, aspect_ratio, image_size,
           status, error, output_r2_key, created_at, updated_at
         ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `.trim()
-      )
-      .bind(
-        jobId,
+        )
+        .bind(
+          jobId,
+          userId,
+          model,
+          cost,
+          prompt,
+          aspectRatio,
+          imageSize,
+          "running",
+          null,
+          null,
+          now,
+          now
+        )
+        .run();
+    } catch (err) {
+      // 如果任务记录写入失败，必须退款，避免用户“扣了积分但无记录”。
+      await refundCredits({
         userId,
-        model,
-        cost,
-        prompt,
-        aspectRatio,
-        imageSize,
-        "running",
-        null,
-        null,
-        now,
-        now
-      )
-      .run();
-  } catch (err) {
-    // 如果任务记录写入失败，必须退款，避免用户“扣了积分但无记录”。
-    await refundCredits({
-      userId,
-      amount: cost,
-      reason: "generation_refund",
-      refProvider: null,
-      refId: jobId,
-    });
-    throw err;
-  }
+        amount: cost,
+        reason: "generation_refund",
+        refProvider: null,
+        refId: jobId,
+      });
+      throw err;
+    }
 
-  const markFailed = async (message: string, status?: number) => {
-    await db
-      .prepare(
-        `UPDATE generation_jobs SET status = ?, error = ?, updated_at = ? WHERE id = ?`
-      )
-      .bind("failed", status ? `${status}: ${message}` : message, nowSeconds(), jobId)
-      .run();
-  };
+    const markFailed = async (message: string, status?: number) => {
+      await db
+        .prepare(
+          `UPDATE generation_jobs SET status = ?, error = ?, updated_at = ? WHERE id = ?`
+        )
+        .bind(
+          "failed",
+          status ? `${status}: ${message}` : message,
+          nowSeconds(),
+          jobId
+        )
+        .run();
+    };
 
-  const markSucceeded = async () => {
-    await db
-      .prepare(`UPDATE generation_jobs SET status = ?, updated_at = ? WHERE id = ?`)
-      .bind("succeeded", nowSeconds(), jobId)
-      .run();
-  };
+    const markSucceeded = async () => {
+      await db
+        .prepare(
+          `UPDATE generation_jobs SET status = ?, updated_at = ? WHERE id = ?`
+        )
+        .bind("succeeded", nowSeconds(), jobId)
+        .run();
+    };
 
-  try {
+    try {
     if (model in GEMINI_MODEL_MAP) {
       const geminiModel = GEMINI_MODEL_MAP[model];
       const apiUrl = `${GEMINI_BASE}/${geminiModel}:generateContent`;
@@ -634,26 +642,34 @@ export async function POST(req: NextRequest) {
       { error: `Unsupported model: ${model}` },
       { status: 400, statusText: "Unsupported model" }
     );
-  } catch (error) {
-    const message =
-      error instanceof Error && error.name === "AbortError"
-        ? "Request timed out"
-        : (error as Error)?.message || "Unknown error";
-    try {
-      await markFailed(message, 500);
-      await refundCredits({
-        userId,
-        amount: cost,
-        reason: "generation_refund",
-        refProvider: null,
-        refId: jobId,
-      });
-    } catch (refundErr) {
-      console.error("[generate] Failed to refund after error:", refundErr);
+    } catch (error) {
+      const message =
+        error instanceof Error && error.name === "AbortError"
+          ? "Request timed out"
+          : (error as Error)?.message || "Unknown error";
+      try {
+        await markFailed(message, 500);
+        await refundCredits({
+          userId,
+          amount: cost,
+          reason: "generation_refund",
+          refProvider: null,
+          refId: jobId,
+        });
+      } catch (refundErr) {
+        console.error("[generate] Failed to refund after error:", refundErr);
+      }
+      return NextResponse.json(
+        { error: message },
+        { status: 500, statusText: "Request failed" }
+      );
     }
+  } catch (error) {
+    console.error("[api/image/generate] Unhandled error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
       { error: message },
-      { status: 500, statusText: "Request failed" }
+      { status: 500, statusText: "Internal Server Error" }
     );
   }
 }

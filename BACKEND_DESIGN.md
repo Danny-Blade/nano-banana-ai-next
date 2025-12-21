@@ -178,6 +178,38 @@ wrangler d1 execute <YOUR_DB_NAME> --file=./db/migrations/0001_init.sql
 
 ---
 
+## 7.1 本地测试 D1（不影响线上）
+
+关键点：
+- 不要用线上（Production）D1 的 `database_id` 做本地测试。
+- 本地跑 D1 需要用 Cloudflare 工具链（`wrangler dev --local`）；`next dev` 下通常拿不到 `DB` 绑定。
+
+推荐流程（安全）：
+
+1) 创建一个“开发用”的 D1（独立于线上）：
+```bash
+wrangler d1 create nano_banana_dev
+```
+
+2) 复制 `wrangler.dev.toml.example` 为 `wrangler.dev.toml`，把上一步输出的 `database_id` 填进去（不要提交）。
+
+3) 初始化本地数据库（只写本机 SQLite，不会写云端）：
+```bash
+wrangler d1 execute nano_banana_dev --local --file=./db/migrations/0001_init.sql
+```
+
+4) 构建并用 Wrangler 在本地启动 Workers 运行时（带 D1 绑定）：
+```bash
+npm run build:local
+npx wrangler dev --local --config wrangler.dev.toml
+```
+
+5) 准备本地运行时变量（建议用 `.dev.vars`，不要提交）：
+- 需要登录：`NEXTAUTH_URL`、`NEXTAUTH_SECRET`、`GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`
+- 需要生图：`APIYI_API_KEY`（或 `NANO_BANANA_API_KEY`）
+
+`wrangler dev` 启动后，用你本地地址访问 API（例如 `/api/me`、`/api/image/generate`）即可验证 D1 链路。
+
 ## 8. 下一步（按优先级）
 
 1) 接入 Creem：
