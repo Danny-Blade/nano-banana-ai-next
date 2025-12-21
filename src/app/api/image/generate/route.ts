@@ -16,7 +16,8 @@ const OPENAI_IMAGES_EDITS_URL = `${API_BASE}/v1/images/edits`;
  * 上游 API Key（服务端环境变量）。
  * 注意：不要使用 `NEXT_PUBLIC_` 前缀（否则会打包进前端）。
  */
-const API_KEY = process.env.APIYI_API_KEY || process.env.NANO_BANANA_API_KEY || "";
+const getApiKey = () =>
+  process.env.APIYI_API_KEY || process.env.NANO_BANANA_API_KEY || "";
 
 type RequestBody = {
   model?: string;
@@ -143,11 +144,12 @@ export async function POST(req: NextRequest) {
       { status: 400, statusText: "Missing model" }
     );
   }
-  if (!API_KEY) {
+  const apiKey = getApiKey();
+  if (!apiKey) {
     return NextResponse.json(
       {
         error:
-          "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重启服务。",
+          "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重新部署/重启服务。",
       },
       { status: 500, statusText: "Missing API key" }
     );
@@ -263,7 +265,7 @@ export async function POST(req: NextRequest) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${API_KEY}`,
+            Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
             contents: [{ parts, role: "user" }],
@@ -341,7 +343,7 @@ export async function POST(req: NextRequest) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${API_KEY}`,
+            Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify(payload),
         },
@@ -440,7 +442,7 @@ export async function POST(req: NextRequest) {
           {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${API_KEY}`,
+              Authorization: `Bearer ${apiKey}`,
             },
             body: form,
           },
@@ -504,7 +506,7 @@ export async function POST(req: NextRequest) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${API_KEY}`,
+            Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify(payload),
         },
@@ -569,7 +571,7 @@ export async function POST(req: NextRequest) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${API_KEY}`,
+            Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify(payload),
         },

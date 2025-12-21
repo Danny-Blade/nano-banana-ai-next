@@ -12,7 +12,8 @@ const API_URL =
  * 旧版接口（兼容历史 UI 调用）。
  * 新功能建议统一使用 `/api/image/generate`（支持多模型 + 按模型扣费）。
  */
-const API_KEY = process.env.APIYI_API_KEY || process.env.NANO_BANANA_API_KEY || "";
+const getApiKey = () =>
+  process.env.APIYI_API_KEY || process.env.NANO_BANANA_API_KEY || "";
 
 type RequestBody = {
   prompt?: string;
@@ -39,11 +40,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (!API_KEY) {
+  const apiKey = getApiKey();
+  if (!apiKey) {
     return NextResponse.json(
       {
         error:
-          "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重启服务。",
+          "API key 未配置。请在服务器环境设置 APIYI_API_KEY 或 NANO_BANANA_API_KEY（不要用 NEXT_PUBLIC 前缀），然后重新部署/重启服务。",
       },
       { status: 500, statusText: "Missing API key" }
     );
@@ -113,7 +115,7 @@ export async function POST(req: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }], role: "user" }],
