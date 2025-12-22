@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { chargeCredits, getModelCost, refundCredits } from "@/lib/credits";
 import { requireD1, nowSeconds } from "@/lib/d1";
 import { newId } from "@/lib/id";
+import { getUserById } from "@/lib/users";
 
 const API_URL =
   "https://api.apiyi.com/v1beta/models/gemini-3-pro-image-preview:generateContent";
@@ -79,6 +80,14 @@ export async function POST(req: NextRequest) {
   if (!charged) {
     return NextResponse.json({ error: "积分不足" }, { status: 402 });
   }
+
+    const creditsAfterCharge = await getUserById(userId);
+    const remainingCredits = creditsAfterCharge?.credits_balance ?? null;
+    const success = (payload: Record<string, unknown>) =>
+      NextResponse.json({
+        ...payload,
+        credits: remainingCredits,
+      });
 
     const db = requireD1();
     const now = nowSeconds();
@@ -184,7 +193,7 @@ export async function POST(req: NextRequest) {
       .prepare(`UPDATE generation_jobs SET status = ?, updated_at = ? WHERE id = ?`)
       .bind("succeeded", nowSeconds(), jobId)
       .run();
-    return NextResponse.json({
+    return success({
       imageData: inlineData.data as string,
       mimeType: inlineData.mimeType || "image/png",
     });

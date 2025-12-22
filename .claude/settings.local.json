@@ -22,7 +22,11 @@
       "Bash(npx wrangler:*)",
       "Bash(xargs kill:*)",
       "Bash(yarn d1:migrate:local:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(for f in /Users/dony/Documents/github/danny-blade/nano-banana-ai-next/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/*.sqlite)",
+      "Bash(do echo \"=== $f ===\")",
+      "Bash(sqlite3:*)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

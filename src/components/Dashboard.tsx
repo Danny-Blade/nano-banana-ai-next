@@ -160,7 +160,7 @@ const IMAGE_HISTORY_LIMIT = 60;
 const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const { locale, t } = useI18n();
   const siteContent = useSiteContent();
-  const { data: session, status: sessionStatus } = useSession();
+  const { data: session, status: sessionStatus, update: refreshSession } = useSession();
 
   const DEFAULT_MODEL: ModelValue = "nano-banana-pro";
 
@@ -806,6 +806,14 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             imageSize,
           },
         });
+      }
+
+      if (generated.length) {
+        try {
+          await refreshSession();
+        } catch {
+          // ignore
+        }
       }
 
       setProgress(100);

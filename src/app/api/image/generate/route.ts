@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { chargeCredits, getModelCost, refundCredits } from "@/lib/credits";
 import { requireD1, nowSeconds } from "@/lib/d1";
+import { getUserById } from "@/lib/users";
 import { newId } from "@/lib/id";
 
 const API_BASE =
@@ -188,6 +189,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "积分不足" }, { status: 402 });
     }
 
+    const creditsAfterCharge = await getUserById(userId);
+    const remainingCredits = creditsAfterCharge?.credits_balance ?? null;
+
+    const success = (payload: Record<string, unknown>) =>
+      NextResponse.json({
+        ...payload,
+        credits: remainingCredits,
+      });
+
     // 记录任务到 DB：用于历史/审计。
     //（目前是同步返回；长耗时建议迁移到 Queues 异步执行。）
     try {
@@ -322,7 +332,7 @@ export async function POST(req: NextRequest) {
       }
 
       await markSucceeded();
-      return NextResponse.json({
+      return success({
         imageData: inlineData.data as string,
         mimeType: inlineData.mimeType || "image/png",
       });
@@ -383,7 +393,7 @@ export async function POST(req: NextRequest) {
       const markdownUrls = extractMarkdownImageUrls(contentText);
       if (markdownUrls.length) {
         await markSucceeded();
-        return NextResponse.json({ imageUrl: markdownUrls[0] });
+        return success({ imageUrl: markdownUrls[0] });
       }
 
       const dataUrls = extractDataUrls(contentText);
@@ -391,7 +401,7 @@ export async function POST(req: NextRequest) {
         const parsed = parseDataUrl(dataUrls[0]);
         if (parsed?.data) {
           await markSucceeded();
-          return NextResponse.json({
+          return success({
             imageData: parsed.data,
             mimeType: parsed.mimeType || "image/png",
           });
@@ -477,14 +487,14 @@ export async function POST(req: NextRequest) {
         const item = data?.data?.[0];
         if (item?.b64_json) {
           await markSucceeded();
-          return NextResponse.json({
+          return success({
             imageData: item.b64_json as string,
             mimeType: "image/png",
           });
         }
         if (item?.url) {
           await markSucceeded();
-          return NextResponse.json({ imageUrl: item.url as string });
+          return success({ imageUrl: item.url as string });
         }
         await markFailed("No image returned from API", 502);
         await refundCredits({
@@ -541,14 +551,14 @@ export async function POST(req: NextRequest) {
       const item = data?.data?.[0];
       if (item?.b64_json) {
         await markSucceeded();
-        return NextResponse.json({
+        return success({
           imageData: item.b64_json as string,
           mimeType: "image/png",
         });
       }
       if (item?.url) {
         await markSucceeded();
-        return NextResponse.json({ imageUrl: item.url as string });
+        return success({ imageUrl: item.url as string });
       }
       await markFailed("No image returned from API", 502);
       await refundCredits({
@@ -606,14 +616,14 @@ export async function POST(req: NextRequest) {
       const item = data?.data?.[0];
       if (item?.b64_json) {
         await markSucceeded();
-        return NextResponse.json({
+        return success({
           imageData: item.b64_json as string,
           mimeType: "image/png",
         });
       }
       if (item?.url) {
         await markSucceeded();
-        return NextResponse.json({ imageUrl: item.url as string });
+        return success({ imageUrl: item.url as string });
       }
 
       await markFailed("No image returned from API", 502);

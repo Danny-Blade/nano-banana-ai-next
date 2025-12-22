@@ -17,8 +17,8 @@ if (process.env.NODE_ENV === "development") {
     initOpenNextCloudflareForDev({
       // 使用开发环境配置文件
       configPath: "wrangler.dev.toml",
-      // 持久化本地数据到 .wrangler 目录
-      persist: { path: ".wrangler/state" },
+      // 持久化本地数据，与 wrangler d1 execute --local 使用相同路径
+      persist: { path: ".wrangler/state/v3" },
     });
   });
 }
