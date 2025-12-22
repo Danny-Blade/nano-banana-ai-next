@@ -80,7 +80,7 @@ const Header = () => {
                     ))}
                 </nav>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div className={styles.actions}>
                     <div className={styles.langSwitch}>
                         <span className={styles.langLabel}>{t("common.language")}</span>
                         <select

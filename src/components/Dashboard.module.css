@@ -531,6 +531,10 @@
     height: 44px;
 }
 
+.promptActions .primaryBtn {
+    flex: 1 1 220px;
+}
+
 .ratioRow {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -971,6 +975,12 @@
 
 .historyHint {
     color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+}
+
+.historyNotice {
+    color: #0f172a;
     font-size: 0.9rem;
     margin-bottom: 0.8rem;
 }
