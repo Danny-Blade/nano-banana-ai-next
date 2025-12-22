@@ -15,6 +15,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
     const { t } = useI18n();
     const [oauthError, setOauthError] = React.useState<string | null>(null);
     const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
+    const [isDevLoading, setIsDevLoading] = React.useState(false);
+    const [showDevLogin, setShowDevLogin] = React.useState(false);
+
+    React.useEffect(() => {
+        // Avoid hydration mismatch: server render has no access to `window`.
+        if (typeof window === "undefined") return;
+        const host = window.location.hostname;
+        // Show dev login on localhost (any port)
+        setShowDevLogin(["localhost", "127.0.0.1", "::1"].includes(host));
+    }, []);
 
     const getSafeCallbackUrl = React.useCallback(() => {
         try {
@@ -33,6 +43,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
             case "OAuthCallback":
             case "Callback":
                 return "Google 授权失败，请检查网络/代理设置后重试。";
+            case "CredentialsSignin":
+                return "本地 Dev 登录失败，请检查本地环境变量与 D1 初始化。";
             case "AccessDenied":
                 return "你已取消授权。";
             case "Configuration":
@@ -49,6 +61,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
 
         setOauthError(null);
         setIsGoogleLoading(false);
+        setIsDevLoading(false);
 
         const prevOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
@@ -65,9 +78,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
     }, [isOpen, onClose]);
 
     if (!isOpen) return null;
+    const isBusy = isGoogleLoading || isDevLoading;
 
     return (
-        <div className={styles.modalOverlay} onClick={onClose}>
+        <div className={styles.modalOverlay} onClick={isBusy ? undefined : onClose}>
             <div
                 className={styles.modalContent}
                 onClick={(e) => e.stopPropagation()}
@@ -77,8 +91,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
             >
                 <button
                     className={styles.closeButton}
-                    onClick={onClose}
+                    onClick={isBusy ? undefined : onClose}
                     aria-label={t("auth.close")}
+                    disabled={isBusy}
                 >
                     ×
                 </button>
@@ -129,7 +144,46 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
                         />
                         {isGoogleLoading ? `${t("auth.continueWithGoogle")}…` : t("auth.continueWithGoogle")}
                     </button>
-                </div>
+
+                    {showDevLogin ? (
+                        <button
+                            className={styles.socialBtn}
+                            onClick={async () => {
+                                setOauthError(null);
+                                setIsDevLoading(true);
+                                try {
+                                    const result = await signIn("dev", {
+                                        redirect: false,
+                                        callbackUrl: getSafeCallbackUrl(),
+                                    });
+                                    if (!result) return;
+                                    if (result?.url) {
+                                        // If the provider is missing/misconfigured, NextAuth can bounce back to /api/auth/signin.
+                                        // Don't treat that as success.
+                                        if (result.url.includes("/api/auth/signin")) {
+                                            setOauthError(
+                                                "Dev 登录未启用：请在 `.dev.vars` 设置 DEV_AUTH_BYPASS=true，然后重启 wrangler。",
+                                            );
+                                            return;
+                                        }
+                                        window.location.href = result.url;
+                                        return;
+                                    }
+                                    console.warn("[auth] dev signIn returned:", result);
+                                    setOauthError(formatAuthError(result?.error));
+                                } catch (err) {
+                                    console.warn("[auth] dev signIn failed:", err);
+                                    setOauthError(formatAuthError("CredentialsSignin"));
+                                } finally {
+                                    setIsDevLoading(false);
+                                }
+                            }}
+                            disabled={isDevLoading || isGoogleLoading}
+                        >
+                            {isDevLoading ? `${t("auth.continueWithDev")}…` : t("auth.continueWithDev")}
+                        </button>
+                    ) : null}
+                  </div>
 
                 {oauthError ? (
                     <div className={styles.error} role="alert">

@@ -15,6 +15,13 @@ export default function GooglePlatformSignIn({
 	iconClassName?: string;
 }) {
 	const [error, setError] = React.useState<string | null>(null);
+	const [origin, setOrigin] = React.useState("");
+
+	React.useEffect(() => {
+		// Avoid hydration mismatch: `window` is not available during SSR.
+		if (typeof window === "undefined") return;
+		setOrigin(window.location.origin);
+	}, []);
 	const signInWithGoogle = React.useCallback(async () => {
 		setError(null);
 		try {
@@ -57,9 +64,7 @@ export default function GooglePlatformSignIn({
 					Google Cloud Console 的 Authorized redirect URIs 需要包含：
 					{" "}
 					<code style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" }}>
-						{typeof window !== "undefined"
-							? `${window.location.origin}/api/auth/callback/google`
-							: ""}
+						{origin ? `${origin}/api/auth/callback/google` : ""}
 					</code>
 				</div>
 			) : null}

@@ -115,6 +115,21 @@ type HistoryEntry =
       };
     };
 
+type ImageHistoryItem = {
+  id: string;
+  createdAt: number;
+  model: ModelValue;
+  prompt: string;
+  aspectRatio: string;
+  imageSize: string;
+  costCredits: number;
+  thumbnailDataUrl: string;
+  imageUrl?: string;
+  fileName?: string;
+  savedDirName?: string;
+  savedVia?: "download" | "fs";
+};
+
 const resolutionOptions: Record<string, string[]> = {
   "nano-banana": ["2K", "1K"],
   "nano-banana-pro": ["4K", "2K", "1K"],
@@ -138,6 +153,9 @@ const formatTime = (timestamp: Date, locale: string) => {
     minute: "2-digit",
   });
 };
+
+const IMAGE_HISTORY_STORAGE_KEY = "nano_banana_image_history_v1";
+const IMAGE_HISTORY_LIMIT = 60;
 
 const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const { locale, t } = useI18n();
@@ -215,7 +233,16 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const [isComparing, setIsComparing] = React.useState(false);
   const [compareError, setCompareError] = React.useState<string | null>(null);
 
-  const [history, setHistory] = React.useState<HistoryEntry[]>([]);
+  const [, setHistory] = React.useState<HistoryEntry[]>([]);
+  const [imageHistory, setImageHistory] = React.useState<ImageHistoryItem[]>([]);
+  const [historyModelFilter, setHistoryModelFilter] = React.useState<ModelValue | "all">(
+    "all"
+  );
+  const [saveDirName, setSaveDirName] = React.useState<string | null>(null);
+  const [hasSaveDir, setHasSaveDir] = React.useState(false);
+  const [selfCallbackUrl, setSelfCallbackUrl] = React.useState<string | undefined>(
+    undefined,
+  );
 
   const [showTemplates, setShowTemplates] = React.useState(false);
   const [templateCategory, setTemplateCategory] = React.useState(
@@ -253,9 +280,105 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
   const imagePool = React.useMemo(() => siteContent.explore.images || [], [siteContent]);
 
-  const getSelfCallbackUrl = React.useCallback(() => {
-    if (typeof window === "undefined") return "/";
-    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  const isFileSystemAccessSupported = React.useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return typeof (globalThis as any).showDirectoryPicker === "function";
+  }, []);
+
+  const historyDb = React.useMemo(() => {
+    const open = () =>
+      new Promise<IDBDatabase>((resolve, reject) => {
+        const req = indexedDB.open("nano-banana-local", 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains("kv")) db.createObjectStore("kv");
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+
+    const get = async <T,>(key: string): Promise<T | null> => {
+      const db = await open();
+      return await new Promise<T | null>((resolve, reject) => {
+        const tx = db.transaction("kv", "readonly");
+        const store = tx.objectStore("kv");
+        const req = store.get(key);
+        req.onsuccess = () => resolve((req.result as T | undefined) ?? null);
+        req.onerror = () => reject(req.error);
+      });
+    };
+
+    const put = async (key: string, value: unknown) => {
+      const db = await open();
+      return await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction("kv", "readwrite");
+        const store = tx.objectStore("kv");
+        store.put(value, key);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    };
+
+    return { get, put };
+  }, []);
+
+  React.useEffect(() => {
+    try {
+      const raw = localStorage.getItem(IMAGE_HISTORY_STORAGE_KEY);
+      if (!raw) return;
+      const parsed: unknown = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return;
+      const items = parsed
+        .filter((v) => v && typeof v === "object")
+        .map((v) => v as ImageHistoryItem)
+        .filter(
+          (v) =>
+            typeof v.id === "string" &&
+            typeof v.createdAt === "number" &&
+            typeof v.model === "string" &&
+            typeof v.prompt === "string" &&
+            typeof v.thumbnailDataUrl === "string"
+        );
+      setImageHistory(items.slice(0, IMAGE_HISTORY_LIMIT));
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  React.useEffect(() => {
+    try {
+      localStorage.setItem(
+        IMAGE_HISTORY_STORAGE_KEY,
+        JSON.stringify(imageHistory.slice(0, IMAGE_HISTORY_LIMIT))
+      );
+    } catch {
+      // ignore
+    }
+  }, [imageHistory]);
+
+  React.useEffect(() => {
+    if (!isFileSystemAccessSupported) return;
+    historyDb
+      .get<{ name?: string }>("saveDirMeta")
+      .then((meta) => {
+        if (meta?.name) setSaveDirName(meta.name);
+      })
+      .catch(() => null);
+    historyDb
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .get<any>("saveDirHandle")
+      .then((handle) => {
+        if (handle) setHasSaveDir(true);
+      })
+      .catch(() => null);
+  }, [historyDb, isFileSystemAccessSupported]);
+
+  React.useEffect(() => {
+    // Avoid hydration mismatch: `window` is not available during SSR.
+    if (typeof window === "undefined") return;
+    setSelfCallbackUrl(
+      `${window.location.pathname}${window.location.search}${window.location.hash}`,
+    );
   }, []);
 
   const ensureAuthenticatedWithCredits = React.useCallback(
@@ -396,6 +519,115 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     }
   };
 
+  const createThumbnailDataUrl = async (url: string) => {
+    try {
+      const res = await fetch(url);
+      const blob = await res.blob();
+
+      const bitmap =
+        typeof createImageBitmap === "function" ? await createImageBitmap(blob) : null;
+      const maxSize = 320;
+      const srcW = bitmap ? bitmap.width : 0;
+      const srcH = bitmap ? bitmap.height : 0;
+      if (!bitmap || !srcW || !srcH) return null;
+
+      const scale = Math.min(1, maxSize / Math.max(srcW, srcH));
+      const width = Math.max(1, Math.round(srcW * scale));
+      const height = Math.max(1, Math.round(srcH * scale));
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return null;
+      ctx.drawImage(bitmap, 0, 0, width, height);
+      try {
+        bitmap.close();
+      } catch {
+        // ignore
+      }
+      return canvas.toDataURL("image/jpeg", 0.78);
+    } catch {
+      return null;
+    }
+  };
+
+  const pickSaveFolder = async () => {
+    if (!isFileSystemAccessSupported) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const picker = (globalThis as any).showDirectoryPicker as (() => Promise<any>) | undefined;
+    if (!picker) return;
+    try {
+      const handle = await picker();
+      const name = typeof handle?.name === "string" ? handle.name : null;
+      await historyDb.put("saveDirHandle", handle);
+      await historyDb.put("saveDirMeta", { name });
+      setSaveDirName(name);
+      setHasSaveDir(true);
+    } catch {
+      // user cancelled
+    }
+  };
+
+  const trySaveToLocalFolder = async (url: string, fileName: string) => {
+    if (!isFileSystemAccessSupported) return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handle = await historyDb.get<any>("saveDirHandle").catch(() => null);
+    if (!handle) return null;
+
+    try {
+      const permission =
+        typeof handle.queryPermission === "function"
+          ? await handle.queryPermission({ mode: "readwrite" })
+          : "granted";
+      if (permission !== "granted" && typeof handle.requestPermission === "function") {
+        const requested = await handle.requestPermission({ mode: "readwrite" });
+        if (requested !== "granted") return null;
+      }
+
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const fileHandle = await handle.getFileHandle(fileName, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+
+      const dirName = typeof handle?.name === "string" ? handle.name : null;
+      return {
+        fileName,
+        savedDirName: dirName,
+        savedVia: "fs" as const,
+      };
+    } catch {
+      return null;
+    }
+  };
+
+  const openSavedFile = async (item: ImageHistoryItem) => {
+    if (!isFileSystemAccessSupported) return;
+    if (!item.fileName) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handle = await historyDb.get<any>("saveDirHandle").catch(() => null);
+    if (!handle) return;
+    try {
+      const permission =
+        typeof handle.queryPermission === "function"
+          ? await handle.queryPermission({ mode: "read" })
+          : "granted";
+      if (permission !== "granted" && typeof handle.requestPermission === "function") {
+        const requested = await handle.requestPermission({ mode: "read" });
+        if (requested !== "granted") return;
+      }
+      const fileHandle = await handle.getFileHandle(item.fileName);
+      const file = await fileHandle.getFile();
+      const objectUrl = URL.createObjectURL(file);
+      window.open(objectUrl, "_blank", "noopener,noreferrer");
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+    } catch {
+      // ignore
+    }
+  };
+
   const runFakeProgress = (
     setter: (value: number) => void,
     durationMs: number,
@@ -514,6 +746,34 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
           if (!url) {
             throw new Error("No image returned from API");
+          }
+
+          const thumbnailDataUrl = await createThumbnailDataUrl(url);
+          if (thumbnailDataUrl) {
+            const suggestedName = `nano-banana-${selectedModel}-${Date.now()}-${i}.png`;
+            const saved = await trySaveToLocalFolder(url, suggestedName);
+            if (data.imageUrl || saved) {
+              setImageHistory((prev) => {
+                const next: ImageHistoryItem[] = [
+                  {
+                    id: `img-${Date.now()}-${i}`,
+                    createdAt: Date.now(),
+                    model: selectedModel,
+                    prompt: targetPrompt,
+                    aspectRatio: ratio,
+                    imageSize,
+                    costCredits: activeModel.creditsPerImage,
+                    thumbnailDataUrl,
+                    imageUrl: data.imageUrl,
+                    fileName: saved?.fileName,
+                    savedDirName: saved?.savedDirName,
+                    savedVia: saved?.savedVia,
+                  },
+                  ...prev,
+                ];
+                return next.slice(0, IMAGE_HISTORY_LIMIT);
+              });
+            }
           }
 
           generated.push({
@@ -708,6 +968,40 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
         setCompareResults([newResult]);
         setShowEvaluation(true);
+
+        const makeHistoryItem = async (modelValue: ModelValue, url: string, cost: number) => {
+          const thumb = await createThumbnailDataUrl(url);
+          if (!thumb) return null;
+          const suggestedName = `nano-banana-${modelValue}-${Date.now()}.png`;
+          const remoteUrl = url.startsWith("http") ? url : undefined;
+          const saved = await trySaveToLocalFolder(url, suggestedName);
+          if (!remoteUrl && !saved) return null;
+          const item: ImageHistoryItem = {
+            id: `img-${Date.now()}-${Math.random()}`,
+            createdAt: Date.now(),
+            model: modelValue,
+            prompt: targetPrompt,
+            aspectRatio: compareRatio,
+            imageSize,
+            costCredits: cost,
+            thumbnailDataUrl: thumb,
+            imageUrl: remoteUrl,
+            fileName: saved?.fileName,
+            savedDirName: saved?.savedDirName,
+            savedVia: saved?.savedVia,
+          };
+          return item;
+        };
+
+        const [leftHist, rightHist] = await Promise.all([
+          makeHistoryItem(leftModel, leftUrl, leftCost),
+          makeHistoryItem(rightModel, rightUrl, rightCost),
+        ]);
+        const toAdd = [leftHist, rightHist].filter(Boolean) as ImageHistoryItem[];
+        if (toAdd.length) {
+          setImageHistory((prev) => [...toAdd, ...prev].slice(0, IMAGE_HISTORY_LIMIT));
+        }
+
         addHistoryEntry({
           type: "compare",
           timestamp: new Date(),
@@ -995,7 +1289,12 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   };
 
   const renderHistory = () => {
-    if (!history.length) {
+    const filtered =
+      historyModelFilter === "all"
+        ? imageHistory
+        : imageHistory.filter((item) => item.model === historyModelFilter);
+
+    if (!filtered.length) {
       return (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>🕒</div>
@@ -1004,60 +1303,141 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
       );
     }
 
-    const renderHistoryTitle = (item: HistoryEntry) => {
-      if (item.type === "generate") {
-        const modelLabel =
-          localizedModelOptions.find((m) => m.value === item.payload.model)?.label ||
-          item.payload.model;
-        return t("dashboard.history.generateDone", { model: modelLabel });
-      }
-      if (item.type === "batch") {
-        return item.payload.mode === "card"
-          ? t("dashboard.history.batchDoneCard")
-          : t("dashboard.history.batchDoneMulti");
-      }
-      return t("dashboard.history.compareDone");
-    };
-
-    const renderHistoryDetail = (item: HistoryEntry) => {
-      if (item.type === "generate") {
-        return `${t("dashboard.generate.countItem", { n: item.payload.count })} · ${
-          item.payload.ratio
-        } · ${item.payload.imageSize}`;
-      }
-      if (item.type === "batch") {
-        return `${t("dashboard.generate.countItem", { n: item.payload.count })} · ${
-          item.payload.ratio === "auto" ? t("dashboard.batch.sizeAuto") : item.payload.ratio
-        }`;
-      }
-      const leftLabel =
-        localizedModelOptions.find((m) => m.value === item.payload.leftModel)?.label ||
-        item.payload.leftModel;
-      const rightLabel =
-        localizedModelOptions.find((m) => m.value === item.payload.rightModel)?.label ||
-        item.payload.rightModel;
-      return `${leftLabel} vs ${rightLabel}`;
-    };
+    const modelsToShow: ModelValue[] =
+      historyModelFilter === "all"
+        ? (modelOptions.map((m) => m.value) as ModelValue[])
+        : [historyModelFilter];
 
     return (
-      <div className={styles.historyGrid}>
-        {history.map((item) => (
-          <div key={item.id} className={styles.historyCard}>
-            <div className={styles.historyHead}>
-              <span className={styles.badge}>{t(`dashboard.tabs.${item.type}`)}</span>
-              <span className={styles.historyTime}>
-                {formatTime(item.timestamp, intlLocale)}
-              </span>
-            </div>
-            <div className={styles.historyTitle}>{renderHistoryTitle(item)}</div>
-            <div className={styles.historyDetail}>{renderHistoryDetail(item)}</div>
-            {item.preview && (
-              <div className={styles.historyPreview}>
-                <img src={item.preview} alt={renderHistoryTitle(item)} />
+      <div>
+        <div className={styles.historyToolbar}>
+          <label className={styles.historyFilter}>
+            <span className={styles.historyFilterLabel}>
+              {t("dashboard.history.filterModel")}
+            </span>
+            <select
+              className={styles.historySelect}
+              value={historyModelFilter}
+              onChange={(e) =>
+                setHistoryModelFilter(e.target.value as ModelValue | "all")
+              }
+            >
+              <option value="all">{t("dashboard.history.filterAll")}</option>
+              {localizedModelOptions.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className={styles.historySaveBox}>
+            <div className={styles.historySaveMeta}>
+              <div className={styles.historySaveTitle}>
+                {t("dashboard.history.saveFolder")}
               </div>
+              <div className={styles.historySaveValue}>
+                {isFileSystemAccessSupported
+                  ? hasSaveDir
+                    ? t("dashboard.history.saveFolderSelected", {
+                        name: saveDirName || t("dashboard.history.saveFolderUnknown"),
+                      })
+                    : t("dashboard.history.saveFolderNotSet")
+                  : t("dashboard.history.saveFolderUnsupported")}
+              </div>
+            </div>
+            {isFileSystemAccessSupported && (
+              <button className={styles.secondaryBtn} type="button" onClick={pickSaveFolder}>
+                {t("dashboard.history.chooseFolder")}
+              </button>
             )}
           </div>
-        ))}
+        </div>
+
+        <div className={styles.historyHint}>{t("dashboard.history.metaOnlyHint")}</div>
+
+        {modelsToShow.map((modelValue) => {
+          const group = filtered.filter((item) => item.model === modelValue);
+          if (!group.length) return null;
+          const modelLabel =
+            localizedModelOptions.find((m) => m.value === modelValue)?.label || modelValue;
+          return (
+            <div key={modelValue} className={styles.historyGroup}>
+              <div className={styles.historyGroupTitle}>{modelLabel}</div>
+              <div className={styles.historyGrid}>
+                {group.map((item) => (
+                  <div key={item.id} className={styles.historyCard}>
+                    <div className={styles.historyHead}>
+                      <span className={styles.badge}>{modelLabel}</span>
+                      <span className={styles.historyTime}>
+                        {formatTime(new Date(item.createdAt), intlLocale)}
+                      </span>
+                    </div>
+                    <div className={styles.historyTitle}>
+                      {t("dashboard.history.imageDone")}
+                    </div>
+                    <div className={styles.historyDetail}>
+                      {t("dashboard.model.points", { credits: item.costCredits })} ·{" "}
+                      {item.aspectRatio} · {item.imageSize}
+                    </div>
+                    <div className={styles.historyDetail}>
+                      {item.prompt.length > 80 ? `${item.prompt.slice(0, 80)}…` : item.prompt}
+                    </div>
+                    <div className={styles.historyPreview}>
+                      <img src={item.thumbnailDataUrl} alt={item.prompt} />
+                    </div>
+                    <div className={styles.historyActions}>
+                      {item.imageUrl ? (
+                        <button
+                          className={styles.secondaryBtn}
+                          type="button"
+                          onClick={async () => {
+                            const filename =
+                              item.fileName || `nano-banana-${item.model}-${item.id}.png`;
+                            await downloadImage(item.imageUrl as string, filename);
+                            setImageHistory((prev) =>
+                              prev.map((p) =>
+                                p.id === item.id
+                                  ? { ...p, fileName: filename, savedVia: "download" }
+                                  : p
+                              )
+                            );
+                          }}
+                        >
+                          {t("dashboard.result.download")}
+                        </button>
+                      ) : (
+                        <button className={styles.secondaryBtn} type="button" disabled>
+                          {t("dashboard.result.download")}
+                        </button>
+                      )}
+
+                      {item.savedVia === "fs" ? (
+                        <button
+                          className={styles.secondaryBtn}
+                          type="button"
+                          onClick={() => openSavedFile(item)}
+                        >
+                          {t("dashboard.history.openLocalFile")}
+                        </button>
+                      ) : null}
+                    </div>
+                    {item.fileName && (
+                      <div className={styles.historyFile}>
+                        {t("dashboard.history.fileLabel", { name: item.fileName })}
+                        {item.savedDirName
+                          ? ` · ${t("dashboard.history.folderLabel", {
+                              name: item.savedDirName,
+                            })}`
+                          : null}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -1901,7 +2281,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
       <LoginModal
         isOpen={isLoginModalOpen}
-        callbackUrl={getSelfCallbackUrl()}
+        callbackUrl={selfCallbackUrl}
         onClose={() => setIsLoginModalOpen(false)}
       />
 

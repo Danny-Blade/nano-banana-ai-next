@@ -1,9 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import type { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { ensureUserFromOAuth, getUserById } from "@/lib/users";
 import { custom } from "openid-client";
 import { HttpsProxyAgent } from "next/dist/compiled/https-proxy-agent";
-import { getD1 } from "@/lib/d1";
+import { getD1, nowSeconds } from "@/lib/d1";
 import { getRuntimeEnv } from "@/lib/runtime-env";
 
 let printedAuthEnvWarning = false;
@@ -63,6 +64,17 @@ function isLocalhostProxy(proxyUrl: string): boolean {
 	}
 }
 
+function isCloudflareRuntime(): boolean {
+	try {
+		// eslint-disable-next-line @typescript-eslint/no-require-imports
+		const { getCloudflareContext } = require("@opennextjs/cloudflare") as typeof import("@opennextjs/cloudflare");
+		const ctx = getCloudflareContext?.();
+		return !!ctx?.env;
+	} catch {
+		return false;
+	}
+}
+
 // 某些网络环境（例如仅浏览器走代理/VPN，而 Node 进程未走）会导致 NextAuth 在 callback
 // 阶段请求 Google token/userinfo 超时。这里允许通过代理环境变量显式为 openid-client 配置 agent。
 const httpOptionsDefaults: Parameters<typeof custom.setHttpOptionsDefaults>[0] = {
@@ -70,13 +82,31 @@ const httpOptionsDefaults: Parameters<typeof custom.setHttpOptionsDefaults>[0] =
 };
 
 if (OAUTH_HTTP_PROXY) {
-	// Cloudflare Workers 无法访问你本机的 127.0.0.1 代理；若线上误配，直接忽略以避免所有 OAuth 请求失败。
-	if (process.env.NODE_ENV === "production" && isLocalhostProxy(OAUTH_HTTP_PROXY)) {
+	// 在 Cloudflare runtime（包括 wrangler dev / workers）里，Node 的代理 agent 不可靠，
+	// 且 localhost 代理往往不可用，容易导致 OAuth callback 失败；这里统一忽略。
+	if (process.env.NODE_ENV === "production" && !isCloudflareRuntime() && isLocalhostProxy(OAUTH_HTTP_PROXY)) {
 		console.warn(
 			`[auth] Ignoring localhost OAuth proxy in production: ${redactProxyUrl(
 				OAUTH_HTTP_PROXY,
 			)}. Remove OAUTH_HTTP_PROXY/HTTPS_PROXY from Cloudflare env.`,
 		);
+	} else
+	if (isCloudflareRuntime()) {
+		// 在开发环境下允许代理使用
+		if (process.env.NODE_ENV !== "production") {
+			console.info(
+				`[auth] Using OAuth proxy in Cloudflare dev runtime: ${redactProxyUrl(
+					OAUTH_HTTP_PROXY,
+				)}`,
+			);
+			httpOptionsDefaults.agent = new HttpsProxyAgent(OAUTH_HTTP_PROXY);
+		} else {
+			console.warn(
+				`[auth] Ignoring OAuth proxy in Cloudflare production runtime: ${redactProxyUrl(
+					OAUTH_HTTP_PROXY,
+				)}. Use direct network access instead.`,
+			);
+		}
 	} else
 	if (OAUTH_HTTP_PROXY.toLowerCase().startsWith("socks")) {
 		// 仅提示：socks 代理需要 socks-proxy-agent；这里先不引入依赖，避免构建与部署复杂度。
@@ -236,10 +266,100 @@ export const authOptions: NextAuthOptions = {
 	},
 	// @ts-expect-error trustHost is supported by NextAuth runtime but missing in its types
     trustHost: true,
+		// Local dev can run multiple ports (e.g. Next.js 3000 vs Wrangler 8787).
+		// Without port-scoped cookie names, OAuth state/csrf cookies can conflict and cause callback failures.
+		// We suffix cookie names by port for localhost URLs.
+		cookies: (() => {
+		const urlText = env("NEXTAUTH_URL")?.trim();
+		let suffix = "";
+		let useSecureCookies = process.env.NODE_ENV === "production";
+		if (urlText) {
+			try {
+				const u = new URL(urlText);
+				useSecureCookies = u.protocol === "https:";
+				const host = u.hostname.toLowerCase();
+				if ((host === "localhost" || host === "127.0.0.1" || host === "::1") && u.port) {
+					suffix = `.${u.port}`;
+				}
+			} catch {
+				// ignore
+			}
+		}
+		const base = {
+			httpOnly: true,
+			sameSite: "lax" as const,
+			path: "/",
+			secure: useSecureCookies,
+		};
+		return {
+			sessionToken: { name: `next-auth.session-token${suffix}`, options: base },
+			callbackUrl: { name: `next-auth.callback-url${suffix}`, options: { ...base, httpOnly: false } },
+			csrfToken: { name: `next-auth.csrf-token${suffix}`, options: { ...base, httpOnly: false } },
+			pkceCodeVerifier: { name: `next-auth.pkce.code_verifier${suffix}`, options: base },
+			state: { name: `next-auth.state${suffix}`, options: base },
+			nonce: { name: `next-auth.nonce${suffix}`, options: base },
+		};
+	})(),
     providers: [
         GoogleNoDiscovery({
             ...getGoogleOAuthCredentials(),
         }),
+		// NOTE: In `wrangler dev`, `NODE_ENV` can be "production". We still want dev login
+		// as long as the explicit flag is enabled. Do NOT set DEV_AUTH_BYPASS in real prod.
+		...(env("DEV_AUTH_BYPASS") === "true"
+			? [
+					CredentialsProvider({
+						id: "dev",
+						name: "Dev",
+						credentials: {
+							email: { label: "Email", type: "text" },
+						},
+						async authorize() {
+							// Dev login always uses a single fixed account for local testing.
+							// (Ignore any user-supplied credentials to avoid accidentally "creating" arbitrary users.)
+							const email = env("DEV_AUTH_EMAIL")?.trim() || "rping1230@gmail.com";
+							const initialCreditsRaw = env("DEV_AUTH_CREDITS")?.trim();
+							const initialCredits = Number.isFinite(Number(initialCreditsRaw))
+								? Math.max(0, Math.floor(Number(initialCreditsRaw)))
+								: 1000;
+							try {
+								const user = await ensureUserFromOAuth({
+									provider: "dev",
+									providerAccountId: email,
+									email,
+									name: "Dev User",
+									avatarUrl: null,
+								});
+
+								// Ensure dev user has enough credits for local testing.
+								try {
+									const db = getD1();
+									if (db) {
+										await db
+											.prepare(
+												`UPDATE users
+                         SET credits_balance = CASE WHEN credits_balance < ? THEN ? ELSE credits_balance END,
+                             updated_at = ?
+                         WHERE id = ?`,
+											)
+											.bind(initialCredits, initialCredits, nowSeconds(), user.id)
+											.run();
+									}
+								} catch (err) {
+									console.error("[auth] DEV_AUTH_BYPASS: Failed to set dev credits:", err);
+								}
+
+								return { id: user.id, email: user.email, name: user.name, image: null };
+							} catch (err) {
+								// Don't block local dev login if D1 is not ready; allow session to proceed.
+								// Credits/features that require D1 will still fail until migrations/binding are correct.
+								console.error("[auth] DEV_AUTH_BYPASS: Failed to persist dev user to D1:", err);
+								return { id: `dev:${email}`, email, name: "Dev User", image: null };
+							}
+						},
+					}),
+			  ]
+			: []),
     ],
     pages: {
         signIn: '/login', // 我们用弹窗登录；这里是兜底路由
@@ -262,7 +382,22 @@ export const authOptions: NextAuthOptions = {
          * 将 OAuth 用户落库到 D1，并把内部 `userId` 写入 JWT。
          * 这样积分/订阅等业务就有稳定的主键可用。
          */
-		async jwt({ token, account, profile }) {
+		async jwt({ token, account, profile, user }) {
+			const devCreditsRaw = env("DEV_AUTH_CREDITS")?.trim();
+			const devCredits = Number.isFinite(Number(devCreditsRaw))
+				? Math.max(0, Math.floor(Number(devCreditsRaw)))
+				: 1000;
+
+			// Credentials provider ("dev") should still populate userId in JWT.
+			if (
+				user &&
+				typeof user.id === "string" &&
+				(account?.provider === "dev" || user.id.startsWith("dev:"))
+			) {
+				token.userId = user.id;
+				(token as Record<string, unknown>).devCredits = devCredits;
+				return token;
+			}
 			if (account?.provider && account.providerAccountId) {
 				const db = getD1();
 				if (!db) {
@@ -314,7 +449,7 @@ export const authOptions: NextAuthOptions = {
 					}
 				}
 			}
-			return token;
+            return token;
         },
 
         /**
@@ -323,6 +458,10 @@ export const authOptions: NextAuthOptions = {
          */
 		async session({ session, token }) {
 			const userId = typeof token.userId === "string" ? token.userId : null;
+			const devCredits =
+				typeof (token as Record<string, unknown>).devCredits === "number"
+					? ((token as Record<string, unknown>).devCredits as number)
+					: null;
 			if (session.user && userId) {
 				session.user.id = userId;
 				const db = getD1();
@@ -332,16 +471,16 @@ export const authOptions: NextAuthOptions = {
 							"[auth] 未找到 D1 数据库绑定（DB）。将返回 credits=0；请在 Cloudflare 环境绑定 D1 为 `DB`。",
 						);
 					}
-					session.user.credits = 0;
+					session.user.credits = devCredits ?? 0;
 					return session;
 				}
 				try {
 					const user = await getUserById(userId);
-					session.user.credits = user?.credits_balance ?? 0;
+					session.user.credits = user?.credits_balance ?? devCredits ?? 0;
 				} catch (err) {
 					// 不阻断 session 获取，否则前端会报 /api/auth/session 500 并导致登录态异常。
 					console.error("[auth] Failed to load user credits from D1:", err);
-					session.user.credits = 0;
+					session.user.credits = devCredits ?? 0;
                 }
             }
             return session;

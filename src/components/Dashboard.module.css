@@ -915,6 +915,75 @@
     gap: 0.9rem;
 }
 
+.historyToolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.historyFilter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.historyFilterLabel {
+    color: #475569;
+    font-size: 0.95rem;
+}
+
+.historySelect {
+    padding: 0.45rem 0.6rem;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #0f172a;
+}
+
+.historySaveBox {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.historySaveMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.historySaveTitle {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.historySaveValue {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.historyHint {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+}
+
+.historyGroup {
+    margin-top: 1.1rem;
+}
+
+.historyGroupTitle {
+    font-weight: 800;
+    margin-bottom: 0.6rem;
+}
+
 .historyCard {
     padding: 0.9rem;
     border-radius: 14px;
@@ -950,6 +1019,20 @@
     width: 100%;
     height: 140px;
     object-fit: cover;
+}
+
+.historyActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+}
+
+.historyFile {
+    margin-top: 0.45rem;
+    font-size: 0.85rem;
+    color: #64748b;
+    word-break: break-all;
 }
 
 .emptyState {

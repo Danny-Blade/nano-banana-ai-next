@@ -10,6 +10,7 @@ const eslintConfig = defineConfig([
     // eslint-config-next 默认忽略：
     ".next/**",
     ".open-next/**",
+    ".wrangler/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
