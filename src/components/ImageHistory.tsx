@@ -232,17 +232,15 @@ export const ImageHistory = ({
                       {formatTime(new Date(item.createdAt), intlLocale)}
                     </span>
                   </div>
-                  <div className={styles.historyTitle}>
-                    {t("dashboard.history.imageDone")}
-                  </div>
                   <div className={styles.historyDetail}>
                     {t("dashboard.model.points", { credits: item.costCredits })} ·{" "}
                     {item.aspectRatio} · {item.imageSize}
                   </div>
-                  <div className={styles.historyDetail}>
-                    {item.prompt.length > 80
-                      ? `${item.prompt.slice(0, 80)}…`
-                      : item.prompt}
+                  <div
+                    className={styles.historyPrompt}
+                    title={item.prompt}
+                  >
+                    {item.prompt}
                   </div>
                   <div
                     className={styles.historyPreview}
@@ -311,14 +309,6 @@ export const ImageHistory = ({
                         {t("dashboard.history.openLocalFile")}
                       </button>
                     ) : null}
-                  </div>
-                  <div className={styles.historyFile}>
-                    {t("dashboard.history.fileLabel", { name: item.fileName || `nano-banana-${item.model}-${item.id}.png` })}
-                    {item.savedDirName
-                      ? ` · ${t("dashboard.history.folderLabel", {
-                          name: item.savedDirName,
-                        })}`
-                      : null}
                   </div>
                 </div>
               ))}
