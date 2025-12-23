@@ -852,6 +852,15 @@
     color: #475569;
     font-size: 0.9rem;
     margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.progressStage {
+    color: #1e40af;
+    font-weight: 500;
 }
 
 .errorNote {

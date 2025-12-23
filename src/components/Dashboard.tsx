@@ -588,7 +588,8 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
           </div>
         )}
 
-        {(variant === "generateOnly" || activeTab === "generate") && (
+        {/* ImageEditorPanel 保持挂载以便生成进度在切换标签时继续 */}
+        <div style={{ display: (variant === "generateOnly" || activeTab === "generate") ? "block" : "none" }}>
           <ImageEditorPanel
             localizedModelOptions={localizedModelOptions}
             selectedModel={selectedModel}
@@ -603,7 +604,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             refreshSession={handleRefreshSession}
             openPreview={openPreview}
           />
-        )}
+        </div>
 
         {variant !== "generateOnly" && activeTab === "batch" && (
           <BatchPanel

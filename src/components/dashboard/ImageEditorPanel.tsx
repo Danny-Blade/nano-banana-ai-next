@@ -26,6 +26,8 @@ import {
   mapResolutionToImageSize,
 } from "./utils";
 
+const SETTINGS_KEY = "nano_banana_editor_settings_v1";
+
 type ImageEditorPanelProps = {
   localizedModelOptions: LocalizedModelOption[];
   selectedModel: ModelValue;
@@ -77,16 +79,63 @@ export const ImageEditorPanel = ({
   const [results, setResults] = React.useState<GeneratedResult[]>([]);
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
+  const [progressStage, setProgressStage] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [activeResultIndex, setActiveResultIndex] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
+  const [settingsLoaded, setSettingsLoaded] = React.useState(false);
 
   const referenceInputRef = React.useRef<HTMLInputElement | null>(null);
+  const progressIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // 加载保存的设置
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem(SETTINGS_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.ratio) setRatio(parsed.ratio);
+        if (parsed.generateCount) setGenerateCount(parsed.generateCount);
+        if (parsed.resolution) setResolution(parsed.resolution);
+        if (parsed.selectedModel && parsed.selectedModel !== selectedModel) {
+          setSelectedModel(parsed.selectedModel);
+        }
+      }
+    } catch {
+      // ignore
+    }
+    setSettingsLoaded(true);
+  }, []);
+
+  // 保存设置
+  React.useEffect(() => {
+    if (!settingsLoaded) return;
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+        ratio,
+        generateCount,
+        resolution,
+        selectedModel,
+      }));
+    } catch {
+      // ignore
+    }
+  }, [ratio, generateCount, resolution, selectedModel, settingsLoaded]);
 
   React.useEffect(() => {
     const defaults = resolutionOptions[selectedModel] || ["Auto"];
+    if (!settingsLoaded) return;
     setResolution(defaults[0]);
-  }, [selectedModel]);
+  }, [selectedModel, settingsLoaded]);
+
+  // 清理进度定时器
+  React.useEffect(() => {
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, []);
 
   React.useEffect(() => {
     setActiveResultIndex(0);
@@ -100,6 +149,38 @@ export const ImageEditorPanel = ({
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     handleDropUtil(event, setReferenceImages, setIsDragging);
+  };
+
+  // 根据进度百分比获取阶段文字
+  const getProgressStage = (percent: number): string => {
+    if (percent < 10) return t("dashboard.generate.progressPreparing");
+    if (percent < 25) return t("dashboard.generate.progressUploading");
+    if (percent < 45) return t("dashboard.generate.progressProcessing");
+    if (percent < 70) return t("dashboard.generate.progressGenerating");
+    if (percent < 90) return t("dashboard.generate.progressEnhancing");
+    if (percent < 100) return t("dashboard.generate.progressFinalizing");
+    return t("dashboard.generate.progressComplete");
+  };
+
+  // 启动模拟进度
+  const startSimulatedProgress = (targetPercent: number) => {
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+    }
+
+    progressIntervalRef.current = setInterval(() => {
+      setProgress((prev) => {
+        const increment = Math.random() * 2 + 0.5; // 0.5-2.5% 随机增量
+        const newValue = Math.min(prev + increment, targetPercent);
+        setProgressStage(getProgressStage(newValue));
+        if (newValue >= targetPercent) {
+          if (progressIntervalRef.current) {
+            clearInterval(progressIntervalRef.current);
+          }
+        }
+        return newValue;
+      });
+    }, 300);
   };
 
   const handleGenerate = () => {
@@ -119,11 +200,25 @@ export const ImageEditorPanel = ({
       setIsGenerating(true);
       setError(null);
       setResultTab("result");
-      setProgress(6);
+      setProgress(2);
+      setProgressStage(getProgressStage(2));
+
+      // 启动模拟进度，初始目标 30%
+      startSimulatedProgress(30);
+
       const generated: GeneratedResult[] = [];
       const encodedRefs = await encodeReferenceImages(referenceImages);
 
+      // 上传完参考图后，目标进度提升到 45%
+      startSimulatedProgress(45);
+
       for (let i = 0; i < count; i += 1) {
+        // 每张图的进度目标：45% + ((i+1)/count)*45%
+        const targetProgress = 45 + ((i + 1) / count) * 45;
+
+        // 开始生成前，更新进度目标
+        startSimulatedProgress(Math.min(targetProgress - 5, 90));
+
         try {
           const response = await fetch("/api/image/generate", {
             method: "POST",
@@ -207,13 +302,25 @@ export const ImageEditorPanel = ({
             ratio,
             resolution: imageSize,
           });
-          setProgress(Math.min(98, Math.round(((i + 1) / count) * 90 + 8)));
+
+          // 完成这张图后，立即更新进度
+          if (progressIntervalRef.current) {
+            clearInterval(progressIntervalRef.current);
+          }
+          setProgress(Math.min(targetProgress, 95));
+          setProgressStage(getProgressStage(Math.min(targetProgress, 95)));
         } catch (err) {
           const message =
             err instanceof Error ? err.message : t("dashboard.generate.generationFailed");
           setError(message);
           break;
         }
+      }
+
+      // 清理进度定时器
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
       }
 
       if (generated.length) {
@@ -228,8 +335,13 @@ export const ImageEditorPanel = ({
         }
       }
 
+      // 平滑完成到 100%
       setProgress(100);
-      setTimeout(() => setProgress(0), 400);
+      setProgressStage(getProgressStage(100));
+      setTimeout(() => {
+        setProgress(0);
+        setProgressStage("");
+      }, 800);
       setIsGenerating(false);
     };
 
@@ -617,9 +729,8 @@ export const ImageEditorPanel = ({
                 />
               </div>
               <div className={styles.progressText}>
-                {t("dashboard.generate.progress", {
-                  percent: progress.toFixed(0),
-                })}
+                {progressStage && <span className={styles.progressStage}>{progressStage}</span>}
+                <span>{progress.toFixed(0)}%</span>
               </div>
             </div>
           )}
