@@ -227,7 +227,6 @@ export const ImageHistory = ({
               {group.map((item) => (
                 <div key={item.id} className={styles.historyCard}>
                   <div className={styles.historyHead}>
-                    <span className={styles.badge}>{modelLabel}</span>
                     <span className={styles.historyTime}>
                       {formatTime(new Date(item.createdAt), intlLocale)}
                     </span>

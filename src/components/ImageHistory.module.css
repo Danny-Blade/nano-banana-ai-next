@@ -112,6 +112,7 @@
 .historyTime {
     color: #64748b;
     font-size: 0.85rem;
+    white-space: nowrap;
 }
 
 
@@ -164,6 +165,7 @@
     font-weight: 600;
     background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
     color: #78350f;
+    white-space: nowrap;
 }
 
 .secondaryBtn {
