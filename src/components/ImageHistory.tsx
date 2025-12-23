@@ -35,8 +35,6 @@ export const ImageHistory = ({
     setImageHistory: setInternalHistory,
     historyModelFilter,
     setHistoryModelFilter,
-    historyNotice,
-    showHistoryNotice,
     saveDirName,
     hasSaveDir,
     isFileSystemAccessSupported,
@@ -53,6 +51,7 @@ export const ImageHistory = ({
 
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [previewAlt, setPreviewAlt] = React.useState("");
+  const [toastMessage, setToastMessage] = React.useState<string | null>(null);
 
   const intlLocale = React.useMemo(() => {
     if (locale === "zh") return "zh-CN";
@@ -75,13 +74,18 @@ export const ImageHistory = ({
     });
   }, [locale, t]);
 
+  const showToast = React.useCallback((message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 2000);
+  }, []);
+
   const copyPrompt = React.useCallback(
     async (text: string) => {
       if (!text) return;
       try {
         if (navigator.clipboard?.writeText) {
           await navigator.clipboard.writeText(text);
-          showHistoryNotice(t("dashboard.history.promptCopied"));
+          showToast(t("dashboard.history.promptCopied"));
           return;
         }
       } catch {
@@ -100,14 +104,14 @@ export const ImageHistory = ({
         textarea.select();
         const ok = document.execCommand("copy");
         document.body.removeChild(textarea);
-        showHistoryNotice(
+        showToast(
           ok ? t("dashboard.history.promptCopied") : t("dashboard.history.copyFailed")
         );
       } catch {
-        showHistoryNotice(t("dashboard.history.copyFailed"));
+        showToast(t("dashboard.history.copyFailed"));
       }
     },
-    [showHistoryNotice, t]
+    [showToast, t]
   );
 
   const openPreview = React.useCallback((url: string, alt: string) => {
@@ -203,9 +207,6 @@ export const ImageHistory = ({
         </>
       )}
 
-      {historyNotice ? (
-        <div className={styles.historyNotice}>{historyNotice}</div>
-      ) : null}
 
       {!filtered.length ? (
         <div className={styles.emptyState}>
@@ -258,21 +259,21 @@ export const ImageHistory = ({
                   <div className={styles.historyActions}>
                     {(() => {
                       const sourceUrl =
-                        item.imageUrl || historySourceMap.current.get(item.id) || "";
+                        item.imageUrl || historySourceMap.current.get(item.id) || item.thumbnailDataUrl || "";
                       const canDownload =
                         !!sourceUrl ||
                         (isFileSystemAccessSupported &&
                           item.savedVia === "fs" &&
                           item.fileName);
+                      const filename =
+                        item.fileName ||
+                        `nano-banana-${item.model}-${item.id}.png`;
                       return (
                         <button
                           className={styles.secondaryBtn}
                           type="button"
                           disabled={!canDownload}
                           onClick={async () => {
-                            const filename =
-                              item.fileName ||
-                              `nano-banana-${item.model}-${item.id}.png`;
                             if (sourceUrl) {
                               await downloadImage(sourceUrl, filename);
                             } else {
@@ -311,16 +312,14 @@ export const ImageHistory = ({
                       </button>
                     ) : null}
                   </div>
-                  {item.fileName && (
-                    <div className={styles.historyFile}>
-                      {t("dashboard.history.fileLabel", { name: item.fileName })}
-                      {item.savedDirName
-                        ? ` · ${t("dashboard.history.folderLabel", {
-                            name: item.savedDirName,
-                          })}`
-                        : null}
-                    </div>
-                  )}
+                  <div className={styles.historyFile}>
+                    {t("dashboard.history.fileLabel", { name: item.fileName || `nano-banana-${item.model}-${item.id}.png` })}
+                    {item.savedDirName
+                      ? ` · ${t("dashboard.history.folderLabel", {
+                          name: item.savedDirName,
+                        })}`
+                      : null}
+                  </div>
                 </div>
               ))}
             </div>
@@ -353,6 +352,13 @@ export const ImageHistory = ({
               className={styles.previewImage}
             />
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className={styles.toastOverlay}>
+          <div className={styles.toastContent}>{toastMessage}</div>
         </div>
       )}
     </div>

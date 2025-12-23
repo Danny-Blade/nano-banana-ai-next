@@ -240,3 +240,36 @@
 .previewClose:hover {
     background: #ffffff;
 }
+
+/* Toast Notification */
+.toastOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.toastContent {
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.9);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    animation: toastFadeIn 0.2s ease-out;
+}
+
+@keyframes toastFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
