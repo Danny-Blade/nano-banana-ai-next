@@ -399,79 +399,102 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     [persistHistorySources],
   );
 
+  // 从 localStorage 加载历史记录 - 只在组件挂载时执行一次
   React.useEffect(() => {
-    try {
-      const raw = localStorage.getItem(IMAGE_HISTORY_STORAGE_KEY);
-      if (!raw) return;
-      const parsed: unknown = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return;
-      const items = parsed
-        .filter((v) => v && typeof v === "object")
-        .map((rawItem) => {
-          const v = rawItem as Record<string, unknown>;
-          const id = typeof v.id === "string" ? v.id : null;
-          const createdAt =
-            typeof v.createdAt === "number"
-              ? v.createdAt
-              : typeof v.created_at === "number"
-                ? v.created_at
-                : null;
-          const model =
-            typeof v.model === "string"
-              ? v.model
-              : typeof v.modelKey === "string"
-                ? v.modelKey
-                : typeof v.model_key === "string"
-                  ? v.model_key
-                  : null;
-          const prompt =
-            typeof v.prompt === "string"
-              ? v.prompt
-              : typeof v.text === "string"
-                ? v.text
-                : "";
-          const thumbnailDataUrl =
-            typeof v.thumbnailDataUrl === "string"
-              ? v.thumbnailDataUrl
-              : typeof v.thumbnail === "string"
-                ? v.thumbnail
-                : typeof v.thumb === "string"
-                  ? v.thumb
-                  : typeof v.imageUrl === "string"
-                    ? v.imageUrl
-                    : null;
-          if (!id || createdAt == null || !model || !thumbnailDataUrl) return null;
-          return {
-            id,
-            createdAt,
-            model: model as ModelValue,
-            prompt,
-            aspectRatio: typeof v.aspectRatio === "string" ? v.aspectRatio : "1:1",
-            imageSize: typeof v.imageSize === "string" ? v.imageSize : "1K",
-            costCredits: typeof v.costCredits === "number" ? v.costCredits : 0,
-            thumbnailDataUrl,
-            imageUrl: typeof v.imageUrl === "string" ? v.imageUrl : undefined,
-            fileName: typeof v.fileName === "string" ? v.fileName : undefined,
-            savedDirName: typeof v.savedDirName === "string" ? v.savedDirName : undefined,
-            savedVia:
-              v.savedVia === "download" || v.savedVia === "fs" ? v.savedVia : undefined,
-          } satisfies ImageHistoryItem;
-        })
-        .filter(Boolean) as ImageHistoryItem[];
-      setImageHistory(items.slice(0, IMAGE_HISTORY_LIMIT));
-      items.forEach((item) => {
-        if (item.imageUrl && !historySourceMap.current.has(item.id)) {
-          historySourceMap.current.set(item.id, item.imageUrl);
+    // 防止重复加载
+    if (historyHydratedRef.current) return;
+
+    const loadHistory = () => {
+      try {
+        const raw = localStorage.getItem(IMAGE_HISTORY_STORAGE_KEY);
+        if (!raw) {
+          historyHydratedRef.current = true;
+          return;
         }
-      });
+        const parsed: unknown = JSON.parse(raw);
+        if (!Array.isArray(parsed)) {
+          historyHydratedRef.current = true;
+          return;
+        }
+        const items = parsed
+          .filter((v) => v && typeof v === "object")
+          .map((rawItem) => {
+            const v = rawItem as Record<string, unknown>;
+            const id = typeof v.id === "string" ? v.id : null;
+            const createdAt =
+              typeof v.createdAt === "number"
+                ? v.createdAt
+                : typeof v.created_at === "number"
+                  ? v.created_at
+                  : null;
+            const model =
+              typeof v.model === "string"
+                ? v.model
+                : typeof v.modelKey === "string"
+                  ? v.modelKey
+                  : typeof v.model_key === "string"
+                    ? v.model_key
+                    : null;
+            const prompt =
+              typeof v.prompt === "string"
+                ? v.prompt
+                : typeof v.text === "string"
+                  ? v.text
+                  : "";
+            const thumbnailDataUrl =
+              typeof v.thumbnailDataUrl === "string"
+                ? v.thumbnailDataUrl
+                : typeof v.thumbnail === "string"
+                  ? v.thumbnail
+                  : typeof v.thumb === "string"
+                    ? v.thumb
+                    : typeof v.imageUrl === "string"
+                      ? v.imageUrl
+                      : null;
+            if (!id || createdAt == null || !model || !thumbnailDataUrl) return null;
+            return {
+              id,
+              createdAt,
+              model: model as ModelValue,
+              prompt,
+              aspectRatio: typeof v.aspectRatio === "string" ? v.aspectRatio : "1:1",
+              imageSize: typeof v.imageSize === "string" ? v.imageSize : "1K",
+              costCredits: typeof v.costCredits === "number" ? v.costCredits : 0,
+              thumbnailDataUrl,
+              imageUrl: typeof v.imageUrl === "string" ? v.imageUrl : undefined,
+              fileName: typeof v.fileName === "string" ? v.fileName : undefined,
+              savedDirName: typeof v.savedDirName === "string" ? v.savedDirName : undefined,
+              savedVia:
+                v.savedVia === "download" || v.savedVia === "fs" ? v.savedVia : undefined,
+            } satisfies ImageHistoryItem;
+          })
+          .filter(Boolean) as ImageHistoryItem[];
+        setImageHistory(items.slice(0, IMAGE_HISTORY_LIMIT));
+        items.forEach((item) => {
+          if (item.imageUrl && !historySourceMap.current.has(item.id)) {
+            historySourceMap.current.set(item.id, item.imageUrl);
+          }
+        });
+      } catch {
+        // ignore parsing errors
+      } finally {
+        historyHydratedRef.current = true;
+      }
+    };
+
+    loadHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 在数据加载后持久化 historySourceMap 到 IndexedDB
+  React.useEffect(() => {
+    if (!historyHydratedRef.current) return;
+    if (historySourceMap.current.size > 0) {
       void persistHistorySources();
-    } catch {
-      // ignore
-    } finally {
-      historyHydratedRef.current = true;
     }
   }, [persistHistorySources]);
 
+  // 保存历史记录到 localStorage - 只在数据已加载且有变化时执行
   React.useEffect(() => {
     if (!historyHydratedRef.current) return;
     try {
