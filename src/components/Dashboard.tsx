@@ -7,6 +7,7 @@ import { getMessage } from "@/lib/i18n";
 import { useSiteContent } from "@/components/useSiteContent";
 import { useSession } from "next-auth/react";
 import LoginModal from "@/components/LoginModal";
+import ImageHistory from "@/components/ImageHistory";
 
 type Tab = "generate" | "batch" | "compare" | "history";
 type ResultTab = "result" | "original" | "compare";
@@ -145,15 +146,6 @@ const templateCategories = [
   { key: "cover" as const },
 ];
 
-const formatTime = (timestamp: Date, locale: string) => {
-  return timestamp.toLocaleString(locale, {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
 const IMAGE_HISTORY_STORAGE_KEY = "nano_banana_image_history_v1";
 const IMAGE_HISTORY_LIMIT = 60;
 const IMAGE_HISTORY_SOURCES_KEY = "historySources";
@@ -164,13 +156,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const { data: session, status: sessionStatus, update: refreshSession } = useSession();
 
   const DEFAULT_MODEL: ModelValue = "nano-banana-pro";
-
-  const intlLocale = React.useMemo(() => {
-    if (locale === "zh") return "zh-CN";
-    if (locale === "ja") return "ja-JP";
-    if (locale === "ko") return "ko-KR";
-    return "en-US";
-  }, [locale]);
 
   const localizedModelOptions = React.useMemo(() => {
     return modelOptions.map((model) => {
@@ -236,12 +221,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
 
   const [, setHistory] = React.useState<HistoryEntry[]>([]);
   const [imageHistory, setImageHistory] = React.useState<ImageHistoryItem[]>([]);
-  const [historyModelFilter, setHistoryModelFilter] = React.useState<ModelValue | "all">(
-    "all"
-  );
-  const [historyNotice, setHistoryNotice] = React.useState<string | null>(null);
-  const [saveDirName, setSaveDirName] = React.useState<string | null>(null);
-  const [hasSaveDir, setHasSaveDir] = React.useState(false);
   const [selfCallbackUrl, setSelfCallbackUrl] = React.useState<string | undefined>(
     undefined,
   );
@@ -283,46 +262,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const [isDragging, setIsDragging] = React.useState(false);
 
   const imagePool = React.useMemo(() => siteContent.explore.images || [], [siteContent]);
-
-  const showHistoryNotice = React.useCallback((message: string) => {
-    setHistoryNotice(message);
-    window.setTimeout(() => setHistoryNotice(null), 1800);
-  }, []);
-
-  const copyPrompt = React.useCallback(
-    async (text: string) => {
-      if (!text) return;
-      try {
-        if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(text);
-          showHistoryNotice(t("dashboard.history.promptCopied"));
-          return;
-        }
-      } catch {
-        // fall through to legacy copy
-      }
-
-      try {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.style.position = "fixed";
-        textarea.style.top = "0";
-        textarea.style.left = "0";
-        textarea.style.opacity = "0";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        const ok = document.execCommand("copy");
-        document.body.removeChild(textarea);
-        showHistoryNotice(
-          ok ? t("dashboard.history.promptCopied") : t("dashboard.history.copyFailed"),
-        );
-      } catch {
-        showHistoryNotice(t("dashboard.history.copyFailed"));
-      }
-    },
-    [showHistoryNotice, t],
-  );
 
   const isFileSystemAccessSupported = React.useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -522,23 +461,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   }, [imageHistory, persistHistorySources]);
 
   React.useEffect(() => {
-    if (!isFileSystemAccessSupported) return;
-    historyDb
-      .get<{ name?: string }>("saveDirMeta")
-      .then((meta) => {
-        if (meta?.name) setSaveDirName(meta.name);
-      })
-      .catch(() => null);
-    historyDb
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .get<any>("saveDirHandle")
-      .then((handle) => {
-        if (handle) setHasSaveDir(true);
-      })
-      .catch(() => null);
-  }, [historyDb, isFileSystemAccessSupported]);
-
-  React.useEffect(() => {
     // Avoid hydration mismatch: `window` is not available during SSR.
     if (typeof window === "undefined") return;
     setSelfCallbackUrl(
@@ -717,23 +639,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     }
   };
 
-  const pickSaveFolder = async () => {
-    if (!isFileSystemAccessSupported) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const picker = (globalThis as any).showDirectoryPicker as (() => Promise<any>) | undefined;
-    if (!picker) return;
-    try {
-      const handle = await picker();
-      const name = typeof handle?.name === "string" ? handle.name : null;
-      await historyDb.put("saveDirHandle", handle);
-      await historyDb.put("saveDirMeta", { name });
-      setSaveDirName(name);
-      setHasSaveDir(true);
-    } catch {
-      // user cancelled
-    }
-  };
-
   const trySaveToLocalFolder = async (url: string, fileName: string) => {
     if (!isFileSystemAccessSupported) return null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -765,58 +670,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
       };
     } catch {
       return null;
-    }
-  };
-
-  const openSavedFile = async (item: ImageHistoryItem) => {
-    if (!isFileSystemAccessSupported) return;
-    if (!item.fileName) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handle = await historyDb.get<any>("saveDirHandle").catch(() => null);
-    if (!handle) return;
-    try {
-      const permission =
-        typeof handle.queryPermission === "function"
-          ? await handle.queryPermission({ mode: "read" })
-          : "granted";
-      if (permission !== "granted" && typeof handle.requestPermission === "function") {
-        const requested = await handle.requestPermission({ mode: "read" });
-        if (requested !== "granted") return;
-      }
-      const fileHandle = await handle.getFileHandle(item.fileName);
-      const file = await fileHandle.getFile();
-      const objectUrl = URL.createObjectURL(file);
-      window.open(objectUrl, "_blank", "noopener,noreferrer");
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
-    } catch {
-      // ignore
-    }
-  };
-
-  const downloadSavedFile = async (item: ImageHistoryItem) => {
-    if (!isFileSystemAccessSupported) return false;
-    if (!item.fileName) return false;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handle = await historyDb.get<any>("saveDirHandle").catch(() => null);
-    if (!handle) return false;
-    try {
-      const permission =
-        typeof handle.queryPermission === "function"
-          ? await handle.queryPermission({ mode: "read" })
-          : "granted";
-      if (permission !== "granted" && typeof handle.requestPermission === "function") {
-        const requested = await handle.requestPermission({ mode: "read" });
-        if (requested !== "granted") return false;
-      }
-
-      const fileHandle = await handle.getFileHandle(item.fileName);
-      const file = await fileHandle.getFile();
-      const objectUrl = URL.createObjectURL(file);
-      await downloadImage(objectUrl, item.fileName);
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 5_000);
-      return true;
-    } catch {
-      return false;
     }
   };
 
@@ -1484,190 +1337,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             </button>
           </div>
         </div>
-      </div>
-    );
-  };
-
-  const renderHistory = () => {
-    const filtered =
-      historyModelFilter === "all"
-        ? imageHistory
-        : imageHistory.filter((item) => item.model === historyModelFilter);
-
-    const modelsToShow: ModelValue[] =
-      historyModelFilter === "all"
-        ? (() => {
-            const known = modelOptions
-              .map((m) => m.value)
-              .filter((value) => filtered.some((item) => item.model === value));
-            const extras = Array.from(
-              new Set(
-                filtered
-                  .map((item) => item.model)
-                  .filter((value) => !known.includes(value))
-              )
-            );
-            return [...known, ...extras];
-          })()
-        : [historyModelFilter];
-
-    return (
-      <div>
-        <div className={styles.historyToolbar}>
-          <label className={styles.historyFilter}>
-            <span className={styles.historyFilterLabel}>
-              {t("dashboard.history.filterModel")}
-            </span>
-            <select
-              className={styles.historySelect}
-              value={historyModelFilter}
-              onChange={(e) =>
-                setHistoryModelFilter(e.target.value as ModelValue | "all")
-              }
-            >
-              <option value="all">{t("dashboard.history.filterAll")}</option>
-              {localizedModelOptions.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div className={styles.historySaveBox}>
-            <div className={styles.historySaveMeta}>
-              <div className={styles.historySaveTitle}>
-                {t("dashboard.history.saveFolder")}
-              </div>
-              <div className={styles.historySaveValue}>
-                {isFileSystemAccessSupported
-                  ? hasSaveDir
-                    ? t("dashboard.history.saveFolderSelected", {
-                        name: saveDirName || t("dashboard.history.saveFolderUnknown"),
-                      })
-                    : t("dashboard.history.saveFolderNotSet")
-                  : t("dashboard.history.saveFolderUnsupported")}
-              </div>
-            </div>
-            {isFileSystemAccessSupported && (
-              <button className={styles.secondaryBtn} type="button" onClick={pickSaveFolder}>
-                {t("dashboard.history.chooseFolder")}
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className={styles.historyHint}>{t("dashboard.history.metaOnlyHint")}</div>
-        {historyNotice ? (
-          <div className={styles.historyNotice}>{historyNotice}</div>
-        ) : null}
-
-        {!filtered.length ? (
-          <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>🕒</div>
-            <p>{t("dashboard.history.empty")}</p>
-          </div>
-        ) : null}
-
-        {modelsToShow.map((modelValue) => {
-          const group = filtered.filter((item) => item.model === modelValue);
-          if (!group.length) return null;
-          const modelLabel =
-            localizedModelOptions.find((m) => m.value === modelValue)?.label || modelValue;
-          return (
-            <div key={modelValue} className={styles.historyGroup}>
-              <div className={styles.historyGroupTitle}>{modelLabel}</div>
-              <div className={styles.historyGrid}>
-                {group.map((item) => (
-                  <div key={item.id} className={styles.historyCard}>
-                    <div className={styles.historyHead}>
-                      <span className={styles.badge}>{modelLabel}</span>
-                      <span className={styles.historyTime}>
-                        {formatTime(new Date(item.createdAt), intlLocale)}
-                      </span>
-                    </div>
-                    <div className={styles.historyTitle}>
-                      {t("dashboard.history.imageDone")}
-                    </div>
-                    <div className={styles.historyDetail}>
-                      {t("dashboard.model.points", { credits: item.costCredits })} ·{" "}
-                      {item.aspectRatio} · {item.imageSize}
-                    </div>
-                    <div className={styles.historyDetail}>
-                      {item.prompt.length > 80 ? `${item.prompt.slice(0, 80)}…` : item.prompt}
-                    </div>
-                    <div className={styles.historyPreview}>
-                      <img src={item.thumbnailDataUrl} alt={item.prompt} />
-                    </div>
-                    <div className={styles.historyActions}>
-                      {(() => {
-                        const sourceUrl =
-                          item.imageUrl || historySourceMap.current.get(item.id) || "";
-                        const canDownload =
-                          !!sourceUrl ||
-                          (isFileSystemAccessSupported && item.savedVia === "fs" && item.fileName);
-                        return (
-                          <button
-                            className={styles.secondaryBtn}
-                            type="button"
-                            disabled={!canDownload}
-                            onClick={async () => {
-                              const filename =
-                                item.fileName || `nano-banana-${item.model}-${item.id}.png`;
-                              if (sourceUrl) {
-                                await downloadImage(sourceUrl, filename);
-                              } else {
-                                const ok = await downloadSavedFile(item);
-                                if (!ok) return;
-                              }
-                              setImageHistory((prev) =>
-                                prev.map((p) =>
-                                  p.id === item.id
-                                    ? { ...p, fileName: filename, savedVia: "download" }
-                                    : p
-                                )
-                              );
-                            }}
-                          >
-                            {t("dashboard.result.download")}
-                          </button>
-                        );
-                      })()}
-
-                      <button
-                        className={styles.secondaryBtn}
-                        type="button"
-                        onClick={() => copyPrompt(item.prompt)}
-                      >
-                        {t("dashboard.history.copyPrompt")}
-                      </button>
-
-                      {item.savedVia === "fs" ? (
-                        <button
-                          className={styles.secondaryBtn}
-                          type="button"
-                          onClick={() => openSavedFile(item)}
-                        >
-                          {t("dashboard.history.openLocalFile")}
-                        </button>
-                      ) : null}
-                    </div>
-                    {item.fileName && (
-                      <div className={styles.historyFile}>
-                        {t("dashboard.history.fileLabel", { name: item.fileName })}
-                        {item.savedDirName
-                          ? ` · ${t("dashboard.history.folderLabel", {
-                              name: item.savedDirName,
-                            })}`
-                          : null}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
       </div>
     );
   };
@@ -2500,7 +2169,12 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
         )}
 
         {variant !== "generateOnly" && activeTab === "history" && (
-          <div className={styles.panel}>{renderHistory()}</div>
+          <div className={styles.panel}>
+            <ImageHistory
+              externalHistory={imageHistory}
+              onHistoryChange={setImageHistory}
+            />
+          </div>
         )}
       </div>
 

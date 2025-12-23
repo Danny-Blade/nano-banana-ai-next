@@ -1,0 +1,242 @@
+.container {
+    padding: 1rem 0;
+}
+
+.historyDetail {
+    font-size: 0.95rem;
+    color: #475569;
+}
+
+.historyGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 0.9rem;
+}
+
+.historyToolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.historyFilter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.historyFilterLabel {
+    color: #475569;
+    font-size: 0.95rem;
+}
+
+.historySelect {
+    padding: 0.45rem 0.6rem;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #0f172a;
+}
+
+.historySaveBox {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.historySaveMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.historySaveTitle {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.historySaveValue {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.historyHint {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+}
+
+.historyNotice {
+    color: #0f172a;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+}
+
+.historyGroup {
+    margin-top: 1.1rem;
+}
+
+.historyGroupTitle {
+    font-weight: 800;
+    margin-bottom: 0.6rem;
+}
+
+.historyCard {
+    padding: 0.9rem;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+}
+
+.historyHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.historyTime {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.historyTitle {
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+}
+
+.historyPreview {
+    margin-top: 0.5rem;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.historyPreview:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.historyPreview img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+.historyActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+}
+
+.historyFile {
+    margin-top: 0.45rem;
+    font-size: 0.85rem;
+    color: #64748b;
+    word-break: break-all;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #64748b;
+}
+
+.emptyIcon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem 0.65rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+    color: #78350f;
+}
+
+.secondaryBtn {
+    padding: 0.5rem 0.9rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #334155;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.secondaryBtn:hover:not(:disabled) {
+    background: #e2e8f0;
+}
+
+.secondaryBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Preview Modal */
+.previewOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.previewContent {
+    position: relative;
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #0f172a;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.previewImage {
+    display: block;
+    max-width: 92vw;
+    max-height: 92vh;
+    object-fit: contain;
+}
+
+.previewClose {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: #0f172a;
+    border: none;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.previewClose:hover {
+    background: #ffffff;
+}
