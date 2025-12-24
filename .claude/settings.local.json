@@ -26,7 +26,10 @@
       "Bash(for f in /Users/dony/Documents/github/danny-blade/nano-banana-ai-next/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/*.sqlite)",
       "Bash(do echo \"=== $f ===\")",
       "Bash(sqlite3:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(for f in /Users/dony/Documents/own/github/Danny-Blade/nano-banana-ai-next/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/*.sqlite)",
+      "Bash(rm:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
