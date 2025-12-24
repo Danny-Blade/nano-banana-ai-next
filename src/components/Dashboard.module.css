@@ -681,6 +681,11 @@
     width: 100%;
     flex: 1;
     min-height: 0;
+    overflow: visible;
+}
+
+.resultCardLarge .resultImageFrameLarge {
+    min-height: 200px;
 }
 
 .resultImageFrame {

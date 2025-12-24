@@ -30,6 +30,88 @@ export const siteContentJa: SiteContent = {
     subtitle:
       "強力な Nano Banana AI モデルで画像を編集・変換。短いプロンプトだけでプロ品質の編集を実現します。",
   },
+  textToImage: {
+    title: "テキストから美しい画像を生成",
+    subtitle:
+      "思い描くものを言葉で伝えるだけで、Nano Banana AI がフォトリアルな画像を生成します",
+    promptLabel: "プロンプト",
+    tryItLabel: "試してみる",
+    items: [
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
+        prompt: "銀色の髪を持つ美しいアニメの少女、桜が舞い散る中、柔らかなピンクの光",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/947423e3-bbfb-43b8-b2fb-69d49cf526d5.png",
+        prompt: "未来感あふれるサイバーパンクの夜景、濡れた路面に反射するネオン、遠くに飛行車",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/373c6b42-a0a7-47c6-9141-9d10ba938574.png",
+        prompt: "山頂に佇む雄大なドラゴン、夕日に輝く金色の鱗、ファンタジーアート風",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/5c5225b8-9adf-41e6-868a-9152f0536dac.png",
+        prompt: "居心地の良いカフェ内装、秋の午後の暖かな光が窓から差し込む、ヴィンテージ美学",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
+        prompt: "発光生物が泳ぐ海底宮殿、サンゴに覆われた古代遺跡、神秘的な雰囲気",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/ac48d3f9-e45a-4664-9cbf-7e4c90d6fca8.png",
+        prompt: "ヴィクトリア朝ロンドン上空を漂うスチームパンク飛行船、歯車と真鍮のディテール、劇的な曇り空",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/d2384f25-397a-4afe-8148-26c3c1f8e06b.png",
+        prompt: "巨大な発光キノコのある魔法の森、妖精の光が点在、幻想的な世界",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
+        prompt: "伝統的な甲冑の侍が竹林に立つ、朝霧が漂う、映画的なライティング",
+      },
+    ],
+  },
+  imageToImageExamples: {
+    title: "AIで画像を自由に変換",
+    subtitle:
+      "写真の編集・補正・再解釈を強力なAIで — スライダーを動かして魔法を体験",
+    beforeLabel: "変更前",
+    afterLabel: "変更後",
+    promptLabel: "編集プロンプト",
+    tryItLabel: "試してみる",
+    items: [
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-after-2.jpg",
+        prompt: "ビキニの色を赤に変更",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/22a808a5-32d2-4760-812c-07eee8875426.png",
+        prompt: "かわいいチビ風の手編み人形に変換",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/c06bcfe8-b5f1-4a11-9181-21138d1b46d3.png",
+        prompt: "ゴッホの『星月夜』スタイルで再解釈",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/47b04301-79bb-431a-a54f-8fc88674bc3c.png",
+        prompt: "髪色を鮮やかな青に変更",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/7c7f75bd-84e5-47e6-9b93-f1f2164d2b26.png",
+        prompt: "LEGOミニフィグに変換してパッケージ箱に入れる",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-2-after.png",
+        prompt: "PVCフィギュア製品展示を作成、パッケージ箱と3Dモデリング画面付き",
+      },
+    ],
+  },
   examples: {
     title: "例：Nano Banana でできること",
     resultAlt: "結果",

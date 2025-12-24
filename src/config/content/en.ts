@@ -29,6 +29,88 @@ export const siteContentEn = {
     subtitle:
       "Transform and edit your images with the powerful Nano Banana AI model - achieve professional-grade image editing with simple text prompts",
   },
+  textToImage: {
+    title: "Create Stunning Images from Text",
+    subtitle:
+      "Simply describe what you want, and watch Nano Banana AI bring your imagination to life with photorealistic quality",
+    promptLabel: "Prompt",
+    tryItLabel: "Try it",
+    items: [
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766614875845-0.jpeg",
+        prompt: "A beautiful anime girl with flowing silver hair, cherry blossoms falling around her, soft pink lighting",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615174387-0.png",
+        prompt: "Futuristic cyberpunk cityscape at night, neon signs reflecting on wet streets, flying cars in the distance",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615566054-1.png",
+        prompt: "Majestic dragon perched on a mountain peak, golden scales glowing in sunset light, fantasy art style",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615696417-1.png",
+        prompt: "Cozy coffee shop interior, warm autumn afternoon light streaming through windows, vintage aesthetic",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615916104-0.png",
+        prompt: "Underwater palace with bioluminescent creatures, ancient ruins covered in coral, mystical atmosphere",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616048580-1.png",
+        prompt: "Steampunk airship floating above Victorian London, gears and brass details, dramatic cloudy sky",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616112421-0.png",
+        prompt: "Enchanted forest with giant glowing mushrooms, fairy lights, whimsical fantasy world",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616188285-0.png",
+        prompt: "Samurai warrior in traditional armor standing in bamboo forest, morning mist, cinematic lighting",
+      },
+    ],
+  },
+  imageToImageExamples: {
+    title: "Transform Any Image with AI",
+    subtitle:
+      "Edit, enhance, and reimagine your photos with powerful AI - drag the slider to see the magic",
+    beforeLabel: "Before",
+    afterLabel: "After",
+    promptLabel: "Edit Prompt",
+    tryItLabel: "Try it yourself",
+    items: [
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-after-2.jpg",
+        prompt: "Change the bikini to red",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/22a808a5-32d2-4760-812c-07eee8875426.png",
+        prompt: "Transform into a handmade crocheted yarn doll with cute chibi-style appearance",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/c06bcfe8-b5f1-4a11-9181-21138d1b46d3.png",
+        prompt: "Reimagine in the style of Van Gogh's 'Starry Night'",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/47b04301-79bb-431a-a54f-8fc88674bc3c.png",
+        prompt: "Change the hair color to vibrant blue",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/7c7f75bd-84e5-47e6-9b93-f1f2164d2b26.png",
+        prompt: "Transform into a LEGO minifigure inside its packaging box",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-2-after.png",
+        prompt: "Create a PVC figure product showcase with packaging box and 3D modeling screen",
+      },
+    ],
+  },
   examples: {
     title: "Examples: See what Nano Banana can do",
     resultAlt: "Result",

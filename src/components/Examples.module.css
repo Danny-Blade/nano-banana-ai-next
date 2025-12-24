@@ -1,25 +1,52 @@
 .examplesSection {
-    padding: 80px 24px;
-    background: #ffffff;
+    padding: 100px 24px;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
 }
 
-.title {
-    font-size: 40px;
-    font-weight: 700;
+.header {
     text-align: center;
-    margin-bottom: 56px;
+    margin-bottom: 64px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    letter-spacing: 0.02em;
+}
+
+.title {
+    font-size: 44px;
+    font-weight: 800;
+    margin-bottom: 16px;
     color: #0f172a;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 24px;
 }
 
@@ -30,74 +57,122 @@
     border: 1px solid #e2e8f0;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(40px) scale(0.95);
 }
 
 .card.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 
 .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-    border-color: #cbd5e1;
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border-color: transparent;
 }
 
-.imageComparison {
+.imageWrapper {
     position: relative;
     aspect-ratio: 1;
     overflow: hidden;
-    background: #f1f5f9;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
 }
 
 .image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card:hover .image {
+    transform: scale(1.08);
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.6) 100%
+    );
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlayVisible {
+    opacity: 1;
+}
+
+.tryButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: white;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    transform: translateY(10px);
+}
+
+.overlayVisible .tryButton {
+    transform: translateY(0);
+}
+
+.tryButton:hover {
+    background: #f1f5f9;
     transform: scale(1.05);
 }
 
-.label {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(8px);
-    color: white;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-}
-
-.prompt {
+.content {
     padding: 20px;
 }
 
-.promptLabel {
-    display: block;
+.promptBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 11px;
     font-weight: 600;
-    color: #94a3b8;
-    margin-bottom: 8px;
+    color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+}
+
+.promptBadge svg {
+    opacity: 0.7;
 }
 
 .promptText {
     font-size: 14px;
-    color: #475569;
+    color: #334155;
     line-height: 1.6;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+@media (max-width: 1200px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
@@ -106,7 +181,14 @@
     }
 
     .title {
-        font-size: 28px;
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .header {
         margin-bottom: 40px;
     }
 

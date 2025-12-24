@@ -630,9 +630,11 @@ export const ImageEditorPanel = ({
             <div className={styles.resultArea}>
               {resultTab === "result" &&
                 (results.length ? (
-                  <div className={styles.singleResult}>
-                    {renderGeneratedResultCard(results[activeResultIndex]!, true)}
-                    {results.length > 1 ? (
+                  <>
+                    <div className={styles.singleResult}>
+                      {renderGeneratedResultCard(results[activeResultIndex]!, true)}
+                    </div>
+                    {results.length > 1 && (
                       <div className={styles.singleNav}>
                         <button
                           type="button"
@@ -660,8 +662,8 @@ export const ImageEditorPanel = ({
                           ›
                         </button>
                       </div>
-                    ) : null}
-                  </div>
+                    )}
+                  </>
                 ) : (
                   <div className={styles.placeholder}>
                     <div className={styles.placeholderIcon}>🎨</div>

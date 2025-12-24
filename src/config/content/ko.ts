@@ -30,6 +30,88 @@ export const siteContentKo: SiteContent = {
     subtitle:
       "강력한 Nano Banana AI 모델로 이미지를 변환·편집하세요. 간단한 프롬프트만으로 전문가급 결과를 얻을 수 있습니다.",
   },
+  textToImage: {
+    title: "텍스트로 멋진 이미지 생성",
+    subtitle:
+      "원하는 것을 설명하기만 하면 Nano Banana AI가 사실적인 이미지로 구현합니다",
+    promptLabel: "프롬프트",
+    tryItLabel: "체험하기",
+    items: [
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
+        prompt: "은빛 머리칼이 흩날리는 아름다운 애니메이션 소녀, 벚꽃이 흩날리는 가운데 부드러운 분홍빛 조명",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/947423e3-bbfb-43b8-b2fb-69d49cf526d5.png",
+        prompt: "미래적인 사이버펑크 도시 야경, 젖은 도로에 반사되는 네온사인, 멀리 비행하는 자동차",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/373c6b42-a0a7-47c6-9141-9d10ba938574.png",
+        prompt: "산봉우리에 앉아 있는 위풍당당한 용, 석양에 빛나는 황금빛 비늘, 판타지 아트 스타일",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/5c5225b8-9adf-41e6-868a-9152f0536dac.png",
+        prompt: "아늑한 카페 인테리어, 가을 오후 따뜻한 빛이 창문을 통해 들어오는, 빈티지 미학",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
+        prompt: "발광 생물이 있는 수중 궁전, 산호로 덮인 고대 유적, 신비로운 분위기",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/ac48d3f9-e45a-4664-9cbf-7e4c90d6fca8.png",
+        prompt: "빅토리아 시대 런던 상공을 떠다니는 스팀펑크 비행선, 기어와 황동 디테일, 극적인 구름 하늘",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/d2384f25-397a-4afe-8148-26c3c1f8e06b.png",
+        prompt: "거대한 발광 버섯이 있는 마법의 숲, 요정 불빛이 점점이, 환상적인 세계",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
+        prompt: "전통 갑옷을 입은 사무라이가 대나무 숲에 서 있는, 아침 안개, 영화적 조명",
+      },
+    ],
+  },
+  imageToImageExamples: {
+    title: "AI로 이미지를 자유롭게 변환",
+    subtitle:
+      "사진 편집, 보정, 재해석을 강력한 AI로 — 슬라이더를 움직여 마법을 체험하세요",
+    beforeLabel: "변경 전",
+    afterLabel: "변경 후",
+    promptLabel: "편집 프롬프트",
+    tryItLabel: "체험하기",
+    items: [
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-after-2.jpg",
+        prompt: "비키니를 빨간색으로 변경",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/22a808a5-32d2-4760-812c-07eee8875426.png",
+        prompt: "귀여운 치비 스타일 손뜨개 인형으로 변환",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/c06bcfe8-b5f1-4a11-9181-21138d1b46d3.png",
+        prompt: "반 고흐의 '별이 빛나는 밤' 스타일로 재해석",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/47b04301-79bb-431a-a54f-8fc88674bc3c.png",
+        prompt: "머리색을 선명한 파란색으로 변경",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/7c7f75bd-84e5-47e6-9b93-f1f2164d2b26.png",
+        prompt: "레고 미니피규어로 변환하여 패키지 박스 안에",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-2-after.png",
+        prompt: "PVC 피규어 제품 쇼케이스 생성, 패키지 박스와 3D 모델링 화면 포함",
+      },
+    ],
+  },
   examples: {
     title: "예시: Nano Banana로 가능한 것들",
     resultAlt: "결과",

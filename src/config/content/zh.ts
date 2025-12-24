@@ -30,6 +30,88 @@ export const siteContentZh: SiteContent = {
     subtitle:
       "用强大的 Nano Banana AI 模型编辑与重塑你的图片 —— 只需简单提示词，即可获得专业级效果",
   },
+  textToImage: {
+    title: "用文字创造惊艳图像",
+    subtitle:
+      "只需描述你的想象，Nano Banana AI 就能为你呈现照片级真实的图像作品",
+    promptLabel: "提示词",
+    tryItLabel: "立即体验",
+    items: [
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
+        prompt: "一位拥有飘逸银发的美丽动漫少女，樱花飘落在她周围，柔和的粉色光芒",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/947423e3-bbfb-43b8-b2fb-69d49cf526d5.png",
+        prompt: "未来感赛博朋克城市夜景，霓虹灯倒映在潮湿的街道上，远处飞行汽车穿梭",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/373c6b42-a0a7-47c6-9141-9d10ba938574.png",
+        prompt: "雄伟的巨龙栖息在山巅，金色鳞片在夕阳下闪耀，奇幻艺术风格",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/5c5225b8-9adf-41e6-868a-9152f0536dac.png",
+        prompt: "温馨咖啡馆内景，秋日午后温暖的阳光透过窗户洒入，复古美学风格",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
+        prompt: "水下宫殿与发光生物，珊瑚覆盖的古代遗迹，神秘梦幻氛围",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/ac48d3f9-e45a-4664-9cbf-7e4c90d6fca8.png",
+        prompt: "蒸汽朋克飞船漂浮在维多利亚时代的伦敦上空，齿轮与黄铜细节，戏剧性多云天空",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/d2384f25-397a-4afe-8148-26c3c1f8e06b.png",
+        prompt: "魔法森林中巨大的发光蘑菇，精灵灯光点缀，梦幻奇异世界",
+      },
+      {
+        image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
+        prompt: "身穿传统盔甲的武士站立于竹林中，晨雾缭绕，电影感光影",
+      },
+    ],
+  },
+  imageToImageExamples: {
+    title: "用 AI 变换任意图像",
+    subtitle:
+      "编辑、增强、重塑你的照片——拖动滑块，见证 AI 的魔力",
+    beforeLabel: "原图",
+    afterLabel: "效果",
+    promptLabel: "编辑提示词",
+    tryItLabel: "立即体验",
+    items: [
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-after-2.jpg",
+        prompt: "把比基尼换成红色",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/22a808a5-32d2-4760-812c-07eee8875426.png",
+        prompt: "变成可爱 Q 版手工钩织毛线娃娃风格",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/c06bcfe8-b5f1-4a11-9181-21138d1b46d3.png",
+        prompt: "用梵高《星空》的风格重新演绎",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/47b04301-79bb-431a-a54f-8fc88674bc3c.png",
+        prompt: "把头发换成活力蓝色",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nano-banana/7c7f75bd-84e5-47e6-9b93-f1f2164d2b26.png",
+        prompt: "变成乐高小人并放在包装盒内",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-2-after.png",
+        prompt: "制作 PVC 手办产品展示，配上包装盒和 3D 建模屏幕",
+      },
+    ],
+  },
   examples: {
     title: "示例：看看 Nano Banana 能做到什么",
     resultAlt: "结果",
@@ -89,7 +171,7 @@ export const siteContentZh: SiteContent = {
         title: "完整的 Nano Banana AI 转化流程",
         prompt:
           "把这个动漫角色变成手办产品展示：制作一个站在透明圆形底座上的 PVC 实体手办，背后放一个印有角色插画的产品盒，并加入一台电脑显示在 Blender 中进行 3D 建模的过程。",
-        videoPrompt: "让动漫角色“活起来”：轻轻微笑、自然眨眼，头发在微风中轻轻摆动",
+        videoPrompt: "让动漫角色'活起来'：轻轻微笑、自然眨眼，头发在微风中轻轻摆动",
         image: "https://cdn.ainanobanana.io/ai-poster.png",
         video: "https://image.ainanobanana.io/ai-nanobanana.mp4",
       },
