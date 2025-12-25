@@ -38,37 +38,61 @@ export const siteContentZh: SiteContent = {
     tryItLabel: "立即体验",
     items: [
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
+        prompt: "生成一张人像图片：两根手指间夹着一个细节精美的透明玻璃球/胶囊，背景为纯色。胶囊内是一个迷你Q版[人物姓名]，拥有真实的面部特征但比例可爱——大头小身体。人物应穿着其最具标志性的服装或可识别的衣物。玻璃应展示逼真的反射效果，人物应在内部呈现立体感。照片写实风格，完美光线。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628927500-0.png",
+        prompt: "创建一个超写实的1080x1080正方形渲染图，展示一只人手轻轻托着一个圆润、带倒角的微缩展示平台，上面是[城市]的3D收藏品立体模型。展示其最具标志性的地标、小比例的现代和历史建筑，以及郁郁葱葱的微缩绿植和树木。平台前缘嵌入一个醒目的3D[New York]标志。使用精致、去饱和的配色方案和哑光纹理，增强逼真的比例模型感。使用柔和的工作室照明、暖色高光和细微的景深阴影。背景为中性灰色渐变，保持一致的视角和透视。添加大气深度、照片级纹理和超精细细节，打造8K品质的高端收藏品美感。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629197849-1.png",
+        prompt: "我在《疯狂动物城》片场与朱迪·霍普斯和尼克·王尔德自拍。主体与参考图完全一致；面部特征、骨骼结构、肤色、表情、姿势和外观100%相同。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629711103-0.png",
+        prompt: "创建一张[埃菲尔铁塔]的信息图图片，将地标的真实照片与蓝图风格的技术标注和图解叠加在图像上。在角落用手绘框标注标题[埃菲尔铁塔]。添加白色粉笔风格的草图，展示关键结构数据、重要尺寸、材料用量、内部图解、载荷流向箭头、横截面、平面图以及显著的建筑或工程特征。风格 - 蓝图美学，在照片上用白色线条绘制，技术/建筑标注风格，教育信息图感觉，背景可见真实环境。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630256509-0.png",
+        prompt: "为圣诞护肤礼盒设计一张专业促销卡，采用垂直布局，极简高端美学风格。使用柔和的渐变背景，从顶部的冰雪白色过渡到底部的浅粉色，营造清新优雅的氛围。在构图的上部中央区域，精心放置一个高端护肤礼盒。礼盒采用哑光白色包装，压印精致的雪花图案和品牌标志(Dior)。礼盒呈打开状态，内部展示三瓶不同大小的护肤品。瓶身设计简洁现代，配有金色瓶盖。在产品周围巧妙布置圣诞装饰元素 - 几枝新鲜松枝、小金铃铛、几颗红浆果和散落的小礼盒。所有道具应精细打光，呈现高端产品摄影效果。卡片顶部使用纤细优雅的字体书写标题 - 圣诞特别版·焕新发光。产品下方中间区域用醒目红色文字突出促销信息 - 限定礼盒8折优惠·买即送5片面膜。底部加入按钮风格的行动号召 - 立即购买·限量发售，并标注促销有效期 - 12月15日至26日。整体设计应强调奢华产品质感和完美平衡的节日氛围。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630986146-0.png",
+        prompt: "你是一位拥有强烈个人手绘风格的日本漫画家。你是《鬼灭之刃》原创手绘草稿的创作者之一。请使用你独特的漫画线稿草图风格，调用Nano Banana Pro根据你对以下内容的理解生成分镜漫画草稿。不要输出任何分析。直接输出分镜漫画草稿图片。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766614875845-0.jpeg",
         prompt: "一位拥有飘逸银发的美丽动漫少女，樱花飘落在她周围，柔和的粉色光芒",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/947423e3-bbfb-43b8-b2fb-69d49cf526d5.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615174387-0.png",
         prompt: "未来感赛博朋克城市夜景，霓虹灯倒映在潮湿的街道上，远处飞行汽车穿梭",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/373c6b42-a0a7-47c6-9141-9d10ba938574.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615566054-1.png",
         prompt: "雄伟的巨龙栖息在山巅，金色鳞片在夕阳下闪耀，奇幻艺术风格",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/5c5225b8-9adf-41e6-868a-9152f0536dac.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615696417-1.png",
         prompt: "温馨咖啡馆内景，秋日午后温暖的阳光透过窗户洒入，复古美学风格",
       },
+      // {
+      //   image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
+      //   prompt: "水下宫殿与发光生物，珊瑚覆盖的古代遗迹，神秘梦幻氛围",
+      // },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
-        prompt: "水下宫殿与发光生物，珊瑚覆盖的古代遗迹，神秘梦幻氛围",
-      },
-      {
-        image: "https://cdn.ainanobanana.io/nano-banana/ac48d3f9-e45a-4664-9cbf-7e4c90d6fca8.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616048580-1.png",
         prompt: "蒸汽朋克飞船漂浮在维多利亚时代的伦敦上空，齿轮与黄铜细节，戏剧性多云天空",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/d2384f25-397a-4afe-8148-26c3c1f8e06b.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616112421-0.png",
         prompt: "魔法森林中巨大的发光蘑菇，精灵灯光点缀，梦幻奇异世界",
       },
-      {
-        image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
-        prompt: "身穿传统盔甲的武士站立于竹林中，晨雾缭绕，电影感光影",
-      },
+      // {
+      //   image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
+      //   prompt: "身穿传统盔甲的武士站立于竹林中，晨雾缭绕，电影感光影",
+      // },
     ],
   },
   imageToImageExamples: {

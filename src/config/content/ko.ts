@@ -38,37 +38,61 @@ export const siteContentKo: SiteContent = {
     tryItLabel: "체험하기",
     items: [
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
+        prompt: "중립적인 배경에서 두 손가락 사이에 있는 정교하고 투명한 유리 구체/캡슐의 인물 이미지를 생성합니다. 캡슐 안에는 사실적인 얼굴 특징을 가진 미니 치비 버전의 [인물 이름]이 있습니다 — 큰 머리, 작은 몸의 귀여운 비율. 인물은 가장 상징적인 의상이나 알아볼 수 있는 옷을 입고 있어야 합니다. 유리에는 사실적인 반사가 있고 인물은 내부에서 입체적으로 보여야 합니다. 포토리얼 스타일, 완벽한 조명.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628927500-0.png",
+        prompt: "인간의 손이 둥글고 모서리가 깎인 미니어처 디스플레이 플랫폼을 부드럽게 들고 있는 하이퍼 리얼리스틱 1080x1080 정사각형 렌더링을 만듭니다. [도시]의 3D 컬렉터블 디오라마를 전시합니다. 가장 상징적인 랜드마크, 소규모 현대 및 역사적 건축물, 풍성한 미니어처 녹지와 나무를 특징으로 합니다. 플랫폼 앞쪽 가장자리에 굵은 3D \"[New York]\" 사인을 깔끔하게 내장합니다. 정제되고 채도가 낮은 색상 구성표와 무광 텍스처로 사실적인 스케일 모델 느낌을 강화합니다. 부드러운 스튜디오 조명, 따뜻한 하이라이트, 미묘한 깊이 그림자로 장면을 조명합니다. 중립적인 회색 그라디언트 배경에 배치하고 일관된 시점과 원근을 유지합니다. 8K 품질의 하이엔드 컬렉터블 미학을 위한 대기 깊이, 포토리얼 텍스처, 초정밀 디테일을 추가합니다.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629197849-1.png",
+        prompt: "주토피아 촬영장에서 주디 홉스, 닉 와일드와 함께 셀카를 찍었습니다. 피사체는 참조 이미지와 정확히 동일합니다. 얼굴 특징, 골격 구조, 피부톤, 표정, 포즈, 외모가 100% 동일합니다.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629711103-0.png",
+        prompt: "[에펠탑]의 인포그래픽 이미지를 만듭니다. 랜드마크의 실제 사진과 청사진 스타일의 기술 주석 및 다이어그램을 이미지 위에 오버레이합니다. 모서리에 손으로 그린 상자에 제목 [에펠탑]을 포함합니다. 주요 구조 데이터, 중요 치수, 재료 수량, 내부 다이어그램, 하중 흐름 화살표, 단면도, 평면도, 주목할 만한 건축 또는 공학적 특징을 보여주는 흰색 분필 스타일의 스케치를 추가합니다. 스타일 - 사진 위에 흰색 선 그림을 사용한 청사진 미학, 기술/건축 주석 스타일, 교육용 인포그래픽 느낌, 주석 뒤에 실제 환경이 보임.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630256509-0.png",
+        prompt: "크리스마스 스킨케어 기프트 세트를 위한 전문 프로모션 카드를 디자인합니다. 세로 레이아웃, 미니멀하고 프리미엄한 미학. 상단의 얼음 눈처럼 흰색에서 하단의 연한 분홍색으로 전환되는 부드러운 그라디언트 배경으로 신선하고 우아한 분위기를 연출합니다. 구도의 상단 중앙 영역에 고급 스킨케어 기프트 박스를 세심하게 배치합니다. 박스는 섬세한 눈송이 패턴이 엠보싱된 무광 흰색 패키지와 브랜드 로고(Dior)가 특징입니다. 박스는 열린 상태로 내부에 크기가 다른 세 개의 스킨케어 병을 보여줍니다. 병은 깔끔하고 모던한 디자인에 골드 캡이 있습니다. 제품 주변에 크리스마스 장식 요소를 미묘하게 배치 - 신선한 소나무 가지 몇 개, 작은 금색 종, 여러 개의 빨간 열매, 흩어진 작은 선물 상자. 모든 소품은 세심하게 조명하여 정제된 하이엔드 제품 사진 느낌을 연출합니다. 카드 상단에 얇고 우아한 폰트로 헤드라인 - 크리스마스 스페셜·리뉴&글로우. 제품 아래 중간 섹션에 빨간색 굵은 텍스트로 프로모션 강조 - 한정 기프트 세트 20% 할인·구매 시 시트 마스크 5장 무료 증정. 하단에 버튼 스타일의 CTA - 지금 구매·한정 수량, 프로모션 유효 기간 - 12월 15일부터 26일. 전체 디자인은 고급 제품 질감과 완벽하게 균형 잡힌 축제 분위기를 강조해야 합니다.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630986146-0.png",
+        prompt: "당신은 강렬한 개인 손그림 스타일을 가진 일본 만화가입니다. 당신은 '귀멸의 칼날' 오리지널 손그림 초안 스케치의 제작자 중 한 명입니다. 당신의 독특한 만화 선화 초안 스타일을 사용하고 Nano Banana Pro를 호출하여 다음 내용에 대한 이해를 바탕으로 패널 기반 만화 초안 스토리보드를 생성하세요. 분석을 출력하지 마세요. 패널 기반 만화 초안 이미지를 직접 출력하세요.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766614875845-0.jpeg",
         prompt: "은빛 머리칼이 흩날리는 아름다운 애니메이션 소녀, 벚꽃이 흩날리는 가운데 부드러운 분홍빛 조명",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/947423e3-bbfb-43b8-b2fb-69d49cf526d5.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615174387-0.png",
         prompt: "미래적인 사이버펑크 도시 야경, 젖은 도로에 반사되는 네온사인, 멀리 비행하는 자동차",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/373c6b42-a0a7-47c6-9141-9d10ba938574.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615566054-1.png",
         prompt: "산봉우리에 앉아 있는 위풍당당한 용, 석양에 빛나는 황금빛 비늘, 판타지 아트 스타일",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/5c5225b8-9adf-41e6-868a-9152f0536dac.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615696417-1.png",
         prompt: "아늑한 카페 인테리어, 가을 오후 따뜻한 빛이 창문을 통해 들어오는, 빈티지 미학",
       },
+      // {
+      //   image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
+      //   prompt: "발광 생물이 있는 수중 궁전, 산호로 덮인 고대 유적, 신비로운 분위기",
+      // },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
-        prompt: "발광 생물이 있는 수중 궁전, 산호로 덮인 고대 유적, 신비로운 분위기",
-      },
-      {
-        image: "https://cdn.ainanobanana.io/nano-banana/ac48d3f9-e45a-4664-9cbf-7e4c90d6fca8.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616048580-1.png",
         prompt: "빅토리아 시대 런던 상공을 떠다니는 스팀펑크 비행선, 기어와 황동 디테일, 극적인 구름 하늘",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/d2384f25-397a-4afe-8148-26c3c1f8e06b.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616112421-0.png",
         prompt: "거대한 발광 버섯이 있는 마법의 숲, 요정 불빛이 점점이, 환상적인 세계",
       },
-      {
-        image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
-        prompt: "전통 갑옷을 입은 사무라이가 대나무 숲에 서 있는, 아침 안개, 영화적 조명",
-      },
+      // {
+      //   image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
+      //   prompt: "전통 갑옷을 입은 사무라이가 대나무 숲에 서 있는, 아침 안개, 영화적 조명",
+      // },
     ],
   },
   imageToImageExamples: {

@@ -29,7 +29,8 @@
       "Bash(done)",
       "Bash(for f in /Users/dony/Documents/own/github/Danny-Blade/nano-banana-ai-next/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/*.sqlite)",
       "Bash(rm:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

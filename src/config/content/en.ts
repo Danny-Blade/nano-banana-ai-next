@@ -37,6 +37,30 @@ export const siteContentEn = {
     tryItLabel: "Try it",
     items: [
       {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
+        prompt: "Generate a portrait image of a detailed, transparent glass sphere/capsule held between two fingers against a neutral background. Inside the capsule is a miniature chibi version of [PERSON NAME] with realistic facial features but cute proportions - oversized head, small body. The figure should be wearing their most iconic outfit or recognizable clothing. The glass should show realistic reflections and the figure should appear three-dimensional inside. Photorealistic style with perfect lighting.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628927500-0.png",
+        prompt: "Create a hyper-realistic 1080x1080 square render of a human hand gently holding a rounded, beveled miniature display platform showcasing a 3D collectible diorama of [CITY]. Feature its most iconic landmarks, small-scale modern and historical architecture, and lush miniature greenery and trees. A bold 3D “[New York]” sign is cleanly built into the front edge of the platform. Use a refined, desaturated color scheme with matte textures to enhance the realistic scale-model look. Light the scene with soft studio illumination, warm highlights, and subtle depth shadows. Place the composition against a neutral gray gradient backdrop, keeping the same viewing angle and perspective for consistency. Add atmospheric depth, photorealistic textures, and ultra-precise detailing for an 8K quality high-end collectible aesthetic",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629197849-1.png",
+        prompt: "I took selfies with Judy Hopps and Nick Wilde on the set of Zootopia.The subjects are kept exactly the same as the reference images; facial features, bone structure, skin tone, expression, pose, and appearance are 100% identical.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629711103-0.png",
+        prompt: "Create an infographic image of [EIFFEL TOWER], combining a real photograph of the landmark with blueprint-style technical annotations and diagrams overlaid on the image. Include the title “[EIFFEL TOWER]” in a hand-drawn box in the corner. Add white chalk-style sketches showing key structural data, important measurements, material quantities, internal diagrams, load-flow arrows, cross-sections, floor plans, and notable architectural or engineering features. Style: blueprint aesthetic with white line drawings on the photograph, technical/architectural annotation style, educational infographic feel, with the real environment visible behind the annotations",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630256509-0.png",
+        prompt: "Create a professional promotional card for a Christmas skincare gift set, designed in a vertical layout with a minimalist and premium aesthetic. Use a soft gradient background that transitions from icy snow-white at the top to a light pink at the bottom, creating a fresh and elegant atmosphere.In the upper central area of the composition, carefully place a high-end skincare gift box. The box features a matte white package with an embossed delicate snowflake pattern and the brand logo (Dior). The box is shown in an open state, revealing three skincare bottles of different sizes inside. The bottles have a clean, modern design with gold caps.Arrange Christmas decorative elements subtly around the products: a few fresh pine sprigs, small gold bells, several red berries, and scattered tiny gift boxes. All props should be meticulously lit to achieve a refined, high-end product photography look.At the top of the card, use a thin, elegant font to write the headline: “Christmas Special · Renew & Glow”. Below the products in the middle section, highlight the promotion in bold red text: “Limited Gift Set — 20% OFF · Buy & Get 5 Sheet Masks Free”. At the bottom, include a call-to-action styled like a button: “Shop Now · Limited Stock”, along with the promotion validity period: “Dec 15–26”.The overall design should emphasize the luxurious product texture and a perfectly balanced festive vibe.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630986146-0.png",
+        prompt: "You are a Japanese manga artist with a strong personal hand-drawn style. You are one of the creators of the original hand-drawn draft sketches of Demon Slayer: Kimetsu no Yaiba.Please use your distinctive manga line-art draft style and call Nano Banana Pro to generate a panel-based manga draft storyboard based on your understanding of the following content.Do not output any analysis. Directly output the panel-based manga draft image.",
+      },
+      {
         image: "https://aiimage.pkgames.org/nano-banana/gen-1766614875845-0.jpeg",
         prompt: "A beautiful anime girl with flowing silver hair, cherry blossoms falling around her, soft pink lighting",
       },
@@ -52,10 +76,10 @@ export const siteContentEn = {
         image: "https://aiimage.pkgames.org/nano-banana/gen-1766615696417-1.png",
         prompt: "Cozy coffee shop interior, warm autumn afternoon light streaming through windows, vintage aesthetic",
       },
-      {
-        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615916104-0.png",
-        prompt: "Underwater palace with bioluminescent creatures, ancient ruins covered in coral, mystical atmosphere",
-      },
+      // {
+      //   image: "https://aiimage.pkgames.org/nano-banana/gen-1766615916104-0.png",
+      //   prompt: "Underwater palace with bioluminescent creatures, ancient ruins covered in coral, mystical atmosphere",
+      // },
       {
         image: "https://aiimage.pkgames.org/nano-banana/gen-1766616048580-1.png",
         prompt: "Steampunk airship floating above Victorian London, gears and brass details, dramatic cloudy sky",
@@ -64,10 +88,10 @@ export const siteContentEn = {
         image: "https://aiimage.pkgames.org/nano-banana/gen-1766616112421-0.png",
         prompt: "Enchanted forest with giant glowing mushrooms, fairy lights, whimsical fantasy world",
       },
-      {
-        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616188285-0.png",
-        prompt: "Samurai warrior in traditional armor standing in bamboo forest, morning mist, cinematic lighting",
-      },
+      // {
+      //   image: "https://aiimage.pkgames.org/nano-banana/gen-1766616188285-0.png",
+      //   prompt: "Samurai warrior in traditional armor standing in bamboo forest, morning mist, cinematic lighting",
+      // },
     ],
   },
   imageToImageExamples: {

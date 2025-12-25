@@ -38,37 +38,61 @@ export const siteContentJa: SiteContent = {
     tryItLabel: "試してみる",
     items: [
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
+        prompt: "ニュートラルな背景に、2本の指で挟んだ精巧な透明ガラス球/カプセルのポートレート画像を生成。カプセル内にはリアルな顔立ちを持つミニチビバージョンの[人物名]—大きな頭と小さな体のかわいいプロポーション。人物は最も象徴的な衣装または特徴的な服を着ている。ガラスにはリアルな反射があり、人物は内部で立体的に見える。フォトリアルスタイル、完璧なライティング。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628927500-0.png",
+        prompt: "人間の手が丸みを帯びた面取りミニチュアディスプレイ台を優しく持つ、ハイパーリアルな1080x1080正方形レンダリングを作成。[都市]の3Dコレクタブルジオラマを展示。最も象徴的なランドマーク、小規模な近代・歴史的建築物、豊かなミニチュアの緑と木々を特徴とする。プラットフォーム前縁に太字3D「[New York]」サインをきれいに組み込む。洗練された彩度を抑えた配色とマットなテクスチャでリアルなスケールモデル感を強調。柔らかいスタジオ照明、暖かいハイライト、繊細な奥行き影でシーンをライティング。ニュートラルなグレーグラデーション背景に配置し、一貫した視点と透視を維持。8K品質のハイエンドコレクタブル美学のための大気深度、フォトリアルテクスチャ、超精密ディテールを追加。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629197849-1.png",
+        prompt: "『ズートピア』の撮影現場でジュディ・ホップスとニック・ワイルドと自撮りした。被写体は参考画像と完全に同一。顔立ち、骨格、肌色、表情、ポーズ、外見が100%同じ。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629711103-0.png",
+        prompt: "[エッフェル塔]のインフォグラフィック画像を作成。ランドマークの実写に青写真風の技術注釈と図を重ねる。隅に手描き風の枠でタイトル[エッフェル塔]を記載。主要構造データ、重要寸法、材料数量、内部図解、荷重フロー矢印、断面図、平面図、建築・工学上の特徴を示す白いチョーク風のスケッチを追加。スタイル - 写真上に白線で描く青写真美学、技術/建築注釈スタイル、教育的インフォグラフィック感、注釈の背後に実環境が見える。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630256509-0.png",
+        prompt: "クリスマス スキンケア ギフトセットのプロモーションカードをデザイン。縦型レイアウト、ミニマルで高級感のある美学。上部の氷雪のような白から下部のライトピンクへのソフトグラデーション背景で、フレッシュでエレガントな雰囲気を演出。構図の上部中央に高級スキンケアギフトボックスを配置。ボックスはマットホワイトで繊細な雪の結晶パターンをエンボス加工、ブランドロゴ(Dior)入り。開いた状態で、内部に3種類のサイズのスキンケアボトルを見せる。ボトルはクリーンでモダンなデザイン、ゴールドキャップ付き。製品周辺にクリスマスデコ要素を控えめに配置 - 新鮮な松の小枝、小さなゴールドベル、赤い実、小さなギフトボックス。すべての小道具は繊細にライティングし、洗練されたハイエンドな製品写真の外観を実現。カード上部に細く上品なフォントで見出し - クリスマス限定・リニュー＆グロー。製品下の中央部に赤い太字で - 限定ギフトセット20%OFF・シートマスク5枚プレゼント。下部にボタン風CTA - 今すぐ購入・数量限定、有効期間12月15日から26日。全体デザインは高級製品の質感と完璧にバランスの取れたフェスティブ感を強調。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630986146-0.png",
+        prompt: "あなたは強い個人的手描きスタイルを持つ日本の漫画家です。『鬼滅の刃』のオリジナル手描き下書きスケッチの制作者の一人です。あなた独自の漫画線画下書きスタイルを使用し、Nano Banana Proを呼び出して以下の内容の理解に基づいたコマ割り漫画下書き絵コンテを生成してください。分析は出力しないでください。コマ割り漫画下書き画像を直接出力してください。",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766614875845-0.jpeg",
         prompt: "銀色の髪を持つ美しいアニメの少女、桜が舞い散る中、柔らかなピンクの光",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/947423e3-bbfb-43b8-b2fb-69d49cf526d5.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615174387-0.png",
         prompt: "未来感あふれるサイバーパンクの夜景、濡れた路面に反射するネオン、遠くに飛行車",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/373c6b42-a0a7-47c6-9141-9d10ba938574.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615566054-1.png",
         prompt: "山頂に佇む雄大なドラゴン、夕日に輝く金色の鱗、ファンタジーアート風",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/5c5225b8-9adf-41e6-868a-9152f0536dac.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615696417-1.png",
         prompt: "居心地の良いカフェ内装、秋の午後の暖かな光が窓から差し込む、ヴィンテージ美学",
       },
+      // {
+      //   image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
+      //   prompt: "発光生物が泳ぐ海底宮殿、サンゴに覆われた古代遺跡、神秘的な雰囲気",
+      // },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
-        prompt: "発光生物が泳ぐ海底宮殿、サンゴに覆われた古代遺跡、神秘的な雰囲気",
-      },
-      {
-        image: "https://cdn.ainanobanana.io/nano-banana/ac48d3f9-e45a-4664-9cbf-7e4c90d6fca8.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616048580-1.png",
         prompt: "ヴィクトリア朝ロンドン上空を漂うスチームパンク飛行船、歯車と真鍮のディテール、劇的な曇り空",
       },
       {
-        image: "https://cdn.ainanobanana.io/nano-banana/d2384f25-397a-4afe-8148-26c3c1f8e06b.png",
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616112421-0.png",
         prompt: "巨大な発光キノコのある魔法の森、妖精の光が点在、幻想的な世界",
       },
-      {
-        image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
-        prompt: "伝統的な甲冑の侍が竹林に立つ、朝霧が漂う、映画的なライティング",
-      },
+      // {
+      //   image: "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
+      //   prompt: "伝統的な甲冑の侍が竹林に立つ、朝霧が漂う、映画的なライティング",
+      // },
     ],
   },
   imageToImageExamples: {
