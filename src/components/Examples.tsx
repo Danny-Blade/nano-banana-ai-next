@@ -10,6 +10,7 @@ const Examples = () => {
     const sectionRef = React.useRef<HTMLElement>(null);
     const [visibleCards, setVisibleCards] = React.useState<Set<number>>(new Set());
     const [hoveredCard, setHoveredCard] = React.useState<number | null>(null);
+    const [previewImage, setPreviewImage] = React.useState<{ src: string; prompt: string } | null>(null);
 
     React.useEffect(() => {
         const observer = new IntersectionObserver(
@@ -30,6 +31,29 @@ const Examples = () => {
         return () => observer.disconnect();
     }, []);
 
+    const handleImageClick = (e: React.MouseEvent, src: string, prompt: string) => {
+        e.stopPropagation();
+        setPreviewImage({ src, prompt });
+    };
+
+    const closePreview = () => {
+        setPreviewImage(null);
+    };
+
+    React.useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') closePreview();
+        };
+        if (previewImage) {
+            document.addEventListener('keydown', handleEsc);
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            document.removeEventListener('keydown', handleEsc);
+            document.body.style.overflow = '';
+        };
+    }, [previewImage]);
+
     return (
         <section ref={sectionRef} className={styles.examplesSection}>
             <div className={styles.container}>
@@ -49,14 +73,22 @@ const Examples = () => {
                             onMouseEnter={() => setHoveredCard(index)}
                             onMouseLeave={() => setHoveredCard(null)}
                         >
-                            <div className={styles.imageWrapper}>
+                            <div
+                                className={styles.imageWrapper}
+                                onClick={(e) => handleImageClick(e, item.image, item.prompt)}
+                                style={{ cursor: 'zoom-in' }}
+                            >
                                 <img
                                     src={item.image}
                                     alt={item.prompt}
                                     className={styles.image}
                                 />
                                 <div className={`${styles.overlay} ${hoveredCard === index ? styles.overlayVisible : ''}`}>
-                                    <a href="/dashboard" className={styles.tryButton}>
+                                    <a
+                                        href="/dashboard"
+                                        className={styles.tryButton}
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
                                         {tryItLabel}
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -77,6 +109,33 @@ const Examples = () => {
                     ))}
                 </div>
             </div>
+
+            {/* Image Preview Modal */}
+            {previewImage && (
+                <div className={styles.previewOverlay} onClick={closePreview}>
+                    <button className={styles.closeButton} onClick={closePreview} aria-label="Close preview">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                    <div className={styles.previewContent} onClick={(e) => e.stopPropagation()}>
+                        <img
+                            src={previewImage.src}
+                            alt={previewImage.prompt}
+                            className={styles.previewImage}
+                        />
+                        <div className={styles.previewPrompt}>
+                            <div className={styles.promptBadge}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                {promptLabel}
+                            </div>
+                            <p className={styles.previewPromptText}>{previewImage.prompt}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 };
