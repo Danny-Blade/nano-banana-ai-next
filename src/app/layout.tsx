@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "Nano Banana AI - Google Gemini 3.0 Flash Image Generation & Editing Studio",
@@ -15,11 +13,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
-  );
+  return children;
 }
