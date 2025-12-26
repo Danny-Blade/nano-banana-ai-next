@@ -464,12 +464,265 @@ export const siteContentEn = {
     emptyMessage: "No history found. Start creating now!",
   },
   legal: {
-    contentComingSoon: "Content coming soon...",
     titles: {
       support: "Support",
       tos: "Terms of Service",
       privacy: "Privacy Policy",
       refund: "Refund Policy",
+    },
+    content: {
+      support: {
+        lastUpdated: "Last updated: December 2024",
+        contactTitle: "Contact Us",
+        contactText: "For any questions or support requests, please email us at:",
+        contactEmail: "support@ainanobanana.io",
+        sections: [
+          {
+            heading: "How Can We Help?",
+            paragraphs: [
+              "Welcome to Nano Banana AI Support Center. We're here to help you get the most out of our AI image generation platform.",
+              "Our support team is available to assist you with account issues, billing questions, technical problems, and general inquiries about our services.",
+            ],
+          },
+          {
+            heading: "Common Questions",
+            paragraphs: [
+              "Account & Billing: For questions about your subscription, credits, or payment issues, please include your registered email address when contacting us.",
+              "Technical Issues: If you're experiencing problems with image generation, please describe the issue in detail and include any error messages you've received.",
+              "Feature Requests: We love hearing from our users! Feel free to share your ideas for new features or improvements.",
+            ],
+          },
+          {
+            heading: "Response Time",
+            paragraphs: [
+              "We typically respond to all inquiries within 24-48 business hours. Premium subscribers receive priority support with faster response times.",
+              "For urgent billing issues, please include 'URGENT' in your email subject line.",
+            ],
+          },
+          {
+            heading: "Self-Service Resources",
+            paragraphs: [
+              "Before contacting support, you may find answers in our FAQ section on the homepage. Many common questions about image generation, credits, and account management are covered there.",
+            ],
+          },
+        ],
+      },
+      tos: {
+        lastUpdated: "Last updated: December 2024",
+        contactTitle: "Contact",
+        contactText: "For questions about these terms, please contact:",
+        contactEmail: "legal@ainanobanana.io",
+        sections: [
+          {
+            heading: "1. Acceptance of Terms",
+            paragraphs: [
+              "By accessing or using Nano Banana AI (\"Service\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.",
+              "We reserve the right to modify these terms at any time. Continued use of the Service after changes constitutes acceptance of the modified terms.",
+            ],
+          },
+          {
+            heading: "2. Description of Service",
+            paragraphs: [
+              "Nano Banana AI provides AI-powered image generation and editing services. Users can create, edit, and transform images using text prompts and reference images.",
+              "The Service is provided \"as is\" and we do not guarantee specific results or outcomes from using our AI models.",
+            ],
+          },
+          {
+            heading: "3. User Accounts",
+            paragraphs: [
+              "You must provide accurate information when creating an account. You are responsible for maintaining the security of your account credentials.",
+              "You may not share your account with others or allow unauthorized access. We reserve the right to suspend or terminate accounts that violate these terms.",
+            ],
+          },
+          {
+            heading: "4. Acceptable Use",
+            paragraphs: [
+              "You agree not to use the Service to generate content that is illegal, harmful, threatening, abusive, defamatory, or otherwise objectionable.",
+              "You may not use the Service to create content that infringes on intellectual property rights of others, or to generate deepfakes or deceptive media intended to mislead.",
+              "We reserve the right to remove any content and suspend accounts that violate our acceptable use policy.",
+            ],
+          },
+          {
+            heading: "5. Intellectual Property",
+            paragraphs: [
+              "Images generated using our Service with a paid subscription include commercial usage rights. You retain ownership of images you create.",
+              "You may not claim that AI-generated images are original photographs or human-created artwork when selling or licensing them.",
+              "Our platform, technology, and branding remain our exclusive intellectual property.",
+            ],
+          },
+          {
+            heading: "6. Payment and Subscriptions",
+            paragraphs: [
+              "Paid subscriptions are billed in advance on a monthly or annual basis. Credits purchased are non-refundable except as specified in our Refund Policy.",
+              "We reserve the right to change pricing with 30 days notice to existing subscribers.",
+            ],
+          },
+          {
+            heading: "7. Limitation of Liability",
+            paragraphs: [
+              "To the maximum extent permitted by law, Nano Banana AI shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.",
+              "Our total liability shall not exceed the amount you paid for the Service in the 12 months preceding the claim.",
+            ],
+          },
+          {
+            heading: "8. Termination",
+            paragraphs: [
+              "We may terminate or suspend your account at any time for violation of these terms. You may cancel your account at any time through your account settings.",
+              "Upon termination, your right to use the Service will immediately cease. We may delete your data after account termination.",
+            ],
+          },
+          {
+            heading: "9. Governing Law",
+            paragraphs: [
+              "These terms shall be governed by and construed in accordance with applicable laws. Any disputes shall be resolved through binding arbitration.",
+            ],
+          },
+        ],
+      },
+      privacy: {
+        lastUpdated: "Last updated: December 2024",
+        contactTitle: "Contact Us",
+        contactText: "For privacy-related inquiries, please contact:",
+        contactEmail: "privacy@ainanobanana.io",
+        sections: [
+          {
+            heading: "1. Information We Collect",
+            paragraphs: [
+              "Account Information: When you create an account, we collect your email address and authentication information from third-party providers (e.g., Google OAuth).",
+              "Usage Data: We collect information about how you use our Service, including prompts used, images generated, and feature usage patterns.",
+              "Payment Information: Payment processing is handled by third-party providers. We do not store your full credit card details.",
+              "Device Information: We collect standard technical information such as browser type, IP address, and device identifiers for security and analytics purposes.",
+            ],
+          },
+          {
+            heading: "2. How We Use Your Information",
+            paragraphs: [
+              "To provide and maintain the Service, process transactions, and send service-related communications.",
+              "To improve our AI models and Service quality through aggregated, anonymized usage analysis.",
+              "To detect and prevent fraud, abuse, and security incidents.",
+              "To comply with legal obligations and respond to lawful requests from authorities.",
+            ],
+          },
+          {
+            heading: "3. Data Sharing",
+            paragraphs: [
+              "We do not sell your personal information to third parties.",
+              "We may share data with service providers who help us operate the Service (payment processors, cloud hosting, analytics).",
+              "We may disclose information when required by law or to protect our rights and safety.",
+            ],
+          },
+          {
+            heading: "4. Data Retention",
+            paragraphs: [
+              "Account data is retained while your account is active. Generated images are stored according to your subscription tier.",
+              "You may request deletion of your account and associated data at any time by contacting support.",
+              "Some data may be retained for legal compliance even after account deletion.",
+            ],
+          },
+          {
+            heading: "5. Data Security",
+            paragraphs: [
+              "We implement industry-standard security measures including encryption, access controls, and regular security audits.",
+              "We are SOC 2, GDPR, and ISO 27001 certified, demonstrating our commitment to data protection.",
+              "While we strive to protect your data, no method of transmission over the Internet is 100% secure.",
+            ],
+          },
+          {
+            heading: "6. Your Rights",
+            paragraphs: [
+              "You have the right to access, correct, or delete your personal information.",
+              "You may opt out of marketing communications at any time.",
+              "EU/EEA users have additional rights under GDPR including data portability and the right to object to processing.",
+            ],
+          },
+          {
+            heading: "7. Cookies and Tracking",
+            paragraphs: [
+              "We use essential cookies for authentication and Service functionality.",
+              "We use analytics tools to understand how users interact with our Service. You can control cookie preferences through your browser settings.",
+            ],
+          },
+          {
+            heading: "8. Children's Privacy",
+            paragraphs: [
+              "Our Service is not intended for children under 13. We do not knowingly collect information from children under 13. If we learn we have collected such information, we will delete it promptly.",
+            ],
+          },
+          {
+            heading: "9. International Data Transfers",
+            paragraphs: [
+              "Your data may be processed in countries outside your residence. We ensure appropriate safeguards are in place for international transfers.",
+            ],
+          },
+          {
+            heading: "10. Changes to This Policy",
+            paragraphs: [
+              "We may update this Privacy Policy periodically. We will notify you of significant changes via email or through the Service.",
+            ],
+          },
+        ],
+      },
+      refund: {
+        lastUpdated: "Last updated: December 2024",
+        contactTitle: "Request a Refund",
+        contactText: "To request a refund, please contact:",
+        contactEmail: "billing@ainanobanana.io",
+        sections: [
+          {
+            heading: "Refund Eligibility",
+            paragraphs: [
+              "We want you to be satisfied with Nano Banana AI. If you're not happy with your purchase, we offer refunds under the following conditions:",
+              "Subscription Plans: You may request a full refund within 7 days of your initial subscription purchase if you have not used more than 20% of your allocated credits.",
+              "Add-on Credit Packages: Credit package purchases are generally non-refundable once credits have been used. Unused credit packages may be refunded within 14 days of purchase.",
+            ],
+          },
+          {
+            heading: "Non-Refundable Situations",
+            paragraphs: [
+              "Refunds will not be provided in the following cases:",
+              "- Credits that have already been used for image generation",
+              "- Subscription renewals (you should cancel before renewal to avoid charges)",
+              "- Accounts terminated for Terms of Service violations",
+              "- Requests made after the eligible refund period",
+              "- Promotional or discounted purchases (unless required by law)",
+            ],
+          },
+          {
+            heading: "How to Request a Refund",
+            paragraphs: [
+              "To request a refund, please email our billing team with the following information:",
+              "- Your registered email address",
+              "- Date of purchase",
+              "- Order or transaction ID (if available)",
+              "- Reason for refund request",
+              "We will process your request within 5-7 business days. Approved refunds will be credited to your original payment method within 10 business days.",
+            ],
+          },
+          {
+            heading: "Subscription Cancellation",
+            paragraphs: [
+              "You may cancel your subscription at any time through your account settings. Upon cancellation:",
+              "- You will retain access to your subscription benefits until the end of your current billing period",
+              "- No partial refunds are provided for the remaining days of your billing period",
+              "- Your credits will expire at the end of your billing period unless you have purchased add-on credits",
+            ],
+          },
+          {
+            heading: "Chargebacks",
+            paragraphs: [
+              "If you initiate a chargeback with your bank or credit card company instead of contacting us first, your account may be suspended pending investigation.",
+              "We encourage you to contact our support team to resolve any billing issues before initiating a chargeback.",
+            ],
+          },
+          {
+            heading: "Special Circumstances",
+            paragraphs: [
+              "We understand that exceptional circumstances may arise. If you believe you have a valid reason for a refund outside our standard policy, please contact us and explain your situation.",
+              "Technical issues that significantly impacted your ability to use the Service may qualify for pro-rated refunds or credit extensions on a case-by-case basis.",
+            ],
+          },
+        ],
+      },
     },
   },
   footer: {
