@@ -101,12 +101,13 @@
 }
 
 .galleryGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    column-count: 4;
+    column-gap: 20px;
 }
 
 .galleryItem {
+    break-inside: avoid;
+    margin-bottom: 20px;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -114,7 +115,6 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     transition: all 0.3s ease;
-    aspect-ratio: 600 / 448;
 }
 
 .galleryItem:hover {
@@ -133,8 +133,7 @@
 
 .image {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
     display: block;
     transition: transform 0.3s ease;
 }
@@ -517,7 +516,7 @@
 /* Responsive */
 @media (max-width: 1200px) {
     .galleryGrid {
-        grid-template-columns: repeat(3, 1fr);
+        column-count: 3;
     }
 }
 
@@ -535,8 +534,8 @@
     }
 
     .galleryGrid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        column-count: 2;
+        column-gap: 12px;
     }
 
     .tabContainer {
@@ -569,7 +568,7 @@
 
 @media (max-width: 480px) {
     .galleryGrid {
-        grid-template-columns: 1fr;
+        column-count: 1;
     }
 
     .thumbnails {
