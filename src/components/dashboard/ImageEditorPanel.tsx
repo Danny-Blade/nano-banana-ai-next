@@ -137,9 +137,14 @@ export const ImageEditorPanel = ({
     };
   }, []);
 
+  // 确保 activeResultIndex 始终在有效范围内
   React.useEffect(() => {
-    setActiveResultIndex(0);
-  }, [results.length]);
+    if (results.length === 0) {
+      setActiveResultIndex(0);
+    } else if (activeResultIndex >= results.length) {
+      setActiveResultIndex(results.length - 1);
+    }
+  }, [results.length, activeResultIndex]);
 
   const currentModel = localizedModelOptions.find((m) => m.value === selectedModel);
   const activeModel = currentModel || localizedModelOptions[0];
@@ -632,7 +637,8 @@ export const ImageEditorPanel = ({
                 (results.length ? (
                   <>
                     <div className={styles.singleResult}>
-                      {renderGeneratedResultCard(results[activeResultIndex]!, true)}
+                      {results[activeResultIndex] &&
+                        renderGeneratedResultCard(results[activeResultIndex], true)}
                     </div>
                     {results.length > 1 && (
                       <div className={styles.singleNav}>

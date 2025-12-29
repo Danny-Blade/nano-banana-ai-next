@@ -19,7 +19,7 @@ function getLocaleFromPath(pathname: string): Locale | null {
   return null;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 跳过静态文件和 API 路由
