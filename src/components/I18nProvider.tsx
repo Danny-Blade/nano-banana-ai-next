@@ -87,7 +87,6 @@ export const I18nProvider = ({
     if (next === locale) return;
 
     const pathWithoutLocale = getPathWithoutLocale(pathname);
-    const newPath = `/${next}${pathWithoutLocale}`;
 
     // 先更新 cookie，确保 middleware 能读取到新的语言偏好
     try {
@@ -96,8 +95,13 @@ export const I18nProvider = ({
       // ignore
     }
 
+    // 英语是默认语言，URL 不带 locale 前缀
+    // 其他语言需要带 locale 前缀
+    const newPath = next === "en"
+      ? (pathWithoutLocale || "/")
+      : `/${next}${pathWithoutLocale}`;
+
     // 使用 router.push 进行导航
-    // 对于英语，middleware 会将 /en/xxx 重定向到 /xxx
     router.push(newPath);
 
     setLocaleState(next);
