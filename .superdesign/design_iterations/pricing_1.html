@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing - Nano Banana AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #faf5ff 0%, #ffffff 50%, #f5f3ff 100%);
+      min-height: 100vh;
+      color: #111827;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+
+    /* Toggle Button Styles */
+    .toggle-container {
+      display: inline-flex;
+      background: #f3f4f6;
+      border-radius: 9999px;
+      padding: 4px;
+      position: relative;
+    }
+
+    .toggle-btn {
+      padding: 10px 24px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: #6b7280;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      position: relative;
+      z-index: 1;
+    }
+
+    .toggle-btn:hover:not(.active) {
+      color: #374151;
+    }
+
+    .toggle-btn.active {
+      color: #ffffff;
+    }
+
+    .toggle-indicator {
+      position: absolute;
+      height: calc(100% - 8px);
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      border-radius: 9999px;
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      top: 4px;
+    }
+
+    .discount-badge {
+      display: inline-flex;
+      align-items: center;
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      color: white;
+      font-size: 0.625rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 9999px;
+      margin-left: 4px;
+    }
+
+    /* Card Styles */
+    .pricing-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      position: relative;
+      transition: all 250ms ease-out;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .pricing-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
+    }
+
+    .pricing-card.highlighted {
+      background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+      border-color: #8b5cf6;
+      box-shadow: 0 0 40px rgba(139, 92, 246, 0.2);
+    }
+
+    .pricing-card.highlighted:hover {
+      box-shadow: 0 0 50px rgba(139, 92, 246, 0.3), 0 20px 40px -10px rgba(139, 92, 246, 0.2);
+    }
+
+    /* Popular Badge */
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+      animation: badgePulse 2s infinite;
+    }
+
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
+    }
+
+    /* Save Badge */
+    .save-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      animation: badgeBounce 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes badgeBounce {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.15); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Price Styles */
+    .price-wrapper {
+      margin: 1.5rem 0;
+    }
+
+    .price-original {
+      color: #9ca3af;
+      text-decoration: line-through;
+      font-size: 1.25rem;
+      margin-right: 0.5rem;
+    }
+
+    .price-current {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #111827;
+      line-height: 1;
+    }
+
+    .price-period {
+      color: #6b7280;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .price-monthly-equiv {
+      color: #8b5cf6;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    /* Button Styles */
+    .btn-primary {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 14px 24px;
+      background: white;
+      color: #8b5cf6;
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid #8b5cf6;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+    }
+
+    .btn-secondary:hover {
+      background: #faf5ff;
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.97);
+    }
+
+    /* Feature List */
+    .feature-list {
+      list-style: none;
+      margin-top: 1.5rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      color: #4b5563;
+      font-size: 0.9rem;
+    }
+
+    .feature-icon {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    /* Pricing Grid */
+    .pricing-grid {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .pricing-grid.active {
+      display: grid;
+    }
+
+    /* One-time header */
+    .onetime-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+      border-radius: 1rem;
+      border: 1px solid #e9d5ff;
+    }
+
+    .onetime-header h3 {
+      font-size: 1.5rem;
+      color: #7c3aed;
+      margin-bottom: 0.5rem;
+    }
+
+    .onetime-header p {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    /* Credits display */
+    .credits-display {
+      text-align: center;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 12px;
+    }
+
+    .credits-amount {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #8b5cf6;
+    }
+
+    .credits-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    /* Trust badges */
+    .trust-section {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .trust-icon {
+      width: 20px;
+      height: 20px;
+      color: #10b981;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .pricing-grid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+      }
+
+      .pricing-card.highlighted {
+        order: -1;
+      }
+    }
+
+    /* Animation classes */
+    .fade-in {
+      animation: fadeIn 400ms ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stagger-1 { animation-delay: 0ms; }
+    .stagger-2 { animation-delay: 100ms; }
+    .stagger-3 { animation-delay: 200ms; }
+  </style>
+</head>
+<body>
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-10">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900">
+          Nano Banana AI for Every Creator
+        </h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+          From hobbyists to professionals - join the community generating millions of images daily.
+        </p>
+
+        <!-- Toggle Buttons -->
+        <div class="toggle-container" id="toggleContainer">
+          <div class="toggle-indicator" id="toggleIndicator"></div>
+          <button class="toggle-btn active" data-mode="monthly" id="btnMonthly">Monthly</button>
+          <button class="toggle-btn" data-mode="yearly" id="btnYearly">
+            Yearly
+            <span class="discount-badge">-20%</span>
+          </button>
+          <button class="toggle-btn" data-mode="onetime" id="btnOnetime">One-time</button>
+        </div>
+      </div>
+
+      <!-- Monthly Plans -->
+      <div class="pricing-grid active" id="monthlyPlans">
+        <!-- Basic -->
+        <div class="pricing-card fade-in stagger-1">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Basic</h3>
+          <p class="text-gray-500 text-sm mb-4">For individual use and small projects</p>
+
+          <div class="price-wrapper">
+            <span class="price-current">$9.99</span>
+            <span class="price-period">/month</span>
+          </div>
+
+          <button class="btn-secondary">Get Started</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              100 credits per month
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              50 high-quality images
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Standard generation speed
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Basic customer support
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              PNG format downloads
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license
+            </li>
+          </ul>
+        </div>
+
+        <!-- Standard (Highlighted) -->
+        <div class="pricing-card highlighted fade-in stagger-2">
+          <div class="popular-badge">🔥 MOST POPULAR</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Standard</h3>
+          <p class="text-gray-500 text-sm mb-4">Best for creators and small teams</p>
+
+          <div class="price-wrapper">
+            <span class="price-current">$19.99</span>
+            <span class="price-period">/month</span>
+          </div>
+
+          <button class="btn-primary">Get Started</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              500 credits per month
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              250 high-quality images
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Priority generation queue
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Priority customer support
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              PNG format downloads
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license & editing tools
+            </li>
+          </ul>
+        </div>
+
+        <!-- Pro -->
+        <div class="pricing-card fade-in stagger-3">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Pro</h3>
+          <p class="text-gray-500 text-sm mb-4">For large teams and enterprises</p>
+
+          <div class="price-wrapper">
+            <span class="price-current">$49.99</span>
+            <span class="price-period">/month</span>
+          </div>
+
+          <button class="btn-secondary">Get Started</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              2000 credits per month
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              1000 high-quality images
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Fastest generation speed
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Dedicated account manager
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              All format downloads
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license & advanced tools
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Yearly Plans -->
+      <div class="pricing-grid" id="yearlyPlans">
+        <!-- Basic Yearly -->
+        <div class="pricing-card fade-in stagger-1">
+          <div class="save-badge">Save 20%</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Basic</h3>
+          <p class="text-gray-500 text-sm mb-4">For individual use and small projects</p>
+
+          <div class="price-wrapper">
+            <span class="price-original">$119.88</span>
+            <span class="price-current">$95.88</span>
+            <span class="price-period">/year</span>
+            <p class="price-monthly-equiv">$7.99/month</p>
+          </div>
+
+          <button class="btn-secondary">Get Started</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              1,200 credits per year
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              600 high-quality images
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Standard generation speed
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Basic customer support
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              PNG format downloads
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license
+            </li>
+          </ul>
+        </div>
+
+        <!-- Standard Yearly (Highlighted) -->
+        <div class="pricing-card highlighted fade-in stagger-2">
+          <div class="popular-badge">🎉 BEST VALUE</div>
+          <div class="save-badge">Save 20%</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Standard</h3>
+          <p class="text-gray-500 text-sm mb-4">Best for creators and small teams</p>
+
+          <div class="price-wrapper">
+            <span class="price-original">$239.88</span>
+            <span class="price-current">$191.88</span>
+            <span class="price-period">/year</span>
+            <p class="price-monthly-equiv">$15.99/month</p>
+          </div>
+
+          <button class="btn-primary">Get Started</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              6,000 credits per year
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              3,000 high-quality images
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Priority generation queue
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Priority customer support
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              PNG format downloads
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license & editing tools
+            </li>
+          </ul>
+        </div>
+
+        <!-- Pro Yearly -->
+        <div class="pricing-card fade-in stagger-3">
+          <div class="save-badge">Save 20%</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Pro</h3>
+          <p class="text-gray-500 text-sm mb-4">For large teams and enterprises</p>
+
+          <div class="price-wrapper">
+            <span class="price-original">$599.88</span>
+            <span class="price-current">$479.88</span>
+            <span class="price-period">/year</span>
+            <p class="price-monthly-equiv">$39.99/month</p>
+          </div>
+
+          <button class="btn-secondary">Get Started</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              24,000 credits per year
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              12,000 high-quality images
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Fastest generation speed
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Dedicated account manager
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              All format downloads
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license & advanced tools
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- One-time Plans -->
+      <div class="pricing-grid" id="onetimePlans">
+        <div class="onetime-header" style="grid-column: 1 / -1;">
+          <h3>💎 Credit Packages</h3>
+          <p>No subscription needed • Never expires • Use anytime</p>
+        </div>
+
+        <!-- Starter Pack -->
+        <div class="pricing-card fade-in stagger-1">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Starter Pack</h3>
+          <p class="text-gray-500 text-sm mb-4">Try it out</p>
+
+          <div class="credits-display">
+            <div class="credits-amount">800</div>
+            <div class="credits-label">Credits</div>
+          </div>
+
+          <div class="price-wrapper text-center">
+            <span class="price-current">$9.99</span>
+          </div>
+
+          <button class="btn-secondary">Buy Now</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              One-time purchase
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Credits never expire
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Fast image generation
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license
+            </li>
+          </ul>
+        </div>
+
+        <!-- Value Pack (Highlighted) -->
+        <div class="pricing-card highlighted fade-in stagger-2">
+          <div class="popular-badge">💰 BEST VALUE</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Value Pack</h3>
+          <p class="text-gray-500 text-sm mb-4">Most popular choice</p>
+
+          <div class="credits-display">
+            <div class="credits-amount">2,000</div>
+            <div class="credits-label">Credits</div>
+          </div>
+
+          <div class="price-wrapper text-center">
+            <span class="price-current">$19.99</span>
+            <p class="price-monthly-equiv">Save 25% vs Starter</p>
+          </div>
+
+          <button class="btn-primary">Buy Now</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              One-time purchase
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Credits never expire
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Fast image generation
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Permanent history records
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mega Pack -->
+        <div class="pricing-card fade-in stagger-3">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Mega Pack</h3>
+          <p class="text-gray-500 text-sm mb-4">For power users</p>
+
+          <div class="credits-display">
+            <div class="credits-amount">5,000</div>
+            <div class="credits-label">Credits</div>
+          </div>
+
+          <div class="price-wrapper text-center">
+            <span class="price-current">$39.99</span>
+            <p class="price-monthly-equiv">Save 40% vs Starter</p>
+          </div>
+
+          <button class="btn-secondary">Buy Now</button>
+
+          <ul class="feature-list">
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              One-time purchase
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Credits never expire
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Fastest generation speed
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Commercial license
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Permanent history records
+            </li>
+            <li class="feature-item">
+              <span class="feature-icon"><i data-lucide="check" style="width:12px;height:12px;"></i></span>
+              Priority support
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Trust Section -->
+      <div class="trust-section">
+        <div class="trust-item">
+          <i data-lucide="shield-check" class="trust-icon"></i>
+          <span>30-day money-back guarantee</span>
+        </div>
+        <div class="trust-item">
+          <i data-lucide="credit-card" class="trust-icon"></i>
+          <span>Secure payment</span>
+        </div>
+        <div class="trust-item">
+          <i data-lucide="x-circle" class="trust-icon"></i>
+          <span>Cancel anytime</span>
+        </div>
+        <div class="trust-item">
+          <i data-lucide="headphones" class="trust-icon"></i>
+          <span>24/7 Support</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Toggle functionality
+    const toggleBtns = document.querySelectorAll('.toggle-btn');
+    const toggleIndicator = document.getElementById('toggleIndicator');
+    const monthlyPlans = document.getElementById('monthlyPlans');
+    const yearlyPlans = document.getElementById('yearlyPlans');
+    const onetimePlans = document.getElementById('onetimePlans');
+
+    function updateIndicator(activeBtn) {
+      const rect = activeBtn.getBoundingClientRect();
+      const containerRect = document.getElementById('toggleContainer').getBoundingClientRect();
+      toggleIndicator.style.width = `${rect.width}px`;
+      toggleIndicator.style.left = `${rect.left - containerRect.left}px`;
+    }
+
+    function switchMode(mode) {
+      // Update buttons
+      toggleBtns.forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.querySelector(`[data-mode="${mode}"]`);
+      activeBtn.classList.add('active');
+      updateIndicator(activeBtn);
+
+      // Hide all plans
+      monthlyPlans.classList.remove('active');
+      yearlyPlans.classList.remove('active');
+      onetimePlans.classList.remove('active');
+
+      // Show selected plan
+      if (mode === 'monthly') {
+        monthlyPlans.classList.add('active');
+      } else if (mode === 'yearly') {
+        yearlyPlans.classList.add('active');
+      } else if (mode === 'onetime') {
+        onetimePlans.classList.add('active');
+      }
+
+      // Re-trigger animations
+      const activePlans = document.querySelector('.pricing-grid.active');
+      const cards = activePlans.querySelectorAll('.pricing-card');
+      cards.forEach((card, index) => {
+        card.classList.remove('visible');
+        setTimeout(() => {
+          card.classList.add('visible');
+        }, index * 100);
+      });
+    }
+
+    // Initialize
+    updateIndicator(document.getElementById('btnMonthly'));
+
+    // Add click handlers
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchMode(btn.dataset.mode);
+      });
+    });
+
+    // Initial animation
+    document.querySelectorAll('.pricing-grid.active .pricing-card').forEach((card, index) => {
+      setTimeout(() => {
+        card.classList.add('visible');
+      }, 300 + index * 100);
+    });
+
+    // Handle resize
+    window.addEventListener('resize', () => {
+      const activeBtn = document.querySelector('.toggle-btn.active');
+      updateIndicator(activeBtn);
+    });
+  </script>
+</body>
+</html>
