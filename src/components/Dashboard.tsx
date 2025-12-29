@@ -15,9 +15,9 @@ import {
   modelOptions,
   resolutionOptions,
   type ModelValue,
-  type ImageHistoryItem,
   type LocalizedModelOption,
 } from "./dashboard/types";
+import { useImageHistory, type ImageHistoryItem } from "@/hooks/useImageHistory";
 
 type Tab = "generate" | "batch" | "compare" | "history";
 type TemplateTarget = "generate" | "batch" | "batch-multi" | "compare";
@@ -32,10 +32,6 @@ const templateCategories = [
   { key: "ecommerce" as const },
   { key: "cover" as const },
 ];
-
-const IMAGE_HISTORY_STORAGE_KEY = "nano_banana_image_history_v1";
-const IMAGE_HISTORY_LIMIT = 60;
-const IMAGE_HISTORY_SOURCES_KEY = "historySources";
 
 const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const { locale, t } = useI18n();
@@ -65,10 +61,16 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   );
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [previewAlt, setPreviewAlt] = React.useState("");
-  const [imageHistory, setImageHistory] = React.useState<ImageHistoryItem[]>([]);
   const [selfCallbackUrl, setSelfCallbackUrl] = React.useState<string | undefined>(undefined);
-  const historySourceMap = React.useRef<Map<string, string>>(new Map());
-  const historyHydratedRef = React.useRef(false);
+
+  // Use shared history hook
+  const {
+    imageHistory,
+    setImageHistory,
+    persistHistorySource,
+    trySaveToLocalFolder,
+    addHistoryItem,
+  } = useImageHistory();
 
   const [showTemplates, setShowTemplates] = React.useState(false);
   const [templateCategory, setTemplateCategory] = React.useState(templateCategories[0].key);
@@ -93,199 +95,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   }, [previewUrl]);
 
   const imagePool = React.useMemo(() => siteContent.explore.images || [], [siteContent]);
-
-  const isFileSystemAccessSupported = React.useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return typeof (globalThis as any).showDirectoryPicker === "function";
-  }, []);
-
-  const historyDb = React.useMemo(() => {
-    const open = () =>
-      new Promise<IDBDatabase>((resolve, reject) => {
-        const req = indexedDB.open("nano-banana-local", 1);
-        req.onupgradeneeded = () => {
-          const db = req.result;
-          if (!db.objectStoreNames.contains("kv")) db.createObjectStore("kv");
-        };
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-
-    const get = async <T,>(key: string): Promise<T | null> => {
-      const db = await open();
-      return await new Promise<T | null>((resolve, reject) => {
-        const tx = db.transaction("kv", "readonly");
-        const store = tx.objectStore("kv");
-        const req = store.get(key);
-        req.onsuccess = () => resolve((req.result as T | undefined) ?? null);
-        req.onerror = () => reject(req.error);
-      });
-    };
-
-    const put = async (key: string, value: unknown) => {
-      const db = await open();
-      return await new Promise<void>((resolve, reject) => {
-        const tx = db.transaction("kv", "readwrite");
-        const store = tx.objectStore("kv");
-        store.put(value, key);
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    };
-
-    return { get, put };
-  }, []);
-
-  React.useEffect(() => {
-    historyDb
-      .get<Record<string, string>>(IMAGE_HISTORY_SOURCES_KEY)
-      .then((stored) => {
-        if (!stored) return;
-        const merged = new Map<string, string>([
-          ...Object.entries(stored),
-          ...historySourceMap.current.entries(),
-        ]);
-        historySourceMap.current = merged;
-      })
-      .catch(() => null);
-  }, [historyDb]);
-
-  const persistHistorySources = React.useCallback(async () => {
-    try {
-      await historyDb.put(
-        IMAGE_HISTORY_SOURCES_KEY,
-        Object.fromEntries(historySourceMap.current.entries()),
-      );
-    } catch {
-      // ignore
-    }
-  }, [historyDb]);
-
-  const persistHistorySource = React.useCallback(
-    async (id: string, url: string) => {
-      historySourceMap.current.set(id, url);
-      await persistHistorySources();
-    },
-    [persistHistorySources],
-  );
-
-  React.useEffect(() => {
-    if (historyHydratedRef.current) return;
-
-    const loadHistory = () => {
-      try {
-        const raw = localStorage.getItem(IMAGE_HISTORY_STORAGE_KEY);
-        if (!raw) {
-          historyHydratedRef.current = true;
-          return;
-        }
-        const parsed: unknown = JSON.parse(raw);
-        if (!Array.isArray(parsed)) {
-          historyHydratedRef.current = true;
-          return;
-        }
-        const items = parsed
-          .filter((v) => v && typeof v === "object")
-          .map((rawItem) => {
-            const v = rawItem as Record<string, unknown>;
-            const id = typeof v.id === "string" ? v.id : null;
-            const createdAt =
-              typeof v.createdAt === "number"
-                ? v.createdAt
-                : typeof v.created_at === "number"
-                  ? v.created_at
-                  : null;
-            const model =
-              typeof v.model === "string"
-                ? v.model
-                : typeof v.modelKey === "string"
-                  ? v.modelKey
-                  : typeof v.model_key === "string"
-                    ? v.model_key
-                    : null;
-            const prompt =
-              typeof v.prompt === "string"
-                ? v.prompt
-                : typeof v.text === "string"
-                  ? v.text
-                  : "";
-            const thumbnailDataUrl =
-              typeof v.thumbnailDataUrl === "string"
-                ? v.thumbnailDataUrl
-                : typeof v.thumbnail === "string"
-                  ? v.thumbnail
-                  : typeof v.thumb === "string"
-                    ? v.thumb
-                    : typeof v.imageUrl === "string"
-                      ? v.imageUrl
-                      : null;
-            if (!id || createdAt == null || !model || !thumbnailDataUrl) return null;
-            return {
-              id,
-              createdAt,
-              model: model as ModelValue,
-              prompt,
-              aspectRatio: typeof v.aspectRatio === "string" ? v.aspectRatio : "1:1",
-              imageSize: typeof v.imageSize === "string" ? v.imageSize : "1K",
-              costCredits: typeof v.costCredits === "number" ? v.costCredits : 0,
-              thumbnailDataUrl,
-              imageUrl: typeof v.imageUrl === "string" ? v.imageUrl : undefined,
-              fileName: typeof v.fileName === "string" ? v.fileName : undefined,
-              savedDirName: typeof v.savedDirName === "string" ? v.savedDirName : undefined,
-              savedVia:
-                v.savedVia === "download" || v.savedVia === "fs" ? v.savedVia : undefined,
-            } satisfies ImageHistoryItem;
-          })
-          .filter(Boolean) as ImageHistoryItem[];
-        setImageHistory(items.slice(0, IMAGE_HISTORY_LIMIT));
-        items.forEach((item) => {
-          if (item.imageUrl && !historySourceMap.current.has(item.id)) {
-            historySourceMap.current.set(item.id, item.imageUrl);
-          }
-        });
-      } catch {
-        // ignore parsing errors
-      } finally {
-        historyHydratedRef.current = true;
-      }
-    };
-
-    loadHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  React.useEffect(() => {
-    if (!historyHydratedRef.current) return;
-    if (historySourceMap.current.size > 0) {
-      void persistHistorySources();
-    }
-  }, [persistHistorySources]);
-
-  React.useEffect(() => {
-    if (!historyHydratedRef.current) return;
-    try {
-      localStorage.setItem(
-        IMAGE_HISTORY_STORAGE_KEY,
-        JSON.stringify(imageHistory.slice(0, IMAGE_HISTORY_LIMIT))
-      );
-    } catch {
-      // ignore
-    }
-  }, [imageHistory]);
-
-  React.useEffect(() => {
-    const keep = new Set(imageHistory.map((item) => item.id));
-    let changed = false;
-    for (const key of historySourceMap.current.keys()) {
-      if (!keep.has(key)) {
-        historySourceMap.current.delete(key);
-        changed = true;
-      }
-    }
-    if (changed) {
-      void persistHistorySources();
-    }
-  }, [imageHistory, persistHistorySources]);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
@@ -334,43 +143,6 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     [imagePool]
   );
 
-  const trySaveToLocalFolder = React.useCallback(
-    async (url: string, fileName: string) => {
-      if (!isFileSystemAccessSupported) return null;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const handle = await historyDb.get<any>("saveDirHandle").catch(() => null);
-      if (!handle) return null;
-
-      try {
-        const permission =
-          typeof handle.queryPermission === "function"
-            ? await handle.queryPermission({ mode: "readwrite" })
-            : "granted";
-        if (permission !== "granted" && typeof handle.requestPermission === "function") {
-          const requested = await handle.requestPermission({ mode: "readwrite" });
-          if (requested !== "granted") return null;
-        }
-
-        const res = await fetch(url);
-        const blob = await res.blob();
-        const fileHandle = await handle.getFileHandle(fileName, { create: true });
-        const writable = await fileHandle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-
-        const dirName = typeof handle?.name === "string" ? handle.name : null;
-        return {
-          fileName,
-          savedDirName: dirName,
-          savedVia: "fs" as const,
-        };
-      } catch {
-        return null;
-      }
-    },
-    [isFileSystemAccessSupported, historyDb]
-  );
-
   const currentModel = localizedModelOptions.find((m) => m.value === selectedModel);
   const activeModel = currentModel || localizedModelOptions[0];
 
@@ -391,8 +163,8 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   };
 
   const onImageHistoryAdd = React.useCallback((item: ImageHistoryItem) => {
-    setImageHistory((prev) => [item, ...prev].slice(0, IMAGE_HISTORY_LIMIT));
-  }, []);
+    addHistoryItem(item);
+  }, [addHistoryItem]);
 
   const handleRefreshSession = React.useCallback(async () => {
     try {

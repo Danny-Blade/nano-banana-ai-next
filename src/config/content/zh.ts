@@ -107,32 +107,32 @@ export const siteContentZh: SiteContent = {
       {
         before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/add-color-1.webp",
-        prompt: "把比基尼换成红色",
+        prompt: "给这张图上色",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/beach-scenery-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/beach-scenery-1.webp",
-        prompt: "变成可爱 Q 版手工钩织毛线娃娃风格",
+        prompt: "切换到夜景场景，并使用点光源",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/car-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/car-1.webp",
-        prompt: "用梵高《星空》的风格重新演绎",
+        prompt: "将背景切换为冬季 snowy 场景",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/ui-design-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/ui-design-1.webp",
-        prompt: "把头发换成活力蓝色",
+        prompt: "根据线框图创建 UI 模型",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/line-art-pose-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/line-art-pose-1.webp",
-        prompt: "变成乐高小人并放在包装盒内",
+        prompt: "将右上角的人物换成线稿的姿势，专业摄影棚拍摄",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/line-drawing-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/line-drawing-1.webp",
-        prompt: "制作 PVC 手办产品展示，配上包装盒和 3D 建模屏幕",
+        prompt: "给线稿上色",
       },
     ],
   },

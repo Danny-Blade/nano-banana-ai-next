@@ -28,8 +28,8 @@ export type ImageHistoryItem = {
   savedVia?: "download" | "fs";
 };
 
-const IMAGE_HISTORY_STORAGE_KEY = "nano_banana_image_history_v1";
-const IMAGE_HISTORY_LIMIT = 60;
+const IMAGE_HISTORY_STORAGE_KEY = "nano_banana_image_history_v1"; // localStorage (legacy)
+const IMAGE_HISTORY_IDB_KEY = "imageHistory"; // IndexedDB (new)
 const IMAGE_HISTORY_SOURCES_KEY = "historySources";
 
 export const useImageHistory = () => {
@@ -122,91 +122,113 @@ export const useImageHistory = () => {
       .catch(() => null);
   }, [historyDb]);
 
-  // Load history from localStorage - only once on mount
+  // Parse raw history data (from localStorage or IndexedDB)
+  const parseHistoryData = React.useCallback((parsed: unknown): ImageHistoryItem[] => {
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((v) => v && typeof v === "object")
+      .map((rawItem) => {
+        const v = rawItem as Record<string, unknown>;
+        const id = typeof v.id === "string" ? v.id : null;
+        const createdAt =
+          typeof v.createdAt === "number"
+            ? v.createdAt
+            : typeof v.created_at === "number"
+              ? v.created_at
+              : null;
+        const model =
+          typeof v.model === "string"
+            ? v.model
+            : typeof v.modelKey === "string"
+              ? v.modelKey
+              : typeof v.model_key === "string"
+                ? v.model_key
+                : null;
+        const prompt =
+          typeof v.prompt === "string"
+            ? v.prompt
+            : typeof v.text === "string"
+              ? v.text
+              : "";
+        const thumbnailDataUrl =
+          typeof v.thumbnailDataUrl === "string"
+            ? v.thumbnailDataUrl
+            : typeof v.thumbnail === "string"
+              ? v.thumbnail
+              : typeof v.thumb === "string"
+                ? v.thumb
+                : typeof v.imageUrl === "string"
+                  ? v.imageUrl
+                  : null;
+        if (!id || createdAt == null || !model || !thumbnailDataUrl) return null;
+        return {
+          id,
+          createdAt,
+          model: model as ModelValue,
+          prompt,
+          aspectRatio: typeof v.aspectRatio === "string" ? v.aspectRatio : "1:1",
+          imageSize: typeof v.imageSize === "string" ? v.imageSize : "1K",
+          costCredits: typeof v.costCredits === "number" ? v.costCredits : 0,
+          thumbnailDataUrl,
+          imageUrl: typeof v.imageUrl === "string" ? v.imageUrl : undefined,
+          fileName: typeof v.fileName === "string" ? v.fileName : undefined,
+          savedDirName: typeof v.savedDirName === "string" ? v.savedDirName : undefined,
+          savedVia:
+            v.savedVia === "download" || v.savedVia === "fs" ? v.savedVia : undefined,
+        } satisfies ImageHistoryItem;
+      })
+      .filter(Boolean) as ImageHistoryItem[];
+  }, []);
+
+  // Load history from IndexedDB (with localStorage migration) - only once on mount
   React.useEffect(() => {
     if (historyHydratedRef.current) return;
 
-    const loadHistory = () => {
+    const loadHistory = async () => {
       try {
+        // Try to load from IndexedDB first
+        const idbData = await historyDb.get<ImageHistoryItem[]>(IMAGE_HISTORY_IDB_KEY);
+        if (idbData && Array.isArray(idbData) && idbData.length > 0) {
+          const items = parseHistoryData(idbData);
+          setImageHistory(items);
+          items.forEach((item) => {
+            if (item.imageUrl && !historySourceMap.current.has(item.id)) {
+              historySourceMap.current.set(item.id, item.imageUrl);
+            }
+          });
+          historyHydratedRef.current = true;
+          return;
+        }
+
+        // Fallback: migrate from localStorage
         const raw = localStorage.getItem(IMAGE_HISTORY_STORAGE_KEY);
         if (!raw) {
           historyHydratedRef.current = true;
           return;
         }
         const parsed: unknown = JSON.parse(raw);
-        if (!Array.isArray(parsed)) {
-          historyHydratedRef.current = true;
-          return;
+        const items = parseHistoryData(parsed);
+        if (items.length > 0) {
+          setImageHistory(items);
+          items.forEach((item) => {
+            if (item.imageUrl && !historySourceMap.current.has(item.id)) {
+              historySourceMap.current.set(item.id, item.imageUrl);
+            }
+          });
+          // Migrate to IndexedDB and clear localStorage
+          await historyDb.put(IMAGE_HISTORY_IDB_KEY, items);
+          localStorage.removeItem(IMAGE_HISTORY_STORAGE_KEY);
         }
-        const items = parsed
-          .filter((v) => v && typeof v === "object")
-          .map((rawItem) => {
-            const v = rawItem as Record<string, unknown>;
-            const id = typeof v.id === "string" ? v.id : null;
-            const createdAt =
-              typeof v.createdAt === "number"
-                ? v.createdAt
-                : typeof v.created_at === "number"
-                  ? v.created_at
-                  : null;
-            const model =
-              typeof v.model === "string"
-                ? v.model
-                : typeof v.modelKey === "string"
-                  ? v.modelKey
-                  : typeof v.model_key === "string"
-                    ? v.model_key
-                    : null;
-            const prompt =
-              typeof v.prompt === "string"
-                ? v.prompt
-                : typeof v.text === "string"
-                  ? v.text
-                  : "";
-            const thumbnailDataUrl =
-              typeof v.thumbnailDataUrl === "string"
-                ? v.thumbnailDataUrl
-                : typeof v.thumbnail === "string"
-                  ? v.thumbnail
-                  : typeof v.thumb === "string"
-                    ? v.thumb
-                    : typeof v.imageUrl === "string"
-                      ? v.imageUrl
-                      : null;
-            if (!id || createdAt == null || !model || !thumbnailDataUrl) return null;
-            return {
-              id,
-              createdAt,
-              model: model as ModelValue,
-              prompt,
-              aspectRatio: typeof v.aspectRatio === "string" ? v.aspectRatio : "1:1",
-              imageSize: typeof v.imageSize === "string" ? v.imageSize : "1K",
-              costCredits: typeof v.costCredits === "number" ? v.costCredits : 0,
-              thumbnailDataUrl,
-              imageUrl: typeof v.imageUrl === "string" ? v.imageUrl : undefined,
-              fileName: typeof v.fileName === "string" ? v.fileName : undefined,
-              savedDirName: typeof v.savedDirName === "string" ? v.savedDirName : undefined,
-              savedVia:
-                v.savedVia === "download" || v.savedVia === "fs" ? v.savedVia : undefined,
-            } satisfies ImageHistoryItem;
-          })
-          .filter(Boolean) as ImageHistoryItem[];
-        setImageHistory(items.slice(0, IMAGE_HISTORY_LIMIT));
-        items.forEach((item) => {
-          if (item.imageUrl && !historySourceMap.current.has(item.id)) {
-            historySourceMap.current.set(item.id, item.imageUrl);
-          }
-        });
       } catch {
-        // ignore parsing errors
+        // ignore errors
       } finally {
         historyHydratedRef.current = true;
       }
     };
 
-    loadHistory();
+    void loadHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [historyDb, parseHistoryData]);
 
   // Persist historySourceMap to IndexedDB after data is loaded
   React.useEffect(() => {
@@ -216,18 +238,13 @@ export const useImageHistory = () => {
     }
   }, [persistHistorySources]);
 
-  // Save history to localStorage
+  // Save history to IndexedDB
   React.useEffect(() => {
     if (!historyHydratedRef.current) return;
-    try {
-      localStorage.setItem(
-        IMAGE_HISTORY_STORAGE_KEY,
-        JSON.stringify(imageHistory.slice(0, IMAGE_HISTORY_LIMIT))
-      );
-    } catch {
+    void historyDb.put(IMAGE_HISTORY_IDB_KEY, imageHistory).catch(() => {
       // ignore
-    }
-  }, [imageHistory]);
+    });
+  }, [imageHistory, historyDb]);
 
   // Clean up orphaned sources
   React.useEffect(() => {
@@ -437,7 +454,7 @@ export const useImageHistory = () => {
 
   const addHistoryItem = React.useCallback(
     (item: ImageHistoryItem) => {
-      setImageHistory((prev) => [item, ...prev].slice(0, IMAGE_HISTORY_LIMIT));
+      setImageHistory((prev) => [item, ...prev]);
       if (item.imageUrl) {
         void persistHistorySource(item.id, item.imageUrl);
       }

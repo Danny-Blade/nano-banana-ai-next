@@ -106,32 +106,32 @@ export const siteContentEn = {
       {
         before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/add-color-1.webp",
-        prompt: "Change the bikini to red",
+        prompt: "Color this image",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/beach-scenery-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/beach-scenery-1.webp",
-        prompt: "Transform into a handmade crocheted yarn doll with cute chibi-style appearance",
+        prompt: "Switch to a night scene with point light sources",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/car-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/car-1.webp",
-        prompt: "Reimagine in the style of Van Gogh's 'Starry Night'",
+        prompt: "Change the background to a snowy winter landscape",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/ui-design-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/ui-design-1.webp",
-        prompt: "Change the hair color to vibrant blue",
+        prompt: "Create a UI mockup based on the wireframe",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/line-art-pose-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/line-art-pose-1.webp",
-        prompt: "Transform into a LEGO minifigure inside its packaging box",
+        prompt: "Replace the person in the top-right corner with the line-art pose, shot in a professional studio setting",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/line-drawing-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/line-drawing-1.webp",
-        prompt: "Create a PVC figure product showcase with packaging box and 3D modeling screen",
+        prompt: "Color the line art",
       },
     ],
   },

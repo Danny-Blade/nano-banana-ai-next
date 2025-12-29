@@ -107,32 +107,32 @@ export const siteContentJa: SiteContent = {
       {
         before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/add-color-1.webp",
-        prompt: "ビキニの色を赤に変更",
+        prompt: "この画像に色を付けてください",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/beach-scenery-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/beach-scenery-1.webp",
-        prompt: "かわいいチビ風の手編み人形に変換",
+        prompt: "点光源を用いた夜景シーンに切り替える",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/car-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/car-1.webp",
-        prompt: "ゴッホの『星月夜』スタイルで再解釈",
+        prompt: "背景を雪の降る冬の風景に変更してください",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/ui-design-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/ui-design-1.webp",
-        prompt: "髪色を鮮やかな青に変更",
+        prompt: "ワイヤーフレームに基づいてUIモックアップを作成してください",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/line-art-pose-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/line-art-pose-1.webp",
-        prompt: "LEGOミニフィグに変換してパッケージ箱に入れる",
+        prompt: "右上の人物を線画のポーズに置き換え、プロのスタジオで撮影したようにしてください",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/line-drawing-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/line-drawing-1.webp",
-        prompt: "PVCフィギュア製品展示を作成、パッケージ箱と3Dモデリング画面付き",
+        prompt: "線画に色を付けてください",
       },
     ],
   },

@@ -107,32 +107,32 @@ export const siteContentKo: SiteContent = {
       {
         before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/add-color-1.webp",
-        prompt: "비키니를 빨간색으로 변경",
+        prompt: "이 그림에 색칠해 주세요",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/beach-scenery-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/beach-scenery-1.webp",
-        prompt: "귀여운 치비 스타일 손뜨개 인형으로 변환",
+        prompt: "야간 장면으로 전환하고 점광원을 사용합니다",
+      },
+      {
+        before: "https://aiimage.pkgames.org/nano-banana/car-0.webp",
+        after: "https://aiimage.pkgames.org/nano-banana/car-1.webp",
+        prompt: "배경을 눈 내리는 겨울 풍경으로 바꿔 주세요",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/ui-design-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/ui-design-1.webp",
-        prompt: "반 고흐의 '별이 빛나는 밤' 스타일로 재해석",
-      },
-      {
-        before: "https://aiimage.pkgames.org/nano-banana/ui-design-0.webp",
-        after: "https://aiimage.pkgames.org/nano-banana/ui-design-1.webp",
-        prompt: "머리색을 선명한 파란색으로 변경",
+        prompt: "와이어프레임을 기반으로 UI 목업을 만들어 주세요",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/line-art-pose-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/line-art-pose-1.webp",
-        prompt: "레고 미니피규어로 변환하여 패키지 박스 안에",
+        prompt: "오른쪽 상단의 인물을 선화의 포즈로 바꾸고, 전문 스튜디오에서 촬영한 느낌으로 만들어 주세요",
       },
       {
         before: "https://aiimage.pkgames.org/nano-banana/line-drawing-0.webp",
         after: "https://aiimage.pkgames.org/nano-banana/line-drawing-1.webp",
-        prompt: "PVC 피규어 제품 쇼케이스 생성, 패키지 박스와 3D 모델링 화면 포함",
+        prompt: "선화에 색을 입혀 주세요",
       },
     ],
   },
