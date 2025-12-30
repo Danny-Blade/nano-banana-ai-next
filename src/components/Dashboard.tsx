@@ -70,6 +70,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     persistHistorySource,
     trySaveToLocalFolder,
     addHistoryItem,
+    getSourceUrl,
   } = useImageHistory();
 
   const [showTemplates, setShowTemplates] = React.useState(false);
@@ -413,6 +414,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             <ImageHistory
               externalHistory={imageHistory}
               onHistoryChange={setImageHistory}
+              externalGetSourceUrl={getSourceUrl}
             />
           </div>
         )}

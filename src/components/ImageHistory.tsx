@@ -22,12 +22,15 @@ type ImageHistoryProps = {
   onHistoryChange?: (items: ImageHistoryItem[]) => void;
   /** Optional: hide toolbar (filter and save folder) */
   hideToolbar?: boolean;
+  /** Optional: external getSourceUrl function (for Dashboard integration) */
+  externalGetSourceUrl?: (item: ImageHistoryItem) => string;
 };
 
 export const ImageHistory = ({
   externalHistory,
   onHistoryChange,
   hideToolbar = false,
+  externalGetSourceUrl,
 }: ImageHistoryProps) => {
   const { locale, t } = useI18n();
   const {
@@ -38,16 +41,17 @@ export const ImageHistory = ({
     saveDirName,
     hasSaveDir,
     isFileSystemAccessSupported,
-    historySourceMap,
     downloadImage,
     pickSaveFolder,
     openSavedFile,
     downloadSavedFile,
+    getSourceUrl: internalGetSourceUrl,
   } = useImageHistory();
 
   // Use external history if provided, otherwise use internal
   const imageHistory = externalHistory ?? internalHistory;
   const setImageHistory = onHistoryChange ?? setInternalHistory;
+  const getSourceUrl = externalGetSourceUrl ?? internalGetSourceUrl;
 
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [previewAlt, setPreviewAlt] = React.useState("");
@@ -244,10 +248,7 @@ export const ImageHistory = ({
                   <div
                     className={styles.historyPreview}
                     onClick={() => {
-                      const sourceUrl =
-                        item.imageUrl ||
-                        historySourceMap.current.get(item.id) ||
-                        item.thumbnailDataUrl;
+                      const sourceUrl = getSourceUrl(item) || item.thumbnailDataUrl;
                       openPreview(sourceUrl, item.prompt);
                     }}
                   >
@@ -255,8 +256,7 @@ export const ImageHistory = ({
                   </div>
                   <div className={styles.historyActions}>
                     {(() => {
-                      const sourceUrl =
-                        item.imageUrl || historySourceMap.current.get(item.id) || item.thumbnailDataUrl || "";
+                      const sourceUrl = getSourceUrl(item) || item.thumbnailDataUrl;
                       const canDownload =
                         !!sourceUrl ||
                         (isFileSystemAccessSupported &&

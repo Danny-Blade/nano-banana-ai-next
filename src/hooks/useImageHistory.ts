@@ -38,12 +38,14 @@ export const useImageHistory = () => {
   const [historyNotice, setHistoryNotice] = React.useState<string | null>(null);
   const [saveDirName, setSaveDirName] = React.useState<string | null>(null);
   const [hasSaveDir, setHasSaveDir] = React.useState(false);
+  const [isFileSystemAccessSupported, setIsFileSystemAccessSupported] = React.useState(false);
   const historySourceMap = React.useRef<Map<string, string>>(new Map());
   const historyHydratedRef = React.useRef(false);
 
-  const isFileSystemAccessSupported = React.useMemo(() => {
+  // Check File System Access API support on client side only
+  React.useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return typeof (globalThis as any).showDirectoryPicker === "function";
+    setIsFileSystemAccessSupported(typeof (globalThis as any).showDirectoryPicker === "function");
   }, []);
 
   const historyDb = React.useMemo(() => {
