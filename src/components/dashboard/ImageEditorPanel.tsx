@@ -668,8 +668,8 @@ export const ImageEditorPanel = ({
               </div>
             )}
 
-            {/* 进度条 - 放在底部 */}
-            {(isGenerating || progress > 0) && (
+            {/* 进度条区域 - 始终保留空间避免跳动 */}
+            {(isGenerating || progress > 0) ? (
               <div className={editorStyles.progressSection}>
                 <div className={styles.progressBar}>
                   <div
@@ -682,6 +682,8 @@ export const ImageEditorPanel = ({
                   <span>{progress.toFixed(0)}%</span>
                 </div>
               </div>
+            ) : (
+              <div className={editorStyles.progressPlaceholder} />
             )}
           </div>
         </div>

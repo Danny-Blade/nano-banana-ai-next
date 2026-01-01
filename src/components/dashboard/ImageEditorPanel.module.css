@@ -195,11 +195,17 @@
   color: #7c3aed;
 }
 
-/* 进度条区域 - 底部 */
+/* 进度条区域 - 底部固定高度，避免内容跳动 */
 .progressSection {
   margin-top: auto;
   padding-top: 0.75rem;
-  border-top: 1px solid #f1f5f9;
+  min-height: 50px;
+}
+
+/* 进度条占位区域 - 始终保留空间 */
+.progressPlaceholder {
+  margin-top: auto;
+  min-height: 50px;
 }
 
 /* 空状态 */
