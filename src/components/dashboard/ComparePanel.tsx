@@ -35,7 +35,7 @@ type ComparePanelProps = {
   setShowTemplates: (show: boolean) => void;
   setTemplateTarget: (target: "generate" | "batch" | "batch-multi" | "compare") => void;
   setIsLoginModalOpen: (open: boolean) => void;
-  openPreview: (url: string, alt: string) => void;
+  openPreview: (images: { url: string; alt: string }[], index: number) => void;
   onImageHistoryAdd: (item: ImageHistoryItem) => void;
   persistHistorySource: (id: string, url: string) => Promise<void>;
   trySaveToLocalFolder: (url: string, fileName: string) => Promise<{
@@ -386,32 +386,37 @@ export const ComparePanel = ({
             <div className={styles.sectionCaption}>{t("dashboard.compare.resultsCaption")}</div>
           </div>
           {compareResults.length ? (
-            compareResults.map((item) => (
-              <div key={item.id} className={styles.compareResult}>
-                <div className={styles.compareItem}>
-                  <div className={styles.compareLabel}>
-                    {localizedModelOptions.find((m) => m.value === item.leftModel)
-                      ?.label || item.leftModel}
+            compareResults.map((item) => {
+              const compareImages = [
+                { url: item.left, alt: localizedModelOptions.find((m) => m.value === item.leftModel)?.label || item.leftModel },
+                { url: item.right, alt: localizedModelOptions.find((m) => m.value === item.rightModel)?.label || item.rightModel },
+              ];
+              return (
+                <div key={item.id} className={styles.compareResult}>
+                  <div className={styles.compareItem}>
+                    <div className={styles.compareLabel}>
+                      {localizedModelOptions.find((m) => m.value === item.leftModel)
+                        ?.label || item.leftModel}
+                    </div>
+                    <img
+                      src={item.left}
+                      alt={item.leftModel}
+                      loading="lazy"
+                      onClick={() => openPreview(compareImages, 0)}
+                    />
                   </div>
-                  <img
-                    src={item.left}
-                    alt={item.leftModel}
-                    loading="lazy"
-                    onClick={() => openPreview(item.left, item.leftModel)}
-                  />
-                </div>
-                <div className={styles.compareItem}>
-                  <div className={styles.compareLabel}>
-                    {localizedModelOptions.find((m) => m.value === item.rightModel)
-                      ?.label || item.rightModel}
+                  <div className={styles.compareItem}>
+                    <div className={styles.compareLabel}>
+                      {localizedModelOptions.find((m) => m.value === item.rightModel)
+                        ?.label || item.rightModel}
+                    </div>
+                    <img
+                      src={item.right}
+                      alt={item.rightModel}
+                      loading="lazy"
+                      onClick={() => openPreview(compareImages, 1)}
+                    />
                   </div>
-                  <img
-                    src={item.right}
-                    alt={item.rightModel}
-                    loading="lazy"
-                    onClick={() => openPreview(item.right, item.rightModel)}
-                  />
-                </div>
                 <div className={styles.resultMeta}>
                   <div className={styles.resultTitle}>{item.prompt}</div>
                   <div className={styles.resultInfo}>
@@ -433,7 +438,8 @@ export const ComparePanel = ({
                   </button>
                 </div>
               </div>
-            ))
+            );
+          })
           ) : (
             <div className={styles.placeholder}>
               <div className={styles.placeholderIcon}>⚖️</div>

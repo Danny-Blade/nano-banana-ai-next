@@ -76,6 +76,8 @@ export const messagesKo: Messages = {
       emptyCompareRight: "생성 후 비교가 표시됩니다",
       download: "다운로드",
       closePreview: "미리보기 닫기",
+      prevImage: "이전 이미지",
+      nextImage: "다음 이미지",
     },
     templates: {
       title: "프롬프트 템플릿",

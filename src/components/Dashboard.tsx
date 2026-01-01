@@ -65,8 +65,8 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const [resolution, setResolution] = React.useState(
     resolutionOptions[DEFAULT_MODEL][0]
   );
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
-  const [previewAlt, setPreviewAlt] = React.useState("");
+  const [previewImages, setPreviewImages] = React.useState<{ url: string; alt: string }[]>([]);
+  const [previewIndex, setPreviewIndex] = React.useState(0);
   const [selfCallbackUrl, setSelfCallbackUrl] = React.useState<string | undefined>(undefined);
 
   // Use shared history hook
@@ -93,13 +93,20 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   }, [selectedModel]);
 
   React.useEffect(() => {
-    if (!previewUrl) return;
+    if (previewImages.length === 0) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setPreviewUrl(null);
+      if (event.key === "Escape") {
+        setPreviewImages([]);
+        setPreviewIndex(0);
+      } else if (event.key === "ArrowLeft") {
+        setPreviewIndex((prev) => (prev > 0 ? prev - 1 : previewImages.length - 1));
+      } else if (event.key === "ArrowRight") {
+        setPreviewIndex((prev) => (prev < previewImages.length - 1 ? prev + 1 : 0));
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [previewUrl]);
+  }, [previewImages]);
 
   const imagePool = React.useMemo(() => siteContent.explore.images || [], [siteContent]);
 
@@ -158,9 +165,12 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     setShowModelPicker(false);
   };
 
-  const openPreview = React.useCallback((url: string, alt: string) => {
-    setPreviewUrl(url);
-    setPreviewAlt(alt);
+  const openPreview = React.useCallback((
+    images: { url: string; alt: string }[],
+    index: number = 0
+  ) => {
+    setPreviewImages(images);
+    setPreviewIndex(index);
   }, []);
 
   const handleApplyTemplate = (prompt: string) => {
@@ -441,12 +451,15 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
         onClose={() => setIsLoginModalOpen(false)}
       />
 
-      {previewUrl && (
+      {previewImages.length > 0 && (
         <div
           className={styles.previewOverlay}
           role="dialog"
           aria-modal="true"
-          onClick={() => setPreviewUrl(null)}
+          onClick={() => {
+            setPreviewImages([]);
+            setPreviewIndex(0);
+          }}
         >
           <div
             className={styles.previewContent}
@@ -456,15 +469,50 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
               type="button"
               className={styles.previewClose}
               aria-label={t("dashboard.result.closePreview")}
-              onClick={() => setPreviewUrl(null)}
+              onClick={() => {
+                setPreviewImages([]);
+                setPreviewIndex(0);
+              }}
             >
               ×
             </button>
+
+            {/* 上一张按钮 */}
+            {previewImages.length > 1 && (
+              <button
+                type="button"
+                className={styles.previewPrev}
+                aria-label={t("dashboard.result.prevImage")}
+                onClick={() => setPreviewIndex((prev) => (prev > 0 ? prev - 1 : previewImages.length - 1))}
+              >
+                ‹
+              </button>
+            )}
+
             <img
-              src={previewUrl}
-              alt={previewAlt}
+              src={previewImages[previewIndex]?.url}
+              alt={previewImages[previewIndex]?.alt}
               className={styles.previewImage}
             />
+
+            {/* 下一张按钮 */}
+            {previewImages.length > 1 && (
+              <button
+                type="button"
+                className={styles.previewNext}
+                aria-label={t("dashboard.result.nextImage")}
+                onClick={() => setPreviewIndex((prev) => (prev < previewImages.length - 1 ? prev + 1 : 0))}
+              >
+                ›
+              </button>
+            )}
+
+            {/* 图片计数器 */}
+            {previewImages.length > 1 && (
+              <div className={styles.previewCounter}>
+                {previewIndex + 1} / {previewImages.length}
+              </div>
+            )}
           </div>
         </div>
       )}

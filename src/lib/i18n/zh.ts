@@ -76,6 +76,8 @@ export const messagesZh: Messages = {
       emptyCompareRight: "生成后展示对比",
       download: "下载",
       closePreview: "关闭预览",
+      prevImage: "上一张",
+      nextImage: "下一张",
     },
     templates: {
       title: "提示词模板库",

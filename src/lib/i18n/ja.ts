@@ -76,6 +76,8 @@ export const messagesJa: Messages = {
       emptyCompareRight: "生成後に比較を表示します",
       download: "ダウンロード",
       closePreview: "プレビューを閉じる",
+      prevImage: "前の画像",
+      nextImage: "次の画像",
     },
     templates: {
       title: "プロンプトテンプレート",

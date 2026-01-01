@@ -47,7 +47,7 @@ type ImageEditorPanelProps = {
     onError: (message: string) => void
   ) => boolean;
   refreshSession: () => Promise<void>;
-  openPreview: (url: string, alt: string) => void;
+  openPreview: (images: { url: string; alt: string }[], index: number) => void;
   initialPrompt?: string;
   initialRefImage?: string;
 };
@@ -406,7 +406,10 @@ export const ImageEditorPanel = ({
     setError(null);
   };
 
-  const renderGeneratedResultCard = (item: GeneratedResult, large = false) => (
+  // 将所有结果转换为预览格式
+  const allResultImages = results.map((r) => ({ url: r.url, alt: r.prompt }));
+
+  const renderGeneratedResultCard = (item: GeneratedResult, index: number, large = false) => (
     <div
       key={item.id}
       className={`${styles.resultCard} ${large ? styles.resultCardLarge : ""}`}
@@ -420,7 +423,7 @@ export const ImageEditorPanel = ({
           src={item.url}
           alt={item.prompt}
           loading="lazy"
-          onClick={() => openPreview(item.url, item.prompt)}
+          onClick={() => openPreview(allResultImages, index)}
         />
       </div>
       <div className={styles.resultMeta}>
@@ -440,14 +443,14 @@ export const ImageEditorPanel = ({
     </div>
   );
 
-  const renderUploadedResultCard = (img: UploadedImage) => (
+  const renderUploadedResultCard = (img: UploadedImage, index: number, allImages: { url: string; alt: string }[]) => (
     <div key={img.id} className={styles.resultCard}>
       <div className={styles.resultImageFrame}>
         <img
           src={img.url}
           alt={img.name}
           loading="lazy"
-          onClick={() => openPreview(img.url, img.name)}
+          onClick={() => openPreview(allImages, index)}
         />
       </div>
       <div className={styles.resultMeta}>
@@ -457,10 +460,10 @@ export const ImageEditorPanel = ({
     </div>
   );
 
-  const renderSimpleImageCard = (url: string, alt: string, key?: string) => (
+  const renderSimpleImageCard = (url: string, alt: string, index: number, allImages: { url: string; alt: string }[], key?: string) => (
     <div key={key || url} className={styles.resultCard}>
       <div className={styles.resultImageFrame}>
-        <img src={url} alt={alt} loading="lazy" onClick={() => openPreview(url, alt)} />
+        <img src={url} alt={alt} loading="lazy" onClick={() => openPreview(allImages, index)} />
       </div>
     </div>
   );
@@ -683,7 +686,7 @@ export const ImageEditorPanel = ({
                   <>
                     <div className={styles.singleResult}>
                       {results[activeResultIndex] &&
-                        renderGeneratedResultCard(results[activeResultIndex], true)}
+                        renderGeneratedResultCard(results[activeResultIndex], activeResultIndex, true)}
                     </div>
                     {results.length > 1 && (
                       <div className={styles.singleNav}>
@@ -725,7 +728,10 @@ export const ImageEditorPanel = ({
               {resultTab === "original" &&
                 (referenceImages.length ? (
                   <div className={styles.resultGrid}>
-                    {referenceImages.map((img) => renderUploadedResultCard(img))}
+                    {(() => {
+                      const refImages = referenceImages.map((img) => ({ url: img.url, alt: img.name }));
+                      return referenceImages.map((img, idx) => renderUploadedResultCard(img, idx, refImages));
+                    })()}
                   </div>
                 ) : (
                   <div className={styles.placeholder}>
@@ -742,9 +748,12 @@ export const ImageEditorPanel = ({
                     </div>
                     {referenceImages.length ? (
                       <div className={styles.resultGrid}>
-                        {referenceImages.map((img) =>
-                          renderSimpleImageCard(img.url, img.name, img.id)
-                        )}
+                        {(() => {
+                          const refImages = referenceImages.map((img) => ({ url: img.url, alt: img.name }));
+                          return referenceImages.map((img, idx) =>
+                            renderSimpleImageCard(img.url, img.name, idx, refImages, img.id)
+                          );
+                        })()}
                       </div>
                     ) : (
                       <div className={styles.placeholderSmall}>
@@ -758,8 +767,8 @@ export const ImageEditorPanel = ({
                     </div>
                     {results.length ? (
                       <div className={styles.resultGrid}>
-                        {results.map((item) =>
-                          renderSimpleImageCard(item.url, item.prompt, item.id)
+                        {results.map((item, idx) =>
+                          renderSimpleImageCard(item.url, item.prompt, idx, allResultImages, item.id)
                         )}
                       </div>
                     ) : (

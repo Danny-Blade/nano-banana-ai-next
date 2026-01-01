@@ -76,6 +76,8 @@ export const messagesEn: Messages = {
       emptyCompareRight: "Generate to view comparison",
       download: "Download",
       closePreview: "Close preview",
+      prevImage: "Previous image",
+      nextImage: "Next image",
     },
     templates: {
       title: "Prompt Template Library",

@@ -53,7 +53,7 @@ type BatchPanelProps = {
   ) => boolean;
   setShowTemplates: (show: boolean) => void;
   setTemplateTarget: (target: "generate" | "batch" | "batch-multi" | "compare") => void;
-  openPreview: (url: string, alt: string) => void;
+  openPreview: (images: { url: string; alt: string }[], index: number) => void;
   onImageHistoryAdd: (item: ImageHistoryItem) => void;
   persistHistorySource: (id: string, url: string) => Promise<void>;
   refreshSession: () => Promise<void>;
@@ -588,49 +588,61 @@ export const BatchPanel = ({
             <div className={styles.sectionCaption}>{t("dashboard.batchNew.resultsGrouped")}</div>
           </div>
 
-          {resultGroups.map((group) => (
-            <div key={group.promptId} className={batchStyles.resultGroup}>
-              <div className={batchStyles.resultGroupHeader}>
-                <div className={batchStyles.resultGroupTitle}>
-                  {group.prompt.slice(0, 80)}
-                  {group.prompt.length > 80 ? "..." : ""}
-                </div>
-                <div className={batchStyles.resultGroupMeta}>
-                  <span className={`${batchStyles.resultGroupBadge} ${batchStyles.ratio}`}>
-                    {t(`dashboard.ratios.${group.ratio}`)}
-                  </span>
-                  <span className={`${batchStyles.resultGroupBadge} ${batchStyles.resolution}`}>
-                    {group.resolution}
-                  </span>
-                  <span className={`${batchStyles.resultGroupBadge} ${batchStyles.count}`}>
-                    {group.results.length} {t("dashboard.batchNew.images")}
-                  </span>
-                </div>
-              </div>
-              <div className={batchStyles.resultGroupGrid}>
-                {group.results.map((result) => (
-                  <div key={result.id} className={batchStyles.resultItem}>
-                    <div className={batchStyles.resultImageFrame}>
-                      <img
-                        src={result.url}
-                        alt={group.prompt}
-                        loading="lazy"
-                        onClick={() => openPreview(result.url, group.prompt)}
-                      />
-                    </div>
-                    <div className={batchStyles.resultActions}>
-                      <button
-                        className={styles.ghostBtn}
-                        onClick={() => downloadImage(result.url, `${result.id}.png`)}
-                      >
-                        {t("dashboard.result.download")}
-                      </button>
-                    </div>
+          {resultGroups.map((group, groupIndex) => {
+            // 计算当前分组之前的所有图片数量（用于计算全局索引）
+            const prevImagesCount = resultGroups
+              .slice(0, groupIndex)
+              .reduce((sum, g) => sum + g.results.length, 0);
+
+            // 收集所有图片用于预览导航
+            const allImages = resultGroups.flatMap((g) =>
+              g.results.map((r) => ({ url: r.url, alt: g.prompt }))
+            );
+
+            return (
+              <div key={group.promptId} className={batchStyles.resultGroup}>
+                <div className={batchStyles.resultGroupHeader}>
+                  <div className={batchStyles.resultGroupTitle}>
+                    {group.prompt.slice(0, 80)}
+                    {group.prompt.length > 80 ? "..." : ""}
                   </div>
-                ))}
+                  <div className={batchStyles.resultGroupMeta}>
+                    <span className={`${batchStyles.resultGroupBadge} ${batchStyles.ratio}`}>
+                      {t(`dashboard.ratios.${group.ratio}`)}
+                    </span>
+                    <span className={`${batchStyles.resultGroupBadge} ${batchStyles.resolution}`}>
+                      {group.resolution}
+                    </span>
+                    <span className={`${batchStyles.resultGroupBadge} ${batchStyles.count}`}>
+                      {group.results.length} {t("dashboard.batchNew.images")}
+                    </span>
+                  </div>
+                </div>
+                <div className={batchStyles.resultGroupGrid}>
+                  {group.results.map((result, resultIndex) => (
+                    <div key={result.id} className={batchStyles.resultItem}>
+                      <div className={batchStyles.resultImageFrame}>
+                        <img
+                          src={result.url}
+                          alt={group.prompt}
+                          loading="lazy"
+                          onClick={() => openPreview(allImages, prevImagesCount + resultIndex)}
+                        />
+                      </div>
+                      <div className={batchStyles.resultActions}>
+                        <button
+                          className={styles.ghostBtn}
+                          onClick={() => downloadImage(result.url, `${result.id}.png`)}
+                        >
+                          {t("dashboard.result.download")}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
