@@ -34,6 +34,7 @@ export const siteContentEn = {
       "Simply describe what you want, and watch Nano Banana AI bring your imagination to life with photorealistic quality",
     promptLabel: "Prompt",
     tryItLabel: "Try it",
+    moreLabel: "View More",
     items: [
       {
         image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
@@ -101,6 +102,7 @@ export const siteContentEn = {
     afterLabel: "After",
     promptLabel: "Edit Prompt",
     tryItLabel: "Try it yourself",
+    moreLabel: "View More",
     items: [
       {
         before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",

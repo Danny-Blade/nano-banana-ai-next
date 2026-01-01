@@ -35,6 +35,7 @@ export const siteContentJa: SiteContent = {
       "思い描くものを言葉で伝えるだけで、Nano Banana AI がフォトリアルな画像を生成します",
     promptLabel: "プロンプト",
     tryItLabel: "試してみる",
+    moreLabel: "もっと見る",
     items: [
       {
         image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
@@ -102,6 +103,7 @@ export const siteContentJa: SiteContent = {
     afterLabel: "変更後",
     promptLabel: "編集プロンプト",
     tryItLabel: "試してみる",
+    moreLabel: "もっと見る",
     items: [
       {
         before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",

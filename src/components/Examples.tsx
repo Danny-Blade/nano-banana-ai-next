@@ -6,7 +6,7 @@ import { useSiteContent } from "@/components/useSiteContent";
 
 const Examples = () => {
     const siteContent = useSiteContent();
-    const { title, subtitle, items, promptLabel, tryItLabel } = siteContent.textToImage;
+    const { title, subtitle, items, promptLabel, tryItLabel, moreLabel } = siteContent.textToImage;
     const sectionRef = React.useRef<HTMLElement>(null);
     const [visibleCards, setVisibleCards] = React.useState<Set<number>>(new Set());
     const [hoveredCard, setHoveredCard] = React.useState<number | null>(null);
@@ -61,6 +61,12 @@ const Examples = () => {
                     <div className={styles.badge}>Text to Image</div>
                     <h2 className={styles.title}>{title}</h2>
                     <p className={styles.subtitle}>{subtitle}</p>
+                    <a href="/prompt" className={styles.moreButton}>
+                        {moreLabel}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
                 </div>
 
                 <div className={styles.grid}>

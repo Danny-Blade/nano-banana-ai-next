@@ -6,7 +6,7 @@ import { useSiteContent } from "@/components/useSiteContent";
 
 const CommunityGallery = () => {
     const siteContent = useSiteContent();
-    const { title, subtitle, items, beforeLabel, afterLabel, promptLabel, tryItLabel } = siteContent.imageToImageExamples;
+    const { title, subtitle, items, beforeLabel, afterLabel, promptLabel, tryItLabel, moreLabel } = siteContent.imageToImageExamples;
     const sectionRef = React.useRef<HTMLElement>(null);
     const [isVisible, setIsVisible] = React.useState(false);
     const [visibleCards, setVisibleCards] = React.useState<Set<number>>(new Set());
@@ -80,6 +80,12 @@ const CommunityGallery = () => {
                     <div className={styles.badge}>Image to Image</div>
                     <h2 className={styles.title}>{title}</h2>
                     <p className={styles.subtitle}>{subtitle}</p>
+                    <a href="/prompt" className={styles.moreButton}>
+                        {moreLabel}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
                 </div>
 
                 <div className={styles.grid}>

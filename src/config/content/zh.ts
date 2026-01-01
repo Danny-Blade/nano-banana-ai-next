@@ -35,6 +35,7 @@ export const siteContentZh: SiteContent = {
       "只需描述你的想象，Nano Banana AI 就能为你呈现照片级真实的图像作品",
     promptLabel: "提示词",
     tryItLabel: "立即体验",
+    moreLabel: "查看更多",
     items: [
       {
         image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
@@ -102,6 +103,7 @@ export const siteContentZh: SiteContent = {
     afterLabel: "效果",
     promptLabel: "编辑提示词",
     tryItLabel: "立即体验",
+    moreLabel: "查看更多",
     items: [
       {
         before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",

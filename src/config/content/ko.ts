@@ -35,6 +35,7 @@ export const siteContentKo: SiteContent = {
       "원하는 것을 설명하기만 하면 Nano Banana AI가 사실적인 이미지로 구현합니다",
     promptLabel: "프롬프트",
     tryItLabel: "체험하기",
+    moreLabel: "더 보기",
     items: [
       {
         image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
@@ -102,6 +103,7 @@ export const siteContentKo: SiteContent = {
     afterLabel: "변경 후",
     promptLabel: "편집 프롬프트",
     tryItLabel: "체험하기",
+    moreLabel: "더 보기",
     items: [
       {
         before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",
