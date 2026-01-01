@@ -36,9 +36,12 @@ const IMAGE_HISTORY_STORAGE_KEY = "nano_banana_image_history_v1"; // localStorag
 const IMAGE_HISTORY_IDB_KEY = "imageHistory"; // IndexedDB (new)
 const IMAGE_HISTORY_SOURCES_KEY = "historySources";
 
+export type HistoryTypeFilter = "all" | "text2img" | "img2img";
+
 export const useImageHistory = () => {
   const [imageHistory, setImageHistory] = React.useState<ImageHistoryItem[]>([]);
   const [historyModelFilter, setHistoryModelFilter] = React.useState<ModelValue | "all">("all");
+  const [historyTypeFilter, setHistoryTypeFilter] = React.useState<HistoryTypeFilter>("all");
   const [historyNotice, setHistoryNotice] = React.useState<string | null>(null);
   const [saveDirName, setSaveDirName] = React.useState<string | null>(null);
   const [hasSaveDir, setHasSaveDir] = React.useState(false);
@@ -493,6 +496,8 @@ export const useImageHistory = () => {
     setImageHistory,
     historyModelFilter,
     setHistoryModelFilter,
+    historyTypeFilter,
+    setHistoryTypeFilter,
     historyNotice,
     showHistoryNotice,
     saveDirName,

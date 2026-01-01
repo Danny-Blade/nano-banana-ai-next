@@ -4,7 +4,7 @@ import React from "react";
 import styles from "./ImageHistory.module.css";
 import { useI18n } from "@/components/I18nProvider";
 import { getMessage } from "@/lib/i18n";
-import { useImageHistory, modelOptions, type ImageHistoryItem, type ModelValue } from "@/hooks/useImageHistory";
+import { useImageHistory, modelOptions, type ImageHistoryItem, type ModelValue, type HistoryTypeFilter } from "@/hooks/useImageHistory";
 
 const formatTime = (timestamp: Date, locale: string) => {
   return timestamp.toLocaleString(locale, {
@@ -38,11 +38,10 @@ export const ImageHistory = ({
     setImageHistory: setInternalHistory,
     historyModelFilter,
     setHistoryModelFilter,
-    saveDirName,
-    hasSaveDir,
+    historyTypeFilter,
+    setHistoryTypeFilter,
     isFileSystemAccessSupported,
     downloadImage,
-    pickSaveFolder,
     openSavedFile,
     downloadSavedFile,
     getSourceUrl: internalGetSourceUrl,
@@ -133,10 +132,20 @@ export const ImageHistory = ({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [previewUrl]);
 
-  const filtered =
-    historyModelFilter === "all"
-      ? imageHistory
-      : imageHistory.filter((item) => item.model === historyModelFilter);
+  const filtered = imageHistory.filter((item) => {
+    // 模型筛选
+    if (historyModelFilter !== "all" && item.model !== historyModelFilter) {
+      return false;
+    }
+    // 类型筛选：有参考图为 img2img，否则为 text2img
+    if (historyTypeFilter === "img2img" && !item.referenceImageThumbnail) {
+      return false;
+    }
+    if (historyTypeFilter === "text2img" && item.referenceImageThumbnail) {
+      return false;
+    }
+    return true;
+  });
 
   const modelsToShow: ModelValue[] =
     historyModelFilter === "all"
@@ -180,34 +189,23 @@ export const ImageHistory = ({
               </select>
             </label>
 
-            <div className={styles.historySaveBox}>
-              <div className={styles.historySaveMeta}>
-                <div className={styles.historySaveTitle}>
-                  {t("dashboard.history.saveFolder")}
-                </div>
-                <div className={styles.historySaveValue}>
-                  {isFileSystemAccessSupported
-                    ? hasSaveDir
-                      ? t("dashboard.history.saveFolderSelected", {
-                          name: saveDirName || t("dashboard.history.saveFolderUnknown"),
-                        })
-                      : t("dashboard.history.saveFolderNotSet")
-                    : t("dashboard.history.saveFolderUnsupported")}
-                </div>
-              </div>
-              {isFileSystemAccessSupported && (
-                <button
-                  className={styles.secondaryBtn}
-                  type="button"
-                  onClick={pickSaveFolder}
-                >
-                  {t("dashboard.history.chooseFolder")}
-                </button>
-              )}
-            </div>
+            <label className={styles.historyFilter}>
+              <span className={styles.historyFilterLabel}>
+                {t("dashboard.history.filterType")}
+              </span>
+              <select
+                className={styles.historySelect}
+                value={historyTypeFilter}
+                onChange={(e) =>
+                  setHistoryTypeFilter(e.target.value as HistoryTypeFilter)
+                }
+              >
+                <option value="all">{t("dashboard.history.filterAll")}</option>
+                <option value="text2img">{t("dashboard.history.typeText2Img")}</option>
+                <option value="img2img">{t("dashboard.history.typeImg2Img")}</option>
+              </select>
+            </label>
           </div>
-
-          <div className={styles.historyHint}>{t("dashboard.history.metaOnlyHint")}</div>
         </>
       )}
 
