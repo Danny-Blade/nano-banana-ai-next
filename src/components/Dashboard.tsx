@@ -413,7 +413,8 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
           />
         </div>
 
-        {variant !== "generateOnly" && activeTab === "compare" && (
+        {/* ComparePanel 保持挂载以便生成进度在切换标签时继续 */}
+        <div style={{ display: (variant !== "generateOnly" && activeTab === "compare") ? "block" : "none" }}>
           <ComparePanel
             localizedModelOptions={localizedModelOptions}
             resolution={resolution}
@@ -427,7 +428,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             trySaveToLocalFolder={trySaveToLocalFolder}
             activeModel={activeModel}
           />
-        )}
+        </div>
 
         {variant !== "generateOnly" && activeTab === "history" && (
           <div className={styles.panel}>

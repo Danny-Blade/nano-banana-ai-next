@@ -26,7 +26,7 @@ export const resolutionOptions: Record<string, string[]> = {
   "seedream-4-0": ["2K", "1K"],
   "sora-image": ["2K", "1K"],
   "flux-kontext-pro": ["2K", "1K"],
-  "flux-kontext-max": ["4K", "2K"],
+  "flux-kontext-max": ["4K", "2K", "1K"],
 };
 
 export type ModelValue = (typeof modelOptions)[number]["value"];

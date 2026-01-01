@@ -349,9 +349,9 @@ export const useImageHistory = () => {
           typeof handle.queryPermission === "function"
             ? await handle.queryPermission({ mode: "read" })
             : "granted";
-        if (permission !== "granted" && typeof handle.requestPermission === "function") {
-          const requested = await handle.requestPermission({ mode: "read" });
-          if (requested !== "granted") return;
+        // 如果权限不足，静默跳过，不弹窗请求权限
+        if (permission !== "granted") {
+          return;
         }
         const fileHandle = await handle.getFileHandle(item.fileName);
         const file = await fileHandle.getFile();
@@ -377,9 +377,9 @@ export const useImageHistory = () => {
           typeof handle.queryPermission === "function"
             ? await handle.queryPermission({ mode: "read" })
             : "granted";
-        if (permission !== "granted" && typeof handle.requestPermission === "function") {
-          const requested = await handle.requestPermission({ mode: "read" });
-          if (requested !== "granted") return false;
+        // 如果权限不足，静默跳过，不弹窗请求权限
+        if (permission !== "granted") {
+          return false;
         }
 
         const fileHandle = await handle.getFileHandle(item.fileName);
@@ -407,9 +407,10 @@ export const useImageHistory = () => {
           typeof handle.queryPermission === "function"
             ? await handle.queryPermission({ mode: "readwrite" })
             : "granted";
-        if (permission !== "granted" && typeof handle.requestPermission === "function") {
-          const requested = await handle.requestPermission({ mode: "readwrite" });
-          if (requested !== "granted") return null;
+        // 如果权限不足，静默跳过，不弹窗请求权限
+        // 用户需要手动点击"选择保存文件夹"按钮来重新授权
+        if (permission !== "granted") {
+          return null;
         }
 
         const res = await fetch(url);
