@@ -317,7 +317,9 @@ export const ImageEditorPanel = ({
 
           const thumbnailDataUrl = await createThumbnailDataUrl(url);
           if (thumbnailDataUrl) {
-            const historyId = `img-${Date.now()}-${i}`;
+            // 使用时间戳 + 随机字符串确保 ID 唯一，即使相同参考图生成多次也不会冲突
+            const uniqueSuffix = Math.random().toString(36).slice(2, 8);
+            const historyId = `img-${Date.now()}-${i}-${uniqueSuffix}`;
             const suggestedName = `nano-banana-${selectedModel}-${Date.now()}-${i}.png`;
             const saved = await trySaveToLocalFolder(url, suggestedName);
             void persistHistorySource(historyId, url);
