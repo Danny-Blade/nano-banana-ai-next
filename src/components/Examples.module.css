@@ -73,14 +73,20 @@
     border-radius: 1.5rem;
     overflow: hidden;
     border: 1px solid #e5e7eb;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 250ms ease-out;
+    animation: cardFadeIn 400ms ease-out forwards;
     opacity: 0;
-    transform: translateY(30px);
 }
 
-.card.visible {
-    opacity: 1;
-    transform: translateY(0);
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .card:hover {

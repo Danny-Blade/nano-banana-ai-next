@@ -11,14 +11,6 @@
 .header {
     text-align: center;
     margin-bottom: 64px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.header.visible {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 .badge {
@@ -79,16 +71,22 @@
 .card {
     background: #ffffff;
     border-radius: 1.5rem;
-    overflow: hidden;
+    overflow: visible;
     border: 1px solid #e5e7eb;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 250ms ease-out;
+    animation: cardFadeIn 400ms ease-out forwards;
     opacity: 0;
-    transform: translateY(30px);
 }
 
-.card.visible {
-    opacity: 1;
-    transform: translateY(0);
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .card:hover {
@@ -105,6 +103,7 @@
     cursor: ew-resize;
     user-select: none;
     -webkit-user-select: none;
+    border-radius: 1.5rem 1.5rem 0 0;
 }
 
 .afterImage {
@@ -197,6 +196,8 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    background: #ffffff;
+    border-radius: 0 0 1.5rem 1.5rem;
 }
 
 .promptSection {
@@ -288,11 +289,20 @@
         height: 16px;
     }
 
+    .card {
+        border-radius: 1.25rem;
+    }
+
+    .comparisonWrapper {
+        border-radius: 1.25rem 1.25rem 0 0;
+    }
+
     .content {
         display: flex;
         flex-direction: column;
         padding: 20px;
         gap: 14px;
+        border-radius: 0 0 1.25rem 1.25rem;
     }
 
     .promptSection {
@@ -302,11 +312,13 @@
 
     .promptBadge {
         display: inline-flex;
+        color: #64748b;
     }
 
     .promptText {
         display: -webkit-box;
         -webkit-line-clamp: 3;
+        color: #334155;
     }
 
     .tryButton {
@@ -386,6 +398,7 @@
         flex-direction: column;
         padding: 16px;
         gap: 12px;
+        border-radius: 0 0 1rem 1rem;
     }
 
     .promptSection {
@@ -398,6 +411,7 @@
         display: inline-flex;
         font-size: 10px;
         margin-bottom: 6px;
+        color: #64748b;
     }
 
     .promptText {
