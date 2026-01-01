@@ -178,6 +178,7 @@ export const messagesZh: Messages = {
       progressComplete: "生成完成！",
       resultsGrouped: "按提示词分组展示",
       images: "张",
+      useGlobalResolution: "使用全局分辨率",
     },
     compare: {
       title: "模型对比",

@@ -27,6 +27,7 @@ type PromptCard = {
   prompt: string;
   ratio: RatioValue;
   count: number;
+  resolution: string; // 空字符串表示使用全局分辨率
   referenceImage: UploadedImage | null;
 };
 
@@ -34,6 +35,7 @@ type BatchResultGroup = {
   promptId: string;
   prompt: string;
   ratio: string;
+  resolution: string;
   results: {
     id: string;
     url: string;
@@ -62,6 +64,7 @@ const createEmptyCard = (): PromptCard => ({
   prompt: "",
   ratio: "1:1",
   count: 1,
+  resolution: "", // 空字符串表示使用全局分辨率
   referenceImage: null,
 });
 
@@ -81,7 +84,6 @@ export const BatchPanel = ({
 
   const [promptCards, setPromptCards] = React.useState<PromptCard[]>([createEmptyCard()]);
   const [resolution, setResolution] = React.useState(resolutionOptions[selectedModel][0]);
-  const [concurrency, setConcurrency] = React.useState(3);
   const [resultGroups, setResultGroups] = React.useState<BatchResultGroup[]>([]);
   const [isBatching, setIsBatching] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -160,13 +162,13 @@ export const BatchPanel = ({
 
     const totalTasks = validCards.reduce((sum, card) => sum + card.count, 0);
     let completedTasks = 0;
-    const imageSize = mapResolutionToImageSize(resolution);
 
     // 初始化所有分组（空结果），这样可以立即显示分组结构
     const initialGroups: BatchResultGroup[] = validCards.map((card) => ({
       promptId: card.id,
       prompt: card.prompt,
       ratio: card.ratio,
+      resolution: card.resolution || resolution,
       results: [],
     }));
     setResultGroups(initialGroups);
@@ -179,6 +181,10 @@ export const BatchPanel = ({
       const encodedRefs = card.referenceImage
         ? await encodeReferenceImages([card.referenceImage])
         : [];
+
+      // 使用卡片分辨率，如果没有设置则使用全局分辨率
+      const cardResolution = card.resolution || resolution;
+      const imageSize = mapResolutionToImageSize(cardResolution);
 
       // 生成该提示词的所有图片
       for (let i = 0; i < card.count; i++) {
@@ -440,6 +446,21 @@ export const BatchPanel = ({
                     </select>
                   </div>
                   <div className={styles.inputGroup}>
+                    <label className={styles.label}>{t("dashboard.generate.resolution")}</label>
+                    <select
+                      className={styles.select}
+                      value={card.resolution}
+                      onChange={(e) => updateCard(card.id, { resolution: e.target.value })}
+                    >
+                      <option value="">{t("dashboard.batchNew.useGlobalResolution")}</option>
+                      {(resolutionOptions[selectedModel] || []).map((res) => (
+                        <option key={res} value={res}>
+                          {res}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className={styles.inputGroup}>
                     <label className={styles.label}>{t("dashboard.generate.count")}</label>
                     <select
                       className={styles.select}
@@ -474,35 +495,19 @@ export const BatchPanel = ({
       <div className={batchStyles.globalSection}>
         <div className={batchStyles.globalSettings}>
           <div className={batchStyles.globalTitle}>{t("dashboard.batchNew.globalSettings")}</div>
-          <div className={styles.gridTwo}>
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>{t("dashboard.generate.resolution")}</label>
-              <select
-                className={styles.select}
-                value={resolution}
-                onChange={(e) => setResolution(e.target.value)}
-              >
-                {(resolutionOptions[selectedModel] || []).map((res) => (
-                  <option key={res} value={res}>
-                    {res}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>{t("dashboard.batch.concurrency")}</label>
-              <select
-                className={styles.select}
-                value={concurrency}
-                onChange={(e) => setConcurrency(parseInt(e.target.value, 10))}
-              >
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>{t("dashboard.generate.resolution")}</label>
+            <select
+              className={styles.select}
+              value={resolution}
+              onChange={(e) => setResolution(e.target.value)}
+            >
+              {(resolutionOptions[selectedModel] || []).map((res) => (
+                <option key={res} value={res}>
+                  {res}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -564,12 +569,19 @@ export const BatchPanel = ({
             <div key={group.promptId} className={batchStyles.resultGroup}>
               <div className={batchStyles.resultGroupHeader}>
                 <div className={batchStyles.resultGroupTitle}>
-                  {group.prompt.slice(0, 50)}
-                  {group.prompt.length > 50 ? "..." : ""}
+                  {group.prompt.slice(0, 80)}
+                  {group.prompt.length > 80 ? "..." : ""}
                 </div>
                 <div className={batchStyles.resultGroupMeta}>
-                  {t(`dashboard.ratios.${group.ratio}`)} · {group.results.length}{" "}
-                  {t("dashboard.batchNew.images")}
+                  <span className={`${batchStyles.resultGroupBadge} ${batchStyles.ratio}`}>
+                    {t(`dashboard.ratios.${group.ratio}`)}
+                  </span>
+                  <span className={`${batchStyles.resultGroupBadge} ${batchStyles.resolution}`}>
+                    {group.resolution}
+                  </span>
+                  <span className={`${batchStyles.resultGroupBadge} ${batchStyles.count}`}>
+                    {group.results.length} {t("dashboard.batchNew.images")}
+                  </span>
                 </div>
               </div>
               <div className={batchStyles.resultGroupGrid}>

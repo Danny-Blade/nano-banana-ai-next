@@ -182,6 +182,7 @@ export const messagesEn: Messages = {
       progressComplete: "Complete!",
       resultsGrouped: "Grouped by prompt",
       images: "images",
+      useGlobalResolution: "Use global resolution",
     },
     compare: {
       title: "Compare Models",
