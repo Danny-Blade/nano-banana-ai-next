@@ -129,6 +129,7 @@ export const messagesEn: Messages = {
       imageDone: "Image generated",
       openLocalFile: "Open local file",
       copyPrompt: "Copy prompt",
+      tryIt: "Try it",
       promptCopied: "Prompt copied",
       copyFailed: "Copy failed",
       fileLabel: "File: {name}",

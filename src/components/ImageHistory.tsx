@@ -245,15 +245,37 @@ export const ImageHistory = ({
                   >
                     {item.prompt}
                   </div>
-                  <div
-                    className={styles.historyPreview}
-                    onClick={() => {
-                      const sourceUrl = getSourceUrl(item) || item.thumbnailDataUrl;
-                      openPreview(sourceUrl, item.prompt);
-                    }}
-                  >
-                    <img src={item.thumbnailDataUrl} alt={item.prompt} />
-                  </div>
+                  {/* 如果有参考图，显示对比布局；否则显示单图 */}
+                  {item.referenceImageThumbnail ? (
+                    <div className={styles.historyCompare}>
+                      <div
+                        className={styles.historyCompareItem}
+                        onClick={() => openPreview(item.referenceImageThumbnail!, "Reference")}
+                      >
+                        <img src={item.referenceImageThumbnail} alt="Reference" />
+                      </div>
+                      <span className={styles.historyCompareArrow}>→</span>
+                      <div
+                        className={styles.historyCompareItem}
+                        onClick={() => {
+                          const sourceUrl = getSourceUrl(item) || item.thumbnailDataUrl;
+                          openPreview(sourceUrl, item.prompt);
+                        }}
+                      >
+                        <img src={item.thumbnailDataUrl} alt={item.prompt} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={styles.historyPreview}
+                      onClick={() => {
+                        const sourceUrl = getSourceUrl(item) || item.thumbnailDataUrl;
+                        openPreview(sourceUrl, item.prompt);
+                      }}
+                    >
+                      <img src={item.thumbnailDataUrl} alt={item.prompt} />
+                    </div>
+                  )}
                   <div className={styles.historyActions}>
                     {(() => {
                       const sourceUrl = getSourceUrl(item) || item.thumbnailDataUrl;
@@ -298,6 +320,22 @@ export const ImageHistory = ({
                     >
                       {t("dashboard.history.copyPrompt")}
                     </button>
+
+                    <a
+                      className={styles.secondaryBtn}
+                      href={`/dashboard?prompt=${encodeURIComponent(item.prompt)}${
+                        (() => {
+                          // 优先使用参考图 URL（图生图场景），否则使用生成图 URL
+                          // 只使用真正的图片 URL，不使用 base64 数据（太长会导致 URL 超限）
+                          const refUrl = item.referenceImageUrl || item.imageUrl;
+                          return refUrl && !refUrl.startsWith('data:')
+                            ? `&refImage=${encodeURIComponent(refUrl)}`
+                            : '';
+                        })()
+                      }`}
+                    >
+                      {t("dashboard.history.tryIt")}
+                    </a>
 
                     {item.savedVia === "fs" ? (
                       <button

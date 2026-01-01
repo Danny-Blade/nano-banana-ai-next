@@ -88,6 +88,10 @@ export const ImageEditorPanel = ({
   const [activeResultIndex, setActiveResultIndex] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
   const [settingsLoaded, setSettingsLoaded] = React.useState(false);
+  // 用于标记初始加载，避免触发 resolution 重置
+  const isInitialLoadRef = React.useRef(true);
+  // 用于标记是否是从 localStorage 恢复模型，避免触发 resolution 重置
+  const isRestoringModelRef = React.useRef(false);
 
   const referenceInputRef = React.useRef<HTMLInputElement | null>(null);
   const progressIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -102,6 +106,8 @@ export const ImageEditorPanel = ({
         if (parsed.generateCount) setGenerateCount(parsed.generateCount);
         if (parsed.resolution) setResolution(parsed.resolution);
         if (parsed.selectedModel && parsed.selectedModel !== selectedModel) {
+          // 标记正在恢复模型，避免触发 resolution 重置
+          isRestoringModelRef.current = true;
           setSelectedModel(parsed.selectedModel);
         }
       }
@@ -145,8 +151,18 @@ export const ImageEditorPanel = ({
   }, [ratio, generateCount, resolution, selectedModel, settingsLoaded]);
 
   React.useEffect(() => {
-    const defaults = resolutionOptions[selectedModel] || ["Auto"];
     if (!settingsLoaded) return;
+    // 初始加载时不重置 resolution（已从 localStorage 恢复）
+    if (isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+      return;
+    }
+    // 如果是从 localStorage 恢复模型，不重置 resolution
+    if (isRestoringModelRef.current) {
+      isRestoringModelRef.current = false;
+      return;
+    }
+    const defaults = resolutionOptions[selectedModel] || ["Auto"];
     setResolution(defaults[0]);
   }, [selectedModel, settingsLoaded]);
 
@@ -305,6 +321,8 @@ export const ImageEditorPanel = ({
             const suggestedName = `nano-banana-${selectedModel}-${Date.now()}-${i}.png`;
             const saved = await trySaveToLocalFolder(url, suggestedName);
             void persistHistorySource(historyId, url);
+            // 获取第一张参考图信息（如果有）
+            const firstRefImage = referenceImages[0];
             onImageHistoryAdd({
               id: historyId,
               createdAt: Date.now(),
@@ -318,6 +336,9 @@ export const ImageEditorPanel = ({
               fileName: saved?.fileName,
               savedDirName: saved?.savedDirName ?? undefined,
               savedVia: saved?.savedVia,
+              // 保存参考图信息
+              referenceImageThumbnail: firstRefImage?.url,
+              referenceImageUrl: firstRefImage?.url,
             });
           }
 

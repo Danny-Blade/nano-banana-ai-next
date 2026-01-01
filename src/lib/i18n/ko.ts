@@ -125,6 +125,7 @@ export const messagesKo: Messages = {
       imageDone: "이미지 생성 완료",
       openLocalFile: "로컬 파일 열기",
       copyPrompt: "프롬프트 복사",
+      tryIt: "체험",
       promptCopied: "프롬프트를 복사했습니다",
       copyFailed: "복사 실패",
       fileLabel: "파일: {name}",

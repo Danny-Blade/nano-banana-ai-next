@@ -126,6 +126,7 @@ export const messagesJa: Messages = {
       imageDone: "画像生成完了",
       openLocalFile: "ローカルファイルを開く",
       copyPrompt: "プロンプトをコピー",
+      tryIt: "試す",
       promptCopied: "プロンプトをコピーしました",
       copyFailed: "コピーに失敗しました",
       fileLabel: "ファイル：{name}",

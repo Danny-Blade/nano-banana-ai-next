@@ -77,6 +77,10 @@ export type ImageHistoryItem = {
   fileName?: string;
   savedDirName?: string;
   savedVia?: "download" | "fs";
+  /** 参考图缩略图（用于 image-to-image 生成） */
+  referenceImageThumbnail?: string;
+  /** 参考图原始 URL */
+  referenceImageUrl?: string;
 };
 
 export type LocalizedModelOption = {

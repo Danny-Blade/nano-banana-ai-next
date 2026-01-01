@@ -26,6 +26,10 @@ export type ImageHistoryItem = {
   fileName?: string;
   savedDirName?: string;
   savedVia?: "download" | "fs";
+  /** 参考图缩略图（用于 image-to-image 生成） */
+  referenceImageThumbnail?: string;
+  /** 参考图原始 URL */
+  referenceImageUrl?: string;
 };
 
 const IMAGE_HISTORY_STORAGE_KEY = "nano_banana_image_history_v1"; // localStorage (legacy)
@@ -177,6 +181,10 @@ export const useImageHistory = () => {
           savedDirName: typeof v.savedDirName === "string" ? v.savedDirName : undefined,
           savedVia:
             v.savedVia === "download" || v.savedVia === "fs" ? v.savedVia : undefined,
+          referenceImageThumbnail:
+            typeof v.referenceImageThumbnail === "string" ? v.referenceImageThumbnail : undefined,
+          referenceImageUrl:
+            typeof v.referenceImageUrl === "string" ? v.referenceImageUrl : undefined,
         } satisfies ImageHistoryItem;
       })
       .filter(Boolean) as ImageHistoryItem[];

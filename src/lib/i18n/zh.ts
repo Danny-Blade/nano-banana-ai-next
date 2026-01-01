@@ -125,6 +125,7 @@ export const messagesZh: Messages = {
       imageDone: "图片已生成",
       openLocalFile: "打开本地文件",
       copyPrompt: "复制提示词",
+      tryIt: "体验",
       promptCopied: "已复制提示词",
       copyFailed: "复制失败",
       fileLabel: "文件：{name}",
