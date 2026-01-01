@@ -179,6 +179,8 @@ export const messagesZh: Messages = {
       resultsGrouped: "按提示词分组展示",
       images: "张",
       useGlobalResolution: "使用全局分辨率",
+      progressRetrying: "正在重试第 {current}/{total} 张（第 {retry} 次重试）...",
+      retryFailed: "重试失败：{error}",
     },
     compare: {
       title: "模型对比",

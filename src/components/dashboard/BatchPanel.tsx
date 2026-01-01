@@ -188,114 +188,137 @@ export const BatchPanel = ({
 
       // 生成该提示词的所有图片
       for (let i = 0; i < card.count; i++) {
-        setProgressText(
-          t("dashboard.batchNew.progressGenerating", {
-            current: completedTasks + 1,
-            total: totalTasks,
-          })
-        );
+        const MAX_RETRIES = 3;
+        let retryCount = 0;
+        let success = false;
 
-        try {
-          const response = await fetch("/api/image/generate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              model: selectedModel,
-              prompt: card.prompt,
-              aspectRatio: card.ratio,
-              imageSize,
-              referenceImages: encodedRefs,
-            }),
-          });
-
-          if (response.status === 401) {
-            setError(t("dashboard.generate.loginRequired"));
-            setIsBatching(false);
-            return;
-          }
-          if (response.status === 402) {
-            setError(t("dashboard.generate.insufficientCreditsShort"));
-            setIsBatching(false);
-            return;
-          }
-          if (!response.ok) {
-            const info: unknown = await response.json().catch(() => ({}));
-            let err: string | undefined;
-            if (info && typeof info === "object") {
-              const infoRecord = info as Record<string, unknown>;
-              const e = infoRecord.error;
-              if (typeof e === "string") err = e;
-              else if (e && typeof e === "object") {
-                const eRecord = e as Record<string, unknown>;
-                if (typeof eRecord.message === "string") err = eRecord.message;
-                else err = JSON.stringify(eRecord);
-              }
-            }
-            throw new Error(err || response.statusText);
-          }
-
-          const data = (await response.json()) as {
-            imageData?: string;
-            mimeType?: string;
-            imageUrl?: string;
-          };
-
-          const url =
-            data.imageUrl ||
-            (data.imageData
-              ? `data:${data.mimeType || "image/png"};base64,${data.imageData}`
-              : null);
-
-          if (!url) {
-            throw new Error("No image returned from API");
-          }
-
-          const resultId = `batch-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 8)}`;
-          const newResult = {
-            id: resultId,
-            url,
-            model: activeModel.label,
-          };
-
-          // 立即更新 UI，显示新生成的图片
-          setResultGroups((prev) =>
-            prev.map((group, idx) =>
-              idx === cardIndex
-                ? { ...group, results: [...group.results, newResult] }
-                : group
-            )
+        while (!success && retryCount < MAX_RETRIES) {
+          setProgressText(
+            retryCount > 0
+              ? t("dashboard.batchNew.progressRetrying", {
+                  current: completedTasks + 1,
+                  total: totalTasks,
+                  retry: retryCount,
+                })
+              : t("dashboard.batchNew.progressGenerating", {
+                  current: completedTasks + 1,
+                  total: totalTasks,
+                })
           );
 
-          // 保存到历史记录（异步，不阻塞 UI 更新）
-          // 注意：批量生成时不自动保存到本地文件夹，避免权限弹窗打断生成流程
-          createThumbnailDataUrl(url).then((thumbnailDataUrl) => {
-            if (thumbnailDataUrl) {
-              void persistHistorySource(resultId, url);
-
-              onImageHistoryAdd({
-                id: resultId,
-                createdAt: Date.now(),
+          try {
+            const response = await fetch("/api/image/generate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
                 model: selectedModel,
                 prompt: card.prompt,
                 aspectRatio: card.ratio,
                 imageSize,
-                costCredits: activeModel.creditsPerImage,
-                thumbnailDataUrl,
-                imageUrl: data.imageUrl,
-                referenceImageThumbnail: card.referenceImage?.url,
-                referenceImageUrl: card.referenceImage?.url,
-              });
-            }
-          });
+                referenceImages: encodedRefs,
+              }),
+            });
 
-          completedTasks++;
-          setProgress(Math.round((completedTasks / totalTasks) * 100));
-        } catch (err) {
-          const message =
-            err instanceof Error ? err.message : t("dashboard.generate.generationFailed");
-          setError(message);
-          setIsBatching(false);
-          return;
+            if (response.status === 401) {
+              setError(t("dashboard.generate.loginRequired"));
+              setIsBatching(false);
+              return;
+            }
+            if (response.status === 402) {
+              setError(t("dashboard.generate.insufficientCreditsShort"));
+              setIsBatching(false);
+              return;
+            }
+            if (!response.ok) {
+              const info: unknown = await response.json().catch(() => ({}));
+              let err: string | undefined;
+              if (info && typeof info === "object") {
+                const infoRecord = info as Record<string, unknown>;
+                const e = infoRecord.error;
+                if (typeof e === "string") err = e;
+                else if (e && typeof e === "object") {
+                  const eRecord = e as Record<string, unknown>;
+                  if (typeof eRecord.message === "string") err = eRecord.message;
+                  else err = JSON.stringify(eRecord);
+                }
+              }
+              throw new Error(err || response.statusText);
+            }
+
+            const data = (await response.json()) as {
+              imageData?: string;
+              mimeType?: string;
+              imageUrl?: string;
+            };
+
+            const url =
+              data.imageUrl ||
+              (data.imageData
+                ? `data:${data.mimeType || "image/png"};base64,${data.imageData}`
+                : null);
+
+            if (!url) {
+              throw new Error("No image returned from API");
+            }
+
+            const resultId = `batch-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 8)}`;
+            const newResult = {
+              id: resultId,
+              url,
+              model: activeModel.label,
+            };
+
+            // 立即更新 UI，显示新生成的图片
+            setResultGroups((prev) =>
+              prev.map((group, idx) =>
+                idx === cardIndex
+                  ? { ...group, results: [...group.results, newResult] }
+                  : group
+              )
+            );
+
+            // 保存到历史记录（异步，不阻塞 UI 更新）
+            // 注意：批量生成时不自动保存到本地文件夹，避免权限弹窗打断生成流程
+            createThumbnailDataUrl(url).then((thumbnailDataUrl) => {
+              if (thumbnailDataUrl) {
+                void persistHistorySource(resultId, url);
+
+                onImageHistoryAdd({
+                  id: resultId,
+                  createdAt: Date.now(),
+                  model: selectedModel,
+                  prompt: card.prompt,
+                  aspectRatio: card.ratio,
+                  imageSize,
+                  costCredits: activeModel.creditsPerImage,
+                  thumbnailDataUrl,
+                  imageUrl: data.imageUrl,
+                  referenceImageThumbnail: card.referenceImage?.url,
+                  referenceImageUrl: card.referenceImage?.url,
+                });
+              }
+            });
+
+            completedTasks++;
+            setProgress(Math.round((completedTasks / totalTasks) * 100));
+            success = true;
+
+            // 每生成一张图片后立即刷新用户积分
+            refreshSession().catch(() => {
+              // 忽略刷新失败，不影响生成流程
+            });
+          } catch (err) {
+            retryCount++;
+            if (retryCount >= MAX_RETRIES) {
+              const message =
+                err instanceof Error ? err.message : t("dashboard.generate.generationFailed");
+              setError(t("dashboard.batchNew.retryFailed", { error: message }));
+              setIsBatching(false);
+              return;
+            }
+            // 等待一段时间后重试（指数退避：1s, 2s, 4s）
+            await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, retryCount - 1)));
+          }
         }
       }
     }

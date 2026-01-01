@@ -183,6 +183,8 @@ export const messagesEn: Messages = {
       resultsGrouped: "Grouped by prompt",
       images: "images",
       useGlobalResolution: "Use global resolution",
+      progressRetrying: "Retrying {current}/{total} (attempt {retry})...",
+      retryFailed: "Retry failed: {error}",
     },
     compare: {
       title: "Compare Models",
