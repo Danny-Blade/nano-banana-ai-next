@@ -5,7 +5,7 @@
     align-items: center;
     text-align: center;
     padding: 140px 24px 100px;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #faf5ff 50%, #f3e8ff 100%);
     min-height: auto;
     justify-content: center;
     overflow: hidden;
@@ -35,7 +35,7 @@
     width: 500px;
     height: 500px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
     top: -100px;
     right: -150px;
     animation: float2 25s ease-in-out infinite;
@@ -122,18 +122,19 @@
     align-items: center;
     gap: 8px;
     padding: 16px 32px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     border-radius: 14px;
     font-weight: 600;
     font-size: 16px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
 }
 
 .primaryBtn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
 }
 
 .btnArrow {

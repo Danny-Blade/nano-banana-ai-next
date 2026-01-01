@@ -1,6 +1,6 @@
 .gallerySection {
-    padding: 100px 24px;
-    background: #ffffff;
+    padding: 6rem 1rem 4rem;
+    background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 50%, #faf5ff 100%);
 }
 
 .container {
@@ -26,7 +26,7 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
     color: white;
     font-size: 13px;
     font-weight: 600;
@@ -36,20 +36,18 @@
 }
 
 .title {
-    font-size: 44px;
+    font-size: 2.5rem;
     font-weight: 800;
-    margin-bottom: 16px;
-    color: #0f172a;
-    letter-spacing: -0.03em;
-    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #111827;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .subtitle {
-    font-size: 18px;
-    color: #64748b;
-    max-width: 640px;
-    margin: 0 auto;
-    line-height: 1.7;
+    font-size: 1.125rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto 2rem;
 }
 
 .grid {
@@ -59,13 +57,24 @@
 }
 
 .card {
-    background: #fff;
-    border-radius: 24px;
+    background: #ffffff;
+    border-radius: 1.5rem;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e5e7eb;
+    transition: all 250ms ease-out;
+    animation: cardFadeIn 400ms ease-out forwards;
     opacity: 0;
-    transform: translateY(40px);
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .card.visible {
@@ -75,8 +84,8 @@
 
 .card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12);
-    border-color: transparent;
+    box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
+    border-color: #8b5cf6;
 }
 
 .comparisonWrapper {
@@ -217,19 +226,19 @@
     justify-content: center;
     gap: 8px;
     padding: 14px 24px;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     font-size: 14px;
     font-weight: 600;
     border-radius: 12px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 200ms ease-out;
 }
 
 .tryButton:hover {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.3);
+    box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.4);
 }
 
 @media (max-width: 1024px) {

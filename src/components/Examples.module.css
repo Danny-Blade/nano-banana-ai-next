@@ -1,6 +1,6 @@
 .examplesSection {
-    padding: 100px 24px;
-    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    padding: 6rem 1rem 4rem;
+    background: linear-gradient(180deg, #faf5ff 0%, #ffffff 50%, #f5f3ff 100%);
 }
 
 .container {
@@ -18,7 +18,7 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
     color: white;
     font-size: 13px;
     font-weight: 600;
@@ -28,20 +28,18 @@
 }
 
 .title {
-    font-size: 44px;
+    font-size: 2.5rem;
     font-weight: 800;
-    margin-bottom: 16px;
-    color: #0f172a;
-    letter-spacing: -0.03em;
-    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #111827;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .subtitle {
-    font-size: 18px;
-    color: #64748b;
+    font-size: 1.125rem;
+    color: #6b7280;
     max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.7;
+    margin: 0 auto 2rem;
 }
 
 .grid {
@@ -51,24 +49,36 @@
 }
 
 .card {
-    background: #fff;
-    border-radius: 20px;
+    background: #ffffff;
+    border-radius: 1.5rem;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e5e7eb;
+    transition: all 250ms ease-out;
     opacity: 0;
-    transform: translateY(40px) scale(0.95);
+    transform: translateY(20px);
+    animation: cardFadeIn 400ms ease-out forwards;
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .card.visible {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
 }
 
 .card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-    border-color: transparent;
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
+    border-color: #8b5cf6;
 }
 
 .imageWrapper {
