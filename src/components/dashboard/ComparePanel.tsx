@@ -173,10 +173,13 @@ export const ComparePanel = ({
   };
 
   // 根据进度百分比获取阶段文字
-  const getProgressStage = (percent: number): string => {
+  // 当没有参考图时（text-to-image），跳过上传和处理阶段
+  const getProgressStage = (percent: number, hasReferenceImages: boolean = false): string => {
     if (percent < 10) return t("dashboard.generate.progressPreparing");
-    if (percent < 25) return t("dashboard.generate.progressUploading");
-    if (percent < 45) return t("dashboard.generate.progressProcessing");
+    if (hasReferenceImages) {
+      if (percent < 25) return t("dashboard.generate.progressUploading");
+      if (percent < 45) return t("dashboard.generate.progressProcessing");
+    }
     if (percent < 70) return t("dashboard.generate.progressGenerating");
     if (percent < 90) return t("dashboard.generate.progressEnhancing");
     if (percent < 100) return t("dashboard.generate.progressFinalizing");
@@ -198,7 +201,7 @@ export const ComparePanel = ({
       setProgress((prev) => {
         const increment = Math.random() * 2 + 0.5;
         const newValue = Math.min(prev + increment, targetPercent);
-        setStage(getProgressStage(newValue));
+        setStage(getProgressStage(newValue, compareReferenceImages.length > 0));
         if (newValue >= targetPercent) {
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -236,8 +239,8 @@ export const ComparePanel = ({
     setCurrentPrompt(targetPrompt);
     setLeftProgress(2);
     setRightProgress(2);
-    setLeftProgressStage(getProgressStage(2));
-    setRightProgressStage(getProgressStage(2));
+    setLeftProgressStage(getProgressStage(2, compareReferenceImages.length > 0));
+    setRightProgressStage(getProgressStage(2, compareReferenceImages.length > 0));
 
     const generateForModel = async (
       modelValue: ModelValue,
@@ -328,7 +331,7 @@ export const ComparePanel = ({
           // 更新进度
           if (intervalRef.current) clearInterval(intervalRef.current);
           setProgress(Math.min(targetProgress, 95));
-          setStage(getProgressStage(Math.min(targetProgress, 95)));
+          setStage(getProgressStage(Math.min(targetProgress, 95), compareReferenceImages.length > 0));
 
           // 保存到历史记录 - 使用 try-catch 确保不会因为缩略图失败而跳过保存
           try {
@@ -374,7 +377,7 @@ export const ComparePanel = ({
 
       // 平滑完成到 100%
       setProgress(100);
-      setStage(getProgressStage(100));
+      setStage(getProgressStage(100, compareReferenceImages.length > 0));
       setTimeout(() => {
         setProgress(0);
         setStage("");
@@ -704,8 +707,8 @@ export const ComparePanel = ({
           </div>
 
           {/* 操作按钮 */}
-          <div className={styles.buttonRow}>
-            <button className={styles.ghostBtn} onClick={handleClear}>
+          <div className={styles.promptActions}>
+            <button className={`${styles.ghostBtn} ${styles.clearBtn}`} onClick={handleClear}>
               {t("dashboard.compare.clear")}
             </button>
             <button
