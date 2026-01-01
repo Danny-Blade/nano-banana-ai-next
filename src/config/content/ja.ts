@@ -512,6 +512,7 @@ export const siteContentJa: SiteContent = {
     promptLabel: "プロンプト",
     copyPrompt: "プロンプトをコピー",
     copied: "コピーしました！",
+    tryItLabel: "試してみる",
     ctaTitle: "自分だけの作品を作る準備はできましたか？",
     ctaSubtitle: "Nano Banana AIで素晴らしい画像の生成を始めよう",
     ctaButton: "今すぐNano Bananaを試す",

@@ -49,6 +49,7 @@ export default function PromptPage() {
         promptLabel: "Prompt",
         copyPrompt: "Copy Prompt",
         copied: "Copied!",
+        tryItLabel: "Try it",
         ctaTitle: "Ready to create your own?",
         ctaSubtitle: "Start generating amazing images with Nano Banana AI",
         ctaButton: "Try Nano Banana Now",
@@ -173,16 +174,26 @@ export default function PromptPage() {
                                         <div className={styles.overlay}>
                                             <div className={styles.overlayModel}>{promptContent.modelLabel}</div>
                                             <div className={styles.overlayPrompt}>{item.prompt}</div>
-                                            <button
-                                                className={styles.copyBtn}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    copyToClipboard(item.prompt);
-                                                }}
-                                            >
-                                                <span className={styles.copyIcon}>📋</span>
-                                                {promptContent.copyPrompt}
-                                            </button>
+                                            <div className={styles.overlayActions}>
+                                                <button
+                                                    className={styles.copyBtn}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        copyToClipboard(item.prompt);
+                                                    }}
+                                                >
+                                                    <span className={styles.copyIcon}>📋</span>
+                                                    {promptContent.copyPrompt}
+                                                </button>
+                                                <Link
+                                                    href={`/dashboard?prompt=${encodeURIComponent(item.prompt)}`}
+                                                    className={styles.tryBtn}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <span>🚀</span>
+                                                    {promptContent.tryItLabel}
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -259,6 +270,13 @@ export default function PromptPage() {
                                             <span>📋</span>
                                             {promptContent.copyPrompt}
                                         </button>
+                                        <Link
+                                            href={`/dashboard?prompt=${encodeURIComponent(currentCompareItem.prompt)}&refImage=${encodeURIComponent(currentCompareItem.before)}`}
+                                            className={styles.compareTryBtn}
+                                        >
+                                            <span>🚀</span>
+                                            {promptContent.tryItLabel}
+                                        </Link>
                                     </div>
                                 </div>
 
@@ -311,13 +329,22 @@ export default function PromptPage() {
                         />
                         <div className={styles.modalPrompt}>
                             <div className={styles.modalPromptText}>{previewImage.prompt}</div>
-                            <button
-                                className={styles.modalCopyBtn}
-                                onClick={() => copyToClipboard(previewImage.prompt)}
-                            >
-                                <span>📋</span>
-                                {promptContent.copyPrompt}
-                            </button>
+                            <div className={styles.modalActions}>
+                                <button
+                                    className={styles.modalCopyBtn}
+                                    onClick={() => copyToClipboard(previewImage.prompt)}
+                                >
+                                    <span>📋</span>
+                                    {promptContent.copyPrompt}
+                                </button>
+                                <Link
+                                    href={`/dashboard?prompt=${encodeURIComponent(previewImage.prompt)}`}
+                                    className={styles.modalTryBtn}
+                                >
+                                    <span>🚀</span>
+                                    {promptContent.tryItLabel}
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

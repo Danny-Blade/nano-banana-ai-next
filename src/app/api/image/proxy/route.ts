@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 const ALLOWED_DOMAINS = [
   "aiimage.pkgames.org",
   "cdn.ainanobanana.io",
+  "image.ainanobanana.io",
 ];
 
 export async function GET(request: NextRequest) {

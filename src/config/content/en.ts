@@ -513,6 +513,7 @@ export const siteContentEn = {
     promptLabel: "Prompt",
     copyPrompt: "Copy Prompt",
     copied: "Copied!",
+    tryItLabel: "Try it",
     ctaTitle: "Ready to create your own?",
     ctaSubtitle: "Start generating amazing images with Nano Banana AI",
     ctaButton: "Try Nano Banana Now",

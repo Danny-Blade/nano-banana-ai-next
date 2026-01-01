@@ -501,6 +501,7 @@ export const siteContentZh: SiteContent = {
     promptLabel: "提示词",
     copyPrompt: "复制提示词",
     copied: "已复制！",
+    tryItLabel: "立即体验",
     ctaTitle: "准备好创建你自己的作品了吗？",
     ctaSubtitle: "使用 Nano Banana AI 开始生成精彩图片",
     ctaButton: "立即体验 Nano Banana",

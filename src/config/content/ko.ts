@@ -502,6 +502,7 @@ export const siteContentKo: SiteContent = {
     promptLabel: "프롬프트",
     copyPrompt: "프롬프트 복사",
     copied: "복사됨!",
+    tryItLabel: "바로 체험",
     ctaTitle: "나만의 작품을 만들 준비가 되셨나요?",
     ctaSubtitle: "Nano Banana AI로 멋진 이미지 생성을 시작하세요",
     ctaButton: "지금 Nano Banana 체험하기",
