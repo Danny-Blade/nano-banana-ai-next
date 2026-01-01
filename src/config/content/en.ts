@@ -251,6 +251,124 @@ export const siteContentEn = {
         description:
           "SOC 2, GDPR, and ISO 27001 certified - Nano Banana AI trusted by professional teams worldwide.",
       },
+      {
+        icon: "🎨",
+        title: "Multiple Style Support",
+        description:
+          "From photorealistic to anime, oil painting to watercolor - master any artistic style with one model.",
+      },
+      {
+        icon: "🌐",
+        title: "Multi-Language Prompts",
+        description:
+          "Write prompts in any language - Chinese, Japanese, Korean, English and more supported natively.",
+      },
+      {
+        icon: "📱",
+        title: "Cross-Platform Access",
+        description:
+          "Create anywhere - seamless experience on desktop, tablet, and mobile devices.",
+      },
+    ],
+  },
+  stats: {
+    title: "Trusted by Creators Worldwide",
+    subtitle: "Join our growing community of AI artists and designers",
+    items: [
+      { value: "100K+", label: "Active Users" },
+      { value: "1.3M+", label: "Images Generated" },
+      { value: "99.9%", label: "Uptime" },
+      { value: "4.9/5", label: "User Rating" },
+    ],
+  },
+  testimonials: {
+    title: "What Creators Say",
+    subtitle: "Real feedback from our community",
+    items: [
+      {
+        name: "Sarah Chen",
+        role: "Digital Artist",
+        avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+        content: "Nano Banana AI has completely transformed my workflow. The image quality is incredible and the speed is unmatched. I can now create concept art 10x faster than before.",
+        rating: 5,
+      },
+      {
+        name: "Marcus Johnson",
+        role: "Marketing Director",
+        avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+        content: "We use Nano Banana for all our marketing campaigns. The consistency in character generation is perfect for our brand assets. Highly recommended!",
+        rating: 5,
+      },
+      {
+        name: "Yuki Tanaka",
+        role: "Game Developer",
+        avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+        content: "The anime style generation is absolutely stunning. I've tried many AI tools, but Nano Banana understands artistic nuances better than any other.",
+        rating: 5,
+      },
+      {
+        name: "Alex Rivera",
+        role: "Content Creator",
+        avatar: "https://randomuser.me/api/portraits/men/75.jpg",
+        content: "60 seconds for professional quality images is a game changer. My YouTube thumbnails have never looked better. The ROI is incredible.",
+        rating: 5,
+      },
+      {
+        name: "Emily Watson",
+        role: "Freelance Illustrator",
+        avatar: "https://randomuser.me/api/portraits/women/22.jpg",
+        content: "As a freelancer, time is money. Nano Banana helps me deliver client work faster without compromising on quality. My clients are always impressed!",
+        rating: 5,
+      },
+      {
+        name: "David Kim",
+        role: "E-commerce Entrepreneur",
+        avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+        content: "Product images that used to cost $500+ per shoot now take minutes. The quality rivals professional photography. Absolute game-changer for my business.",
+        rating: 5,
+      },
+      {
+        name: "Lisa Thompson",
+        role: "Social Media Manager",
+        avatar: "https://randomuser.me/api/portraits/women/56.jpg",
+        content: "I manage 10+ brand accounts. Nano Banana helps me create unique, on-brand visuals for each one. The multi-style support is fantastic!",
+        rating: 5,
+      },
+      {
+        name: "James Wilson",
+        role: "Indie Game Studio Founder",
+        avatar: "https://randomuser.me/api/portraits/men/67.jpg",
+        content: "We saved months of art production time. The character consistency feature is perfect for our game assets. Worth every penny!",
+        rating: 5,
+      },
+      {
+        name: "Sophie Martin",
+        role: "Fashion Blogger",
+        avatar: "https://randomuser.me/api/portraits/women/33.jpg",
+        content: "Creating outfit concepts and mood boards has never been easier. The photorealistic quality is just incredible. My followers love the content!",
+        rating: 5,
+      },
+      {
+        name: "Michael Brown",
+        role: "Advertising Creative",
+        avatar: "https://randomuser.me/api/portraits/men/52.jpg",
+        content: "From concept to client presentation in hours instead of days. Nano Banana has revolutionized our creative process. The team loves it!",
+        rating: 5,
+      },
+      {
+        name: "Anna Kowalski",
+        role: "Children's Book Author",
+        avatar: "https://randomuser.me/api/portraits/women/41.jpg",
+        content: "Illustrating my books used to be the hardest part. Now I can bring my stories to life exactly as I imagine them. Magical experience!",
+        rating: 5,
+      },
+      {
+        name: "Robert Taylor",
+        role: "Architecture Visualizer",
+        avatar: "https://randomuser.me/api/portraits/men/28.jpg",
+        content: "The ability to quickly generate architectural concepts and renderings has transformed how I work with clients. Incredible tool for visualization!",
+        rating: 5,
+      },
     ],
   },
   pricing: {

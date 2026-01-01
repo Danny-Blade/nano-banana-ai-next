@@ -250,6 +250,124 @@ export const siteContentJa: SiteContent = {
         description:
           "SOC 2 / GDPR / ISO 27001 準拠。プロチームに信頼されています。",
       },
+      {
+        icon: "🎨",
+        title: "多様なスタイル対応",
+        description:
+          "フォトリアルからアニメ、油絵から水彩まで——1つのモデルであらゆる芸術スタイルを実現。",
+      },
+      {
+        icon: "🌐",
+        title: "多言語プロンプト",
+        description:
+          "どの言語でもプロンプト入力可能——日本語・中国語・韓国語・英語などネイティブ対応。",
+      },
+      {
+        icon: "📱",
+        title: "クロスプラットフォーム",
+        description:
+          "いつでもどこでも創作——デスクトップ・タブレット・モバイルでシームレスに利用可能。",
+      },
+    ],
+  },
+  stats: {
+    title: "世界中のクリエイターに信頼されています",
+    subtitle: "成長を続けるAIアーティストとデザイナーのコミュニティに参加しよう",
+    items: [
+      { value: "10万+", label: "アクティブユーザー" },
+      { value: "130万+", label: "生成画像数" },
+      { value: "99.9%", label: "稼働率" },
+      { value: "4.9/5", label: "ユーザー評価" },
+    ],
+  },
+  testimonials: {
+    title: "クリエイターの声",
+    subtitle: "コミュニティからのリアルなフィードバック",
+    items: [
+      {
+        name: "佐藤美咲",
+        role: "デジタルアーティスト",
+        avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+        content: "Nano Banana AIは私のワークフローを完全に変えました。画質は驚くほど美しく、スピードは他に類を見ません。コンセプトアートの制作が以前の10倍速くなりました。",
+        rating: 5,
+      },
+      {
+        name: "田村健太",
+        role: "マーケティングディレクター",
+        avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+        content: "すべてのマーケティングキャンペーンでNano Bananaを使用しています。キャラクター生成の一貫性はブランドアセットに最適です。強くおすすめします！",
+        rating: 5,
+      },
+      {
+        name: "鈴木優希",
+        role: "ゲーム開発者",
+        avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+        content: "アニメスタイルの生成は本当に素晴らしいです。多くのAIツールを試しましたが、Nano Bananaは芸術的なニュアンスを最もよく理解しています。",
+        rating: 5,
+      },
+      {
+        name: "Alex Rivera",
+        role: "コンテンツクリエイター",
+        avatar: "https://randomuser.me/api/portraits/men/75.jpg",
+        content: "60秒でプロ品質の画像が作れるのは革命的です。YouTubeサムネイルがこれまでで最高の仕上がりに。投資対効果が素晴らしいです。",
+        rating: 5,
+      },
+      {
+        name: "山田あかり",
+        role: "フリーランスイラストレーター",
+        avatar: "https://randomuser.me/api/portraits/women/22.jpg",
+        content: "フリーランサーにとって時間はお金です。Nano Bananaのおかげで品質を落とさずに納品が早くなりました。クライアントも大満足です！",
+        rating: 5,
+      },
+      {
+        name: "中村大輔",
+        role: "EC事業者",
+        avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+        content: "以前は1回の商品撮影に500ドル以上かかっていましたが、今は数分で完了。プロの写真に匹敵するクオリティです。ビジネスの革命です。",
+        rating: 5,
+      },
+      {
+        name: "高橋理沙",
+        role: "SNSマネージャー",
+        avatar: "https://randomuser.me/api/portraits/women/56.jpg",
+        content: "10以上のブランドアカウントを担当しています。Nano Bananaで各アカウントに合ったユニークなビジュアルが作れます。マルチスタイル対応が最高！",
+        rating: 5,
+      },
+      {
+        name: "小林翔太",
+        role: "インディーゲームスタジオ代表",
+        avatar: "https://randomuser.me/api/portraits/men/67.jpg",
+        content: "アート制作にかかる時間を数ヶ月短縮できました。キャラクター一貫性機能はゲームアセットに最適です。価格以上の価値があります！",
+        rating: 5,
+      },
+      {
+        name: "伊藤さくら",
+        role: "ファッションブロガー",
+        avatar: "https://randomuser.me/api/portraits/women/33.jpg",
+        content: "コーディネートのコンセプトやムードボードの作成がこんなに簡単になるなんて。フォトリアルなクオリティが素晴らしい。フォロワーにも大好評！",
+        rating: 5,
+      },
+      {
+        name: "渡辺誠",
+        role: "広告クリエイティブディレクター",
+        avatar: "https://randomuser.me/api/portraits/men/52.jpg",
+        content: "コンセプトからクライアントプレゼンまで数日かかっていたのが数時間に。Nano Bananaは私たちのクリエイティブプロセスを革新しました。チーム全員のお気に入りです！",
+        rating: 5,
+      },
+      {
+        name: "松本ゆい",
+        role: "絵本作家",
+        avatar: "https://randomuser.me/api/portraits/women/41.jpg",
+        content: "本のイラストを描くのが一番大変でした。今では想像通りに物語を表現できます。魔法のような体験です！",
+        rating: 5,
+      },
+      {
+        name: "斉藤隆",
+        role: "建築ビジュアライザー",
+        avatar: "https://randomuser.me/api/portraits/men/28.jpg",
+        content: "建築コンセプトやレンダリングを素早く生成できる機能は、クライアントとの仕事を一変させました。ビジュアライゼーションの強力なツールです！",
+        rating: 5,
+      },
     ],
   },
   pricing: {
