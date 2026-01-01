@@ -264,3 +264,76 @@
         font-size: 0.65rem;
     }
 }
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .section {
+        padding: 48px 12px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .header {
+        margin-bottom: 24px;
+    }
+
+    .tableWrapper {
+        border-radius: 0.75rem;
+        margin: 0 -4px;
+    }
+
+    .table {
+        min-width: 700px;
+    }
+
+    .th, .td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .th:first-child, .td:first-child {
+        padding-left: 0.75rem;
+    }
+
+    .th:last-child, .td:last-child {
+        padding-right: 0.75rem;
+    }
+
+    .modelName {
+        gap: 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .modelIcon {
+        font-size: 1rem;
+    }
+
+    .badge {
+        font-size: 0.45rem;
+        padding: 0.15rem 0.3rem;
+    }
+
+    .value {
+        font-size: 0.7rem;
+    }
+
+    .ratingDot {
+        width: 5px;
+        height: 5px;
+    }
+
+    .label {
+        font-size: 0.6rem;
+    }
+
+    .footer {
+        font-size: 0.75rem;
+        margin-top: 16px;
+    }
+}

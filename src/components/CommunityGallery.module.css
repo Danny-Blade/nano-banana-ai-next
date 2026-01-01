@@ -287,4 +287,134 @@
         width: 16px;
         height: 16px;
     }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        gap: 14px;
+    }
+
+    .promptSection {
+        flex: 1;
+        display: block;
+    }
+
+    .promptBadge {
+        display: inline-flex;
+    }
+
+    .promptText {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+    }
+
+    .tryButton {
+        display: inline-flex;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .gallerySection {
+        padding: 48px 16px;
+    }
+
+    .header {
+        margin-bottom: 32px;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        font-size: 11px;
+        margin-bottom: 16px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+        margin: 0 auto 1.5rem;
+    }
+
+    .moreButton {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+
+    .grid {
+        gap: 16px;
+    }
+
+    .card {
+        border-radius: 1rem;
+    }
+
+    .comparisonWrapper {
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    .sliderKnob {
+        width: 32px;
+        height: 32px;
+    }
+
+    .sliderKnob svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .labels {
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+    }
+
+    .beforeLabel,
+    .afterLabel {
+        padding: 4px 10px;
+        font-size: 10px;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .promptSection {
+        flex: 1;
+        display: block;
+        min-height: auto;
+    }
+
+    .promptBadge {
+        display: inline-flex;
+        font-size: 10px;
+        margin-bottom: 6px;
+    }
+
+    .promptText {
+        display: -webkit-box;
+        font-size: 13px;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        color: #334155;
+    }
+
+    .tryButton {
+        display: inline-flex;
+        padding: 12px 20px;
+        font-size: 13px;
+        border-radius: 10px;
+        width: 100%;
+        justify-content: center;
+    }
 }

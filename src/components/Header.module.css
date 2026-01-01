@@ -310,6 +310,11 @@
 }
 
 @media (max-width: 768px) {
+    .header {
+        grid-template-columns: auto 1fr auto;
+        padding: 0.875rem 1rem;
+    }
+
     .nav {
         display: none;
     }
@@ -318,8 +323,14 @@
         display: none;
     }
 
+    .actions {
+        gap: 0.75rem;
+    }
+
     .mobileMenuBtn {
         display: flex;
+        padding: 8px;
+        margin-left: 4px;
     }
 
     .mobileNav {
@@ -330,12 +341,14 @@
         left: 0;
         width: 100%;
         height: 100vh;
-        background: #ffffff;
-        padding: 6rem 2rem;
-        gap: 2rem;
+        height: 100dvh;
+        background: linear-gradient(180deg, #ffffff 0%, #faf5ff 100%);
+        padding: 5rem 1.5rem 2rem;
+        gap: 0;
         z-index: 101;
         transform: translateX(100%);
         transition: transform 0.3s ease-in-out;
+        overflow-y: auto;
     }
 
     .mobileNav.open {
@@ -343,9 +356,20 @@
     }
 
     .mobileNavLink {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 600;
         color: #0f172a;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e2e8f0;
+        transition: color 0.2s ease;
+    }
+
+    .mobileNavLink:hover {
+        color: #8b5cf6;
+    }
+
+    .mobileNavLink:last-child {
+        border-bottom: none;
     }
 
     /* Hamburger animation state */
@@ -359,5 +383,88 @@
 
     .mobileMenuBtn.open .hamburgerLine:nth-child(3) {
         transform: rotate(-45deg) translate(5px, -6px);
+    }
+
+    .loginBtn {
+        padding: 7px 14px;
+        font-size: 13px;
+    }
+}
+
+/* Responsive - Mobile (Super small screens) */
+@media (max-width: 480px) {
+    .header {
+        padding: 0.75rem 1rem;
+    }
+
+    .logo {
+        font-size: 1.25rem;
+    }
+
+    .langSelect {
+        padding: 5px 8px;
+        font-size: 0.8rem;
+    }
+
+    .userAvatarBtn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .userAvatarInitial {
+        font-size: 13px;
+    }
+
+    .userDropdown {
+        width: 260px;
+        padding: 10px;
+    }
+
+    .userDropdownHeader {
+        padding: 8px;
+    }
+
+    .userDropdownAvatar {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .userDropdownName {
+        font-size: 13px;
+    }
+
+    .userDropdownEmail {
+        font-size: 11px;
+    }
+
+    .userDropdownStats {
+        padding: 8px 10px;
+    }
+
+    .userDropdownStatLabel {
+        font-size: 11px;
+    }
+
+    .userDropdownStatValue {
+        font-size: 16px;
+    }
+
+    .userDropdownLogout {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .mobileNav {
+        padding: 5rem 1.5rem;
+    }
+
+    .mobileNavLink {
+        font-size: 1.25rem;
+    }
+
+    .loginBtn {
+        padding: 6px 16px;
+        font-size: 13px;
     }
 }

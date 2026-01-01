@@ -57,4 +57,44 @@
     .title {
         font-size: 2rem;
     }
+
+    .subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .emptyState {
+        padding: 60px 16px;
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .historySection {
+        padding: 70px 16px 48px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .emptyState {
+        padding: 48px 12px;
+        border-radius: 1rem;
+    }
+
+    .emptyIcon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+    }
+
+    .emptyMessage {
+        font-size: 1rem;
+    }
 }

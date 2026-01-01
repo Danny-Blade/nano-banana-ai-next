@@ -155,3 +155,63 @@
         padding: 1.25rem;
     }
 }
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .section {
+        padding: 48px 16px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .header {
+        margin-bottom: 24px;
+    }
+
+    .grid {
+        gap: 12px;
+    }
+
+    .card {
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+
+    .cardHeader {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .userName {
+        font-size: 0.9rem;
+    }
+
+    .userRole {
+        font-size: 0.75rem;
+    }
+
+    .stars {
+        margin-bottom: 10px;
+    }
+
+    .starFilled,
+    .starEmpty {
+        font-size: 0.875rem;
+    }
+
+    .content {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+}

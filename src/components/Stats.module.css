@@ -119,3 +119,39 @@
         font-size: 0.875rem;
     }
 }
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .section {
+        padding: 48px 16px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .header {
+        margin-bottom: 24px;
+    }
+
+    .grid {
+        gap: 12px;
+    }
+
+    .card {
+        padding: 1.25rem 0.75rem;
+        border-radius: 1rem;
+    }
+
+    .value {
+        font-size: 1.75rem;
+    }
+
+    .label {
+        font-size: 0.8rem;
+    }
+}

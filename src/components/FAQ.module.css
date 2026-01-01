@@ -120,3 +120,41 @@
         font-size: 0.95rem;
     }
 }
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .faqSection {
+        padding: 48px 16px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .faqList {
+        gap: 12px;
+    }
+
+    .faqItem {
+        border-radius: 0.75rem;
+    }
+
+    .question {
+        padding: 14px 16px;
+        font-size: 0.9rem;
+        gap: 12px;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        font-size: 1rem;
+    }
+
+    .answer {
+        padding: 0 16px 16px 16px;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+}

@@ -194,3 +194,32 @@
         display: none;
     }
 }
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .hero {
+        padding: 80px 16px 48px;
+    }
+
+    .title {
+        font-size: 28px;
+        margin-bottom: 16px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+
+    .ctaGroup {
+        gap: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .primaryBtn,
+    .secondaryBtn {
+        padding: 14px 24px;
+        font-size: 15px;
+    }
+}
