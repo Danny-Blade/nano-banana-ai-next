@@ -31,7 +31,8 @@
       "Bash(rm:*)",
       "Bash(git rm:*)",
       "Bash(npx tsc:*)",
-      "Bash(yarn build:local:*)"
+      "Bash(yarn build:local:*)",
+      "Bash(npx next build)"
     ],
     "deny": [],
     "ask": []

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useSearchParams } from "next/navigation";
 import styles from "./Dashboard.module.css";
 import { useI18n } from "@/components/I18nProvider";
 import { getMessage } from "@/lib/i18n";
@@ -37,6 +38,11 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const { locale, t } = useI18n();
   const siteContent = useSiteContent();
   const { data: session, status: sessionStatus, update: refreshSession } = useSession();
+  const searchParams = useSearchParams();
+
+  // Read initial values from URL query parameters
+  const initialPrompt = searchParams.get("prompt") || "";
+  const initialRefImage = searchParams.get("refImage") || "";
 
   const DEFAULT_MODEL: ModelValue = "nano-banana-pro";
 
@@ -376,6 +382,8 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             ensureAuthenticatedWithCredits={ensureAuthenticatedWithCredits}
             refreshSession={handleRefreshSession}
             openPreview={openPreview}
+            initialPrompt={initialPrompt}
+            initialRefImage={initialRefImage}
           />
         </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import styles from "./Editor.module.css";
 import Dashboard from "@/components/Dashboard";
 import { useSiteContent } from "@/components/useSiteContent";
@@ -17,8 +17,10 @@ const Editor = () => {
           <p className={styles.subtitle}>{subtitle}</p>
         </div>
 
-        {/* 首页编辑器使用 Dashboard 的“生图模块” */}
-        <Dashboard variant="generateOnly" />
+        {/* 首页编辑器使用 Dashboard 的"生图模块" */}
+        <Suspense fallback={<div className={styles.loading}>Loading...</div>}>
+          <Dashboard variant="generateOnly" />
+        </Suspense>
       </div>
     </section>
   );

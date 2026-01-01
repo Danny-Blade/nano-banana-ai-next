@@ -91,7 +91,7 @@ const Examples = () => {
                                 />
                                 <div className={`${styles.overlay} ${hoveredCard === index ? styles.overlayVisible : ''}`}>
                                     <a
-                                        href="/dashboard"
+                                        href={`/dashboard?prompt=${encodeURIComponent(item.prompt)}`}
                                         className={styles.tryButton}
                                         onClick={(e) => e.stopPropagation()}
                                     >

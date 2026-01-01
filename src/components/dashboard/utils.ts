@@ -84,16 +84,28 @@ export const downloadImage = async (url: string, name?: string) => {
   }
 };
 
-export const toDataUrl = async (objectUrl: string) => {
-  const res = await fetch(objectUrl);
-  const blob = await res.blob();
-  return await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = () =>
-      reject(reader.error || new Error("Failed to read image"));
-    reader.readAsDataURL(blob);
-  });
+export const toDataUrl = async (imageUrl: string) => {
+  // 对于 blob: 或 data: URL，直接使用 fetch
+  if (imageUrl.startsWith("blob:") || imageUrl.startsWith("data:")) {
+    const res = await fetch(imageUrl);
+    const blob = await res.blob();
+    return await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () =>
+        reject(reader.error || new Error("Failed to read image"));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  // 对于外部 URL，使用服务端代理来避免 CORS 问题
+  const proxyUrl = `/api/image/proxy?url=${encodeURIComponent(imageUrl)}`;
+  const res = await fetch(proxyUrl);
+  if (!res.ok) {
+    throw new Error(`Failed to proxy image: ${res.status}`);
+  }
+  const data = await res.json();
+  return data.dataUrl;
 };
 
 export const encodeReferenceImages = async (images: UploadedImage[]) => {

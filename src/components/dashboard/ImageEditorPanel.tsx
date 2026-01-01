@@ -48,6 +48,8 @@ type ImageEditorPanelProps = {
   ) => boolean;
   refreshSession: () => Promise<void>;
   openPreview: (url: string, alt: string) => void;
+  initialPrompt?: string;
+  initialRefImage?: string;
 };
 
 type ResultTab = "result" | "original" | "compare";
@@ -65,6 +67,8 @@ export const ImageEditorPanel = ({
   ensureAuthenticatedWithCredits,
   refreshSession,
   openPreview,
+  initialPrompt = "",
+  initialRefImage = "",
 }: ImageEditorPanelProps) => {
   const { t } = useI18n();
 
@@ -106,6 +110,24 @@ export const ImageEditorPanel = ({
     }
     setSettingsLoaded(true);
   }, []);
+
+  // 从 URL 参数初始化提示词和参考图
+  React.useEffect(() => {
+    if (initialPrompt) {
+      setGeneratePrompt(initialPrompt);
+    }
+    if (initialRefImage) {
+      // 直接使用外部图片 URL（避免 CORS 问题）
+      const fileName = initialRefImage.split("/").pop() || "reference.jpg";
+      const uploadedImage: UploadedImage = {
+        id: `ref-${Date.now()}`,
+        name: fileName,
+        url: initialRefImage,
+        size: "External",
+      };
+      setReferenceImages([uploadedImage]);
+    }
+  }, [initialPrompt, initialRefImage]);
 
   // 保存设置
   React.useEffect(() => {

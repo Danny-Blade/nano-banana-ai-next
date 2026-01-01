@@ -158,7 +158,7 @@ const CommunityGallery = () => {
                                         </div>
                                         <p className={styles.promptText}>{item.prompt}</p>
                                     </div>
-                                    <a href="/dashboard" className={styles.tryButton}>
+                                    <a href={`/dashboard?prompt=${encodeURIComponent(item.prompt)}&refImage=${encodeURIComponent(item.before)}`} className={styles.tryButton}>
                                         {tryItLabel}
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M5 12h14M12 5l7 7-7 7" />
