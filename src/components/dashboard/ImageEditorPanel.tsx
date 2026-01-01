@@ -3,8 +3,8 @@
 import React from "react";
 import styles from "../Dashboard.module.css";
 import { useI18n } from "@/components/I18nProvider";
+import editorStyles from "./ImageEditorPanel.module.css";
 import {
-  modelOptions,
   ratioOptions,
   resolutionOptions,
   type ModelValue,
@@ -52,8 +52,6 @@ type ImageEditorPanelProps = {
   initialRefImage?: string;
 };
 
-type ResultTab = "result" | "original" | "compare";
-
 export const ImageEditorPanel = ({
   localizedModelOptions,
   selectedModel,
@@ -72,7 +70,6 @@ export const ImageEditorPanel = ({
 }: ImageEditorPanelProps) => {
   const { t } = useI18n();
 
-  const [resultTab, setResultTab] = React.useState<ResultTab>("result");
   const [resolution, setResolution] = React.useState(
     resolutionOptions[selectedModel][0]
   );
@@ -242,7 +239,6 @@ export const ImageEditorPanel = ({
     const run = async () => {
       setIsGenerating(true);
       setError(null);
-      setResultTab("result");
       setProgress(2);
       setProgressStage(getProgressStage(2));
 
@@ -408,65 +404,6 @@ export const ImageEditorPanel = ({
 
   // 将所有结果转换为预览格式
   const allResultImages = results.map((r) => ({ url: r.url, alt: r.prompt }));
-
-  const renderGeneratedResultCard = (item: GeneratedResult, index: number, large = false) => (
-    <div
-      key={item.id}
-      className={`${styles.resultCard} ${large ? styles.resultCardLarge : ""}`}
-    >
-      <div
-        className={`${styles.resultImageFrame} ${
-          large ? styles.resultImageFrameLarge : ""
-        }`}
-      >
-        <img
-          src={item.url}
-          alt={item.prompt}
-          loading="lazy"
-          onClick={() => openPreview(allResultImages, index)}
-        />
-      </div>
-      <div className={styles.resultMeta}>
-        <div className={styles.resultTitle}>{item.prompt}</div>
-        <div className={styles.resultInfo}>
-          {item.model} · {item.ratio} · {item.resolution}
-        </div>
-      </div>
-      <div className={styles.resultActions}>
-        <button
-          className={styles.ghostBtn}
-          onClick={() => downloadImage(item.url, `${item.id}.png`)}
-        >
-          {t("dashboard.result.download")}
-        </button>
-      </div>
-    </div>
-  );
-
-  const renderUploadedResultCard = (img: UploadedImage, index: number, allImages: { url: string; alt: string }[]) => (
-    <div key={img.id} className={styles.resultCard}>
-      <div className={styles.resultImageFrame}>
-        <img
-          src={img.url}
-          alt={img.name}
-          loading="lazy"
-          onClick={() => openPreview(allImages, index)}
-        />
-      </div>
-      <div className={styles.resultMeta}>
-        <div className={styles.resultTitle}>{img.name}</div>
-        <div className={styles.resultInfo}>{img.size}</div>
-      </div>
-    </div>
-  );
-
-  const renderSimpleImageCard = (url: string, alt: string, index: number, allImages: { url: string; alt: string }[], key?: string) => (
-    <div key={key || url} className={styles.resultCard}>
-      <div className={styles.resultImageFrame}>
-        <img src={url} alt={alt} loading="lazy" onClick={() => openPreview(allImages, index)} />
-      </div>
-    </div>
-  );
 
   return (
     <div className={styles.panel}>
@@ -658,144 +595,95 @@ export const ImageEditorPanel = ({
         </div>
 
         <div className={`${styles.column} ${styles.resultColumn}`}>
-          <div className={styles.resultBox}>
+          <div className={editorStyles.resultsSection}>
             <div className={styles.sectionHeader}>
               <div className={styles.sectionTitle}>{t("dashboard.result.title")}</div>
-              <div className={styles.headerActions}>
-                <div className={styles.tabRow}>
-                  {["result", "original", "compare"].map((key) => (
-                    <button
-                      key={key}
-                      className={`${styles.subTab} ${
-                        resultTab === key ? styles.active : ""
-                      }`}
-                      onClick={() => setResultTab(key as ResultTab)}
-                    >
-                      {key === "result" && t("dashboard.result.tabResult")}
-                      {key === "original" && t("dashboard.result.tabOriginal")}
-                      {key === "compare" && t("dashboard.result.tabCompare")}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.resultArea}>
-              {resultTab === "result" &&
-                (results.length ? (
-                  <>
-                    <div className={styles.singleResult}>
-                      {results[activeResultIndex] &&
-                        renderGeneratedResultCard(results[activeResultIndex], activeResultIndex, true)}
-                    </div>
-                    {results.length > 1 && (
-                      <div className={styles.singleNav}>
-                        <button
-                          type="button"
-                          className={styles.singleNavBtn}
-                          disabled={activeResultIndex === 0}
-                          onClick={() =>
-                            setActiveResultIndex((prev) => Math.max(prev - 1, 0))
-                          }
-                        >
-                          ‹
-                        </button>
-                        <div className={styles.singleNavText}>
-                          {activeResultIndex + 1} / {results.length}
-                        </div>
-                        <button
-                          type="button"
-                          className={styles.singleNavBtn}
-                          disabled={activeResultIndex >= results.length - 1}
-                          onClick={() =>
-                            setActiveResultIndex((prev) =>
-                              Math.min(prev + 1, results.length - 1)
-                            )
-                          }
-                        >
-                          ›
-                        </button>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className={styles.placeholder}>
-                    <div className={styles.placeholderIcon}>🎨</div>
-                    <p>{t("dashboard.result.emptyResult")}</p>
-                  </div>
-                ))}
-
-              {resultTab === "original" &&
-                (referenceImages.length ? (
-                  <div className={styles.resultGrid}>
-                    {(() => {
-                      const refImages = referenceImages.map((img) => ({ url: img.url, alt: img.name }));
-                      return referenceImages.map((img, idx) => renderUploadedResultCard(img, idx, refImages));
-                    })()}
-                  </div>
-                ) : (
-                  <div className={styles.placeholder}>
-                    <div className={styles.placeholderIcon}>🖼️</div>
-                    <p>{t("dashboard.result.emptyOriginal")}</p>
-                  </div>
-                ))}
-
-              {resultTab === "compare" && (
-                <div className={styles.compareGrid}>
-                  <div>
-                    <div className={styles.sectionCaption}>
-                      {t("dashboard.result.tabOriginal")}
-                    </div>
-                    {referenceImages.length ? (
-                      <div className={styles.resultGrid}>
-                        {(() => {
-                          const refImages = referenceImages.map((img) => ({ url: img.url, alt: img.name }));
-                          return referenceImages.map((img, idx) =>
-                            renderSimpleImageCard(img.url, img.name, idx, refImages, img.id)
-                          );
-                        })()}
-                      </div>
-                    ) : (
-                      <div className={styles.placeholderSmall}>
-                        {t("dashboard.result.emptyCompareLeft")}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <div className={styles.sectionCaption}>
-                      {t("dashboard.result.tabResult")}
-                    </div>
-                    {results.length ? (
-                      <div className={styles.resultGrid}>
-                        {results.map((item, idx) =>
-                          renderSimpleImageCard(item.url, item.prompt, idx, allResultImages, item.id)
-                        )}
-                      </div>
-                    ) : (
-                      <div className={styles.placeholderSmall}>
-                        {t("dashboard.result.emptyCompareRight")}
-                      </div>
-                    )}
-                  </div>
+              {results.length > 0 && (
+                <div className={editorStyles.resultMeta}>
+                  <span className={editorStyles.resultBadge}>
+                    {results.length} {t("dashboard.batchNew.images")}
+                  </span>
                 </div>
               )}
-              {error && <div className={styles.errorNote}>⚠️ {error}</div>}
             </div>
+
+            {error && <div className={styles.errorNote}>⚠️ {error}</div>}
+
+            {/* 结果展示 - 单张大图模式 */}
+            {results.length > 0 ? (
+              <div className={editorStyles.singleResultContainer}>
+                <div className={editorStyles.singleResultCard}>
+                  <div className={editorStyles.singleImageFrame}>
+                    <img
+                      src={results[activeResultIndex]?.url}
+                      alt={results[activeResultIndex]?.prompt}
+                      loading="lazy"
+                      onClick={() => openPreview(allResultImages, activeResultIndex)}
+                    />
+                  </div>
+                  <div className={editorStyles.resultInfo}>
+                    <div className={editorStyles.resultInfoText}>
+                      {results[activeResultIndex]?.model} · {results[activeResultIndex]?.ratio} · {results[activeResultIndex]?.resolution}
+                    </div>
+                  </div>
+                  <div className={editorStyles.resultActions}>
+                    <button
+                      className={editorStyles.downloadBtn}
+                      onClick={() => downloadImage(results[activeResultIndex]?.url, `${results[activeResultIndex]?.id}.png`)}
+                    >
+                      {t("dashboard.result.download")}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 导航控制 */}
+                {results.length > 1 && (
+                  <div className={editorStyles.resultNav}>
+                    <button
+                      type="button"
+                      className={editorStyles.navBtn}
+                      disabled={activeResultIndex === 0}
+                      onClick={() => setActiveResultIndex((prev) => Math.max(prev - 1, 0))}
+                    >
+                      ‹
+                    </button>
+                    <div className={editorStyles.navText}>
+                      {activeResultIndex + 1} / {results.length}
+                    </div>
+                    <button
+                      type="button"
+                      className={editorStyles.navBtn}
+                      disabled={activeResultIndex >= results.length - 1}
+                      onClick={() => setActiveResultIndex((prev) => Math.min(prev + 1, results.length - 1))}
+                    >
+                      ›
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className={editorStyles.emptyState}>
+                <div className={editorStyles.emptyIcon}>🎨</div>
+                <p className={editorStyles.emptyText}>{t("dashboard.result.emptyResult")}</p>
+              </div>
+            )}
+
+            {/* 进度条 - 放在底部 */}
+            {(isGenerating || progress > 0) && (
+              <div className={editorStyles.progressSection}>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressFill}
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <div className={styles.progressText}>
+                  {progressStage && <span className={styles.progressStage}>{progressStage}</span>}
+                  <span>{progress.toFixed(0)}%</span>
+                </div>
+              </div>
+            )}
           </div>
-          {(isGenerating || progress > 0) && (
-            <div className={styles.progressBlock}>
-              <div className={styles.progressBar}>
-                <div
-                  className={styles.progressFill}
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <div className={styles.progressText}>
-                {progressStage && <span className={styles.progressStage}>{progressStage}</span>}
-                <span>{progress.toFixed(0)}%</span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
