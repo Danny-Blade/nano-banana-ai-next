@@ -99,6 +99,12 @@ export const messagesKo: Messages = {
         history: "기록: 최근 생성 결과가 저장되어 재사용/다운로드 가능.",
       },
     },
+    insufficientCreditsModal: {
+      title: "크레딧 부족",
+      message: "현재 크레딧은 {credits}이며, 이 작업에는 {required} 크레딧이 필요합니다.",
+      buyCredits: "크레딧 구매",
+      close: "닫기",
+    },
     activity: {
       title: "신규 사용자 혜택",
       caption: "기간 한정",
@@ -194,6 +200,7 @@ export const messagesKo: Messages = {
       size: "공통 사이즈",
       clear: "초기화",
       start: "비교 시작",
+      startWithCost: "비교 시작 ({credits} 크레딧)",
       comparing: "비교 중...",
       refsTitle: "참조 이미지(선택)",
       refsCaption: "최대 {max}장",

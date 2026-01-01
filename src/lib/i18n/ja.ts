@@ -99,6 +99,12 @@ export const messagesJa: Messages = {
         history: "履歴：最近の生成が保存され、再利用・DLできます。",
       },
     },
+    insufficientCreditsModal: {
+      title: "クレジット不足",
+      message: "現在のクレジットは {credits}、この操作には {required} クレジットが必要です。",
+      buyCredits: "クレジットを購入",
+      close: "閉じる",
+    },
     activity: {
       title: "新規ユーザー特典",
       caption: "期間限定",
@@ -195,6 +201,7 @@ export const messagesJa: Messages = {
       size: "共通サイズ",
       clear: "クリア",
       start: "比較開始",
+      startWithCost: "比較開始（{credits} クレジット）",
       comparing: "比較中...",
       refsTitle: "参照画像（任意）",
       refsCaption: "最大 {max} 枚",

@@ -515,6 +515,16 @@ export const ComparePanel = ({
   const isComparing = isComparingLeft || isComparingRight;
   const commonResolutions = getCommonResolutions();
 
+  // 计算总积分消耗
+  const count = Math.max(1, Math.min(4, parseInt(compareCount, 10) || 1));
+  const leftCost = compareLeftModel
+    ? (modelOptions.find((m) => m.value === compareLeftModel)?.creditsPerImage ?? 2) * count
+    : 0;
+  const rightCost = compareRightModel
+    ? (modelOptions.find((m) => m.value === compareRightModel)?.creditsPerImage ?? 2) * count
+    : 0;
+  const totalCompareCost = leftCost + rightCost;
+
   const leftLabel = localizedModelOptions.find((m) => m.value === compareLeftModel)?.label || compareLeftModel || t("dashboard.compare.leftModel");
   const rightLabel = localizedModelOptions.find((m) => m.value === compareRightModel)?.label || compareRightModel || t("dashboard.compare.rightModel");
 
@@ -716,7 +726,9 @@ export const ComparePanel = ({
               onClick={handleCompare}
               disabled={isComparing || !compareLeftModel || !compareRightModel}
             >
-              {isComparing ? t("dashboard.compare.comparing") : t("dashboard.compare.start")}
+              {isComparing
+                ? t("dashboard.compare.comparing")
+                : t("dashboard.compare.startWithCost", { credits: totalCompareCost })}
             </button>
           </div>
 

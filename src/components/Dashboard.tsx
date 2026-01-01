@@ -86,6 +86,11 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const [showGuide, setShowGuide] = React.useState(false);
   const [showActivity, setShowActivity] = React.useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
+  const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = React.useState(false);
+  const [insufficientCreditsInfo, setInsufficientCreditsInfo] = React.useState<{
+    credits: number;
+    required: number;
+  } | null>(null);
 
   React.useEffect(() => {
     const defaults = resolutionOptions[selectedModel] || ["Auto"];
@@ -136,6 +141,9 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             required: requiredCredits,
           }),
         );
+        // 打开积分不足弹窗
+        setInsufficientCreditsInfo({ credits, required: requiredCredits });
+        setShowInsufficientCreditsModal(true);
         return false;
       }
       return true;
@@ -345,6 +353,48 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     );
   };
 
+  const renderInsufficientCreditsModal = () => {
+    if (!showInsufficientCreditsModal || !insufficientCreditsInfo) return null;
+    return (
+      <div className={styles.modalOverlay} role="dialog" aria-modal="true">
+        <div className={styles.modalCard}>
+          <div className={styles.modalHeader}>
+            <div>
+              <div className={styles.modalTitle}>
+                {t("dashboard.insufficientCreditsModal.title")}
+              </div>
+            </div>
+            <button
+              className={styles.closeBtn}
+              onClick={() => setShowInsufficientCreditsModal(false)}
+            >
+              ×
+            </button>
+          </div>
+          <div className={styles.activityBlock}>
+            <p className={styles.activityText}>
+              {t("dashboard.insufficientCreditsModal.message", {
+                credits: insufficientCreditsInfo.credits,
+                required: insufficientCreditsInfo.required,
+              })}
+            </p>
+            <div className={styles.promptActions}>
+              <button
+                className={styles.ghostBtn}
+                onClick={() => setShowInsufficientCreditsModal(false)}
+              >
+                {t("dashboard.insufficientCreditsModal.close")}
+              </button>
+              <a href="/pricing" className={styles.primaryBtn}>
+                {t("dashboard.insufficientCreditsModal.buyCredits")}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const Wrapper = variant === "generateOnly" ? "div" : "section";
 
   return (
@@ -445,6 +495,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
       {renderModelModal()}
       {renderGuideModal()}
       {renderActivityModal()}
+      {renderInsufficientCreditsModal()}
 
       <LoginModal
         isOpen={isLoginModalOpen}

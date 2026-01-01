@@ -102,6 +102,12 @@ export const messagesEn: Messages = {
         history: "History: recent generations are saved for reuse and download.",
       },
     },
+    insufficientCreditsModal: {
+      title: "Insufficient Credits",
+      message: "You have {credits} credits, but this action requires {required} credits.",
+      buyCredits: "Buy Credits",
+      close: "Close",
+    },
     activity: {
       title: "New User Bonus",
       caption: "Limited-time offer",
@@ -198,6 +204,7 @@ export const messagesEn: Messages = {
       size: "Shared size",
       clear: "Clear",
       start: "Start compare",
+      startWithCost: "Start Compare ({credits} credits)",
       comparing: "Comparing...",
       refsTitle: "Reference images (optional)",
       refsCaption: "Up to {max}",

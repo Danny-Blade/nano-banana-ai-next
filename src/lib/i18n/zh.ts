@@ -99,6 +99,12 @@ export const messagesZh: Messages = {
         history: "历史记录：自动保存最近生成内容，便于复用与下载。",
       },
     },
+    insufficientCreditsModal: {
+      title: "积分不足",
+      message: "您当前积分为 {credits}，本次操作需要 {required} 积分。",
+      buyCredits: "购买积分",
+      close: "关闭",
+    },
     activity: {
       title: "新用户福利",
       caption: "站内活动提示区",
@@ -194,6 +200,7 @@ export const messagesZh: Messages = {
       size: "共同支持尺寸",
       clear: "清空",
       start: "开始对比",
+      startWithCost: "开始对比（消耗 {credits} 积分）",
       comparing: "对比中...",
       refsTitle: "参考图（可选）",
       refsCaption: "最多 {max} 张",
