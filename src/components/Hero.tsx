@@ -31,9 +31,11 @@ const Hero = () => {
                         {ctaPrimary}
                         <span className={styles.btnArrow}>→</span>
                     </Link>
-                    <Link href={ctaSecondaryHref || '/image-to-video'} className={styles.secondaryBtn}>
-                        {ctaSecondary}
-                    </Link>
+                    {ctaSecondary && ctaSecondaryHref && (
+                        <Link href={ctaSecondaryHref} className={styles.secondaryBtn}>
+                            {ctaSecondary}
+                        </Link>
+                    )}
                 </div>
             </div>
         </section>

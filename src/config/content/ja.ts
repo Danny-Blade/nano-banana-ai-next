@@ -9,7 +9,6 @@ export const siteContentJa: SiteContent = {
       { label: "ダッシュボード", href: "/dashboard" },
       { label: "料金", href: "/pricing" },
       { label: "Prompt", href: "/prompt" },
-      { label: "画像→動画", href: "/image-to-video" },
       { label: "履歴", href: "/history" },
     ],
     loginButton: "ログイン",
@@ -21,9 +20,9 @@ export const siteContentJa: SiteContent = {
     subtitle:
       "Google の革新的な Nano Banana AI（Gemini 3.0 Flash Image）で高度な画像生成と編集を体験。Nano Banana AI で画像の作成・合成・強化を行えます（Google AI Studio の代替として）。",
     ctaPrimary: "今すぐ試す",
-    ctaSecondary: "画像→動画",
+    ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
-    ctaSecondaryHref: "/image-to-video",
+    ctaSecondaryHref: "",
   },
   editor: {
     title: "Nano Banana AI - 高度な画像エディター",

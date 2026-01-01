@@ -9,7 +9,6 @@ export const siteContentKo: SiteContent = {
       { label: "대시보드", href: "/dashboard" },
       { label: "요금제", href: "/pricing" },
       { label: "Prompt", href: "/prompt" },
-      { label: "이미지→비디오", href: "/image-to-video" },
       { label: "기록", href: "/history" },
     ],
     loginButton: "로그인",
@@ -21,9 +20,9 @@ export const siteContentKo: SiteContent = {
     subtitle:
       "Google의 혁신적인 Nano Banana AI(Gemini 3.0 Flash Image)로 고급 이미지 생성과 편집을 경험하세요. Nano Banana AI에서 생성, 합성, 보정을 손쉽게 수행할 수 있습니다( Google AI Studio 대안).",
     ctaPrimary: "지금 시작하기",
-    ctaSecondary: "이미지→비디오",
+    ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
-    ctaSecondaryHref: "/image-to-video",
+    ctaSecondaryHref: "",
   },
   editor: {
     title: "Nano Banana AI - 고급 이미지 편집기",

@@ -7,7 +7,6 @@ export const siteContentEn = {
       { label: "Dashboard", href: "/dashboard" },
       { label: "Pricing", href: "/pricing" },
       { label: "Prompt", href: "/prompt" },
-      { label: "Image to Video", href: "/image-to-video" },
       { label: "History", href: "/history" },
     ],
     loginButton: "Login",
@@ -20,9 +19,9 @@ export const siteContentEn = {
     subtitle:
       "Experience Google's revolutionary Nano Banana AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana AI （alternative Google AI Studio).",
     ctaPrimary: "Try Nano Banana",
-    ctaSecondary: "Image to Video",
+    ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
-    ctaSecondaryHref: "/image-to-video",
+    ctaSecondaryHref: "",
   },
   editor: {
     title: "Nano Banana AI - Advanced Image Editor",

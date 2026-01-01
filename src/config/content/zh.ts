@@ -9,7 +9,6 @@ export const siteContentZh: SiteContent = {
       { label: "Dashboard", href: "/dashboard" },
       { label: "价格", href: "/pricing" },
       { label: "Prompt", href: "/prompt" },
-      { label: "图转视频", href: "/image-to-video" },
       { label: "历史", href: "/history" },
     ],
     loginButton: "登录",
@@ -21,9 +20,9 @@ export const siteContentZh: SiteContent = {
     subtitle:
       "体验 Google 革命性的 Nano Banana AI（Gemini 3.0 Flash Image），用于高级图像生成与编辑。通过先进的 AI 技术在 Nano Banana AI 中创建、融合与增强图片（可替代 Google AI Studio）。",
     ctaPrimary: "开始体验",
-    ctaSecondary: "图转视频",
+    ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
-    ctaSecondaryHref: "/image-to-video",
+    ctaSecondaryHref: "",
   },
   editor: {
     title: "Nano Banana AI - 高级图片编辑器",
