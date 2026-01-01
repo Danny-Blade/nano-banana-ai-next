@@ -1,0 +1,394 @@
+/* 批量生成面板样式 */
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.promptCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.promptCard:hover {
+  border-color: #c4b5fd;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.08);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #faf5ff 0%, #f8fafc 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cardTitle {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #7c3aed;
+}
+
+.removeCardBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.removeCardBtn:hover {
+  background: #fef2f2;
+  border-color: #fecdd3;
+  color: #dc2626;
+}
+
+.cardContent {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* 参考图区域 */
+.refSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.refLabel {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.refUpload {
+  width: 120px;
+  height: 120px;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refUpload:hover {
+  border-color: #8b5cf6;
+  background: #faf5ff;
+}
+
+.refUploadIcon {
+  font-size: 1.8rem;
+}
+
+.refUploadText {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+.refPreview {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.refPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.refRemoveBtn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  color: #0f172a;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.refRemoveBtn:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* 提示词区域 */
+.promptSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.promptTextarea {
+  min-height: 80px !important;
+}
+
+.cardSettings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* 添加卡片按钮 */
+.addCardBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1.5px dashed #c4b5fd;
+  border-radius: 16px;
+  background: #faf5ff;
+  color: #7c3aed;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addCardBtn:hover {
+  background: #f3e8ff;
+  border-color: #8b5cf6;
+  transform: translateY(-1px);
+}
+
+.addCardIcon {
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+/* 全局设置区域 */
+.globalSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.globalSettings {
+  padding: 1rem;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.globalTitle {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  color: #0f172a;
+}
+
+.statsBox {
+  padding: 1rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border: 1px solid #c4b5fd;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #7c3aed;
+}
+
+/* 操作按钮行 */
+.actionRow {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin: 1rem 0;
+}
+
+.actionRow button {
+  min-width: 120px;
+}
+
+/* 结果区域 */
+.resultsSection {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.resultGroup {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.resultGroupHeader {
+  margin-bottom: 0.75rem;
+}
+
+.resultGroupTitle {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f172a;
+  margin-bottom: 0.2rem;
+}
+
+.resultGroupMeta {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.resultGroupGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.resultItem {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.resultItem:hover {
+  border-color: #c4b5fd;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.1);
+}
+
+.resultImageFrame {
+  width: 100%;
+  min-height: 120px;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.resultImageFrame img {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+  animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.resultImageFrame img:hover {
+  transform: scale(1.02);
+}
+
+.resultActions {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.resultActions button {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.75rem;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .cardContent {
+    grid-template-columns: 1fr;
+  }
+
+  .refSection {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .refUpload,
+  .refPreview {
+    width: 80px;
+    height: 80px;
+  }
+
+  .globalSection {
+    grid-template-columns: 1fr;
+  }
+
+  .cardSettings {
+    grid-template-columns: 1fr;
+  }
+
+  .resultGroupGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}

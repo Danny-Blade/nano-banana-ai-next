@@ -387,19 +387,21 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
           />
         </div>
 
-        {variant !== "generateOnly" && activeTab === "batch" && (
+        {/* BatchPanel 保持挂载以便生成进度在切换标签时继续 */}
+        <div style={{ display: (variant !== "generateOnly" && activeTab === "batch") ? "block" : "none" }}>
           <BatchPanel
             localizedModelOptions={localizedModelOptions}
             selectedModel={selectedModel}
-            resolution={resolution}
+            setShowModelPicker={setShowModelPicker}
             ensureAuthenticatedWithCredits={ensureAuthenticatedWithCredits}
             setShowTemplates={setShowTemplates}
             setTemplateTarget={setTemplateTarget}
             openPreview={openPreview}
-            pickImages={pickImages}
-            activeModel={activeModel}
+            onImageHistoryAdd={onImageHistoryAdd}
+            persistHistorySource={persistHistorySource}
+            refreshSession={handleRefreshSession}
           />
-        )}
+        </div>
 
         {variant !== "generateOnly" && activeTab === "compare" && (
           <ComparePanel

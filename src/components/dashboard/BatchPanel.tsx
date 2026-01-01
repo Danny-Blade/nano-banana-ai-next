@@ -2,28 +2,49 @@
 
 import React from "react";
 import styles from "../Dashboard.module.css";
+import batchStyles from "./BatchPanel.module.css";
 import { useI18n } from "@/components/I18nProvider";
 import {
   ratioOptions,
+  resolutionOptions,
   type RatioValue,
-  type BatchRatioValue,
   type UploadedImage,
-  type BatchResult,
   type LocalizedModelOption,
   type ModelValue,
+  type ImageHistoryItem,
 } from "./types";
 import {
-  REFERENCE_IMAGE_LIMIT,
-  openFileDialog,
-  handleImageUploadFiles,
-  removeImage,
   downloadImage,
+  encodeReferenceImages,
+  createThumbnailDataUrl,
+  mapResolutionToImageSize,
 } from "./utils";
+
+const MAX_PROMPTS = 5;
+
+type PromptCard = {
+  id: string;
+  prompt: string;
+  ratio: RatioValue;
+  count: number;
+  referenceImage: UploadedImage | null;
+};
+
+type BatchResultGroup = {
+  promptId: string;
+  prompt: string;
+  ratio: string;
+  results: {
+    id: string;
+    url: string;
+    model: string;
+  }[];
+};
 
 type BatchPanelProps = {
   localizedModelOptions: LocalizedModelOption[];
   selectedModel: ModelValue;
-  resolution: string;
+  setShowModelPicker: (show: boolean) => void;
   ensureAuthenticatedWithCredits: (
     requiredCredits: number,
     onError: (message: string) => void
@@ -31,371 +52,560 @@ type BatchPanelProps = {
   setShowTemplates: (show: boolean) => void;
   setTemplateTarget: (target: "generate" | "batch" | "batch-multi" | "compare") => void;
   openPreview: (url: string, alt: string) => void;
-  pickImages: (count: number) => string[];
-  activeModel: LocalizedModelOption;
+  onImageHistoryAdd: (item: ImageHistoryItem) => void;
+  persistHistorySource: (id: string, url: string) => Promise<void>;
+  refreshSession: () => Promise<void>;
 };
+
+const createEmptyCard = (): PromptCard => ({
+  id: `card-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  prompt: "",
+  ratio: "1:1",
+  count: 1,
+  referenceImage: null,
+});
 
 export const BatchPanel = ({
   localizedModelOptions,
   selectedModel,
-  resolution,
+  setShowModelPicker,
   ensureAuthenticatedWithCredits,
   setShowTemplates,
   setTemplateTarget,
   openPreview,
-  pickImages,
-  activeModel,
+  onImageHistoryAdd,
+  persistHistorySource,
+  refreshSession,
 }: BatchPanelProps) => {
   const { t } = useI18n();
 
-  const [batchMode, setBatchMode] = React.useState<"card" | "multi">("card");
-  const [cardPrompt, setCardPrompt] = React.useState("");
-  const [cardCount, setCardCount] = React.useState(5);
-  const [batchPrompts, setBatchPrompts] = React.useState("");
-  const [batchRatio, setBatchRatio] = React.useState<BatchRatioValue>("auto");
-  const [batchCount, setBatchCount] = React.useState("1");
-  const [batchConcurrency, setBatchConcurrency] = React.useState("3");
-  const [batchReferenceImages, setBatchReferenceImages] = React.useState<UploadedImage[]>([]);
-  const [batchResults, setBatchResults] = React.useState<BatchResult[]>([]);
+  const [promptCards, setPromptCards] = React.useState<PromptCard[]>([createEmptyCard()]);
+  const [resolution, setResolution] = React.useState(resolutionOptions[selectedModel][0]);
+  const [concurrency, setConcurrency] = React.useState(3);
+  const [resultGroups, setResultGroups] = React.useState<BatchResultGroup[]>([]);
   const [isBatching, setIsBatching] = React.useState(false);
-  const [batchProgress, setBatchProgress] = React.useState(0);
+  const [progress, setProgress] = React.useState(0);
+  const [progressText, setProgressText] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
 
-  const batchReferenceInputRef = React.useRef<HTMLInputElement | null>(null);
+  const fileInputRefs = React.useRef<Map<string, HTMLInputElement>>(new Map());
 
-  const runFakeProgress = (
-    setter: (value: number) => void,
-    durationMs: number,
-    onComplete: () => void
-  ) => {
-    let value = 5;
-    setter(value);
-    const tick = window.setInterval(() => {
-      value = Math.min(95, value + 8 + Math.random() * 6);
-      setter(value);
-    }, 240);
-    window.setTimeout(() => {
-      window.clearInterval(tick);
-      setter(100);
-      window.setTimeout(onComplete, 200);
-    }, durationMs);
+  const currentModel = localizedModelOptions.find((m) => m.value === selectedModel);
+  const activeModel = currentModel || localizedModelOptions[0];
+
+  // 计算总图片数和积分
+  const totalImages = promptCards.reduce((sum, card) => sum + card.count, 0);
+  const totalCredits = totalImages * activeModel.creditsPerImage;
+
+  // 更新 resolution 当模型改变时
+  React.useEffect(() => {
+    const defaults = resolutionOptions[selectedModel] || ["Auto"];
+    setResolution(defaults[0]);
+  }, [selectedModel]);
+
+  const updateCard = (id: string, updates: Partial<PromptCard>) => {
+    setPromptCards((prev) =>
+      prev.map((card) => (card.id === id ? { ...card, ...updates } : card))
+    );
   };
 
-  const handleBatchGenerate = () => {
+  const removeCard = (id: string) => {
+    if (promptCards.length <= 1) return;
+    setPromptCards((prev) => prev.filter((card) => card.id !== id));
+  };
+
+  const addCard = () => {
+    if (promptCards.length >= MAX_PROMPTS) return;
+    setPromptCards((prev) => [...prev, createEmptyCard()]);
+  };
+
+  const handleFileUpload = (cardId: string, files: File[]) => {
+    if (files.length === 0) return;
+    const file = files[0];
+    const url = URL.createObjectURL(file);
+    const sizeKB = (file.size / 1024).toFixed(1);
+    const uploaded: UploadedImage = {
+      id: `img-${Date.now()}`,
+      name: file.name,
+      url,
+      size: `${sizeKB} KB`,
+    };
+    updateCard(cardId, { referenceImage: uploaded });
+  };
+
+  const clearAll = () => {
+    setPromptCards([createEmptyCard()]);
+    setResultGroups([]);
+    setError(null);
+    setProgress(0);
+  };
+
+  const handleBatchGenerate = async () => {
     if (isBatching) return;
-    const prompts =
-      batchMode === "card"
-        ? [cardPrompt || t("dashboard.templatePrompts.batch")]
-        : batchPrompts
-            .split(/\n\s*\n/)
-            .map((p) => p.trim())
-            .filter(Boolean);
-    const count = Math.max(1, Math.min(6, prompts.length * parseInt(batchCount, 10)));
-    const requiredCredits = count * activeModel.creditsPerImage;
+
+    // 过滤有效的提示词
+    const validCards = promptCards.filter((card) => card.prompt.trim());
+    if (validCards.length === 0) {
+      setError(t("dashboard.batchNew.noPrompts"));
+      return;
+    }
+
+    const requiredCredits = validCards.reduce((sum, card) => sum + card.count, 0) * activeModel.creditsPerImage;
     if (!ensureAuthenticatedWithCredits(requiredCredits, (m) => setError(m))) return;
 
     setIsBatching(true);
-    runFakeProgress(setBatchProgress, 1600, () => {
-      const picked = pickImages(count);
-      const modelLabel =
-        localizedModelOptions.find((m) => m.value === selectedModel)?.label || selectedModel;
-      const newBatchResults: BatchResult[] = picked.map((url, idx) => ({
-        id: `batch-${Date.now()}-${idx}`,
-        url,
-        prompt: prompts[idx % prompts.length],
-        promptLabel:
-          prompts[idx % prompts.length]?.slice(0, 26) || t("dashboard.tabs.batch"),
-        model: modelLabel,
-        ratio: batchRatio === "auto" ? t("dashboard.batch.sizeAuto") : batchRatio,
-        resolution,
-      }));
-      setBatchResults(newBatchResults);
-      setIsBatching(false);
-      setBatchProgress(0);
-    });
-  };
+    setError(null);
+    setResultGroups([]);
+    setProgress(0);
 
-  const renderUploadList = (
-    items: UploadedImage[],
-    removeHandler: (id: string) => void
-  ) => {
-    if (!items.length) return null;
-    return (
-      <div className={styles.uploadGrid}>
-        {items.map((img) => (
-          <div key={img.id} className={styles.uploadThumb}>
-            <img src={img.url} alt={img.name} />
-            <div className={styles.uploadMeta}>
-              <div className={styles.metaTitle}>{img.name}</div>
-              <span className={styles.metaCaption}>{img.size}</span>
-            </div>
-            <button
-              className={styles.removeBtn}
-              aria-label={t("dashboard.common.removeImage")}
-              onClick={() => removeHandler(img.id)}
-            >
-              ×
-            </button>
-          </div>
-        ))}
-      </div>
-    );
+    const totalTasks = validCards.reduce((sum, card) => sum + card.count, 0);
+    let completedTasks = 0;
+    const imageSize = mapResolutionToImageSize(resolution);
+
+    // 初始化所有分组（空结果），这样可以立即显示分组结构
+    const initialGroups: BatchResultGroup[] = validCards.map((card) => ({
+      promptId: card.id,
+      prompt: card.prompt,
+      ratio: card.ratio,
+      results: [],
+    }));
+    setResultGroups(initialGroups);
+
+    // 按提示词分组生成
+    for (let cardIndex = 0; cardIndex < validCards.length; cardIndex++) {
+      const card = validCards[cardIndex];
+
+      // 编码参考图
+      const encodedRefs = card.referenceImage
+        ? await encodeReferenceImages([card.referenceImage])
+        : [];
+
+      // 生成该提示词的所有图片
+      for (let i = 0; i < card.count; i++) {
+        setProgressText(
+          t("dashboard.batchNew.progressGenerating", {
+            current: completedTasks + 1,
+            total: totalTasks,
+          })
+        );
+
+        try {
+          const response = await fetch("/api/image/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: selectedModel,
+              prompt: card.prompt,
+              aspectRatio: card.ratio,
+              imageSize,
+              referenceImages: encodedRefs,
+            }),
+          });
+
+          if (response.status === 401) {
+            setError(t("dashboard.generate.loginRequired"));
+            setIsBatching(false);
+            return;
+          }
+          if (response.status === 402) {
+            setError(t("dashboard.generate.insufficientCreditsShort"));
+            setIsBatching(false);
+            return;
+          }
+          if (!response.ok) {
+            const info: unknown = await response.json().catch(() => ({}));
+            let err: string | undefined;
+            if (info && typeof info === "object") {
+              const infoRecord = info as Record<string, unknown>;
+              const e = infoRecord.error;
+              if (typeof e === "string") err = e;
+              else if (e && typeof e === "object") {
+                const eRecord = e as Record<string, unknown>;
+                if (typeof eRecord.message === "string") err = eRecord.message;
+                else err = JSON.stringify(eRecord);
+              }
+            }
+            throw new Error(err || response.statusText);
+          }
+
+          const data = (await response.json()) as {
+            imageData?: string;
+            mimeType?: string;
+            imageUrl?: string;
+          };
+
+          const url =
+            data.imageUrl ||
+            (data.imageData
+              ? `data:${data.mimeType || "image/png"};base64,${data.imageData}`
+              : null);
+
+          if (!url) {
+            throw new Error("No image returned from API");
+          }
+
+          const resultId = `batch-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 8)}`;
+          const newResult = {
+            id: resultId,
+            url,
+            model: activeModel.label,
+          };
+
+          // 立即更新 UI，显示新生成的图片
+          setResultGroups((prev) =>
+            prev.map((group, idx) =>
+              idx === cardIndex
+                ? { ...group, results: [...group.results, newResult] }
+                : group
+            )
+          );
+
+          // 保存到历史记录（异步，不阻塞 UI 更新）
+          // 注意：批量生成时不自动保存到本地文件夹，避免权限弹窗打断生成流程
+          createThumbnailDataUrl(url).then((thumbnailDataUrl) => {
+            if (thumbnailDataUrl) {
+              void persistHistorySource(resultId, url);
+
+              onImageHistoryAdd({
+                id: resultId,
+                createdAt: Date.now(),
+                model: selectedModel,
+                prompt: card.prompt,
+                aspectRatio: card.ratio,
+                imageSize,
+                costCredits: activeModel.creditsPerImage,
+                thumbnailDataUrl,
+                imageUrl: data.imageUrl,
+                referenceImageThumbnail: card.referenceImage?.url,
+                referenceImageUrl: card.referenceImage?.url,
+              });
+            }
+          });
+
+          completedTasks++;
+          setProgress(Math.round((completedTasks / totalTasks) * 100));
+        } catch (err) {
+          const message =
+            err instanceof Error ? err.message : t("dashboard.generate.generationFailed");
+          setError(message);
+          setIsBatching(false);
+          return;
+        }
+      }
+    }
+
+    setProgress(100);
+    setProgressText(t("dashboard.batchNew.progressComplete"));
+    setIsBatching(false);
+
+    try {
+      await refreshSession();
+    } catch {
+      // ignore
+    }
+
+    setTimeout(() => {
+      setProgress(0);
+      setProgressText("");
+    }, 1500);
   };
 
   return (
     <div className={styles.panel}>
       <div className={styles.sectionHeader}>
-        <div className={styles.sectionTitle}>{t("dashboard.batch.title")}</div>
-        <div className={styles.sectionCaption}>{t("dashboard.batch.caption")}</div>
+        <div>
+          <div className={styles.sectionTitle}>{t("dashboard.batchNew.title")}</div>
+          <div className={styles.sectionCaption}>{t("dashboard.batchNew.caption")}</div>
+        </div>
       </div>
 
-      <div className={styles.panelGrid}>
-        <div className={styles.column}>
-          <div className={styles.toggleRow}>
-            <button
-              className={`${styles.toggleBtn} ${
-                batchMode === "card" ? styles.active : ""
-              }`}
-              onClick={() => setBatchMode("card")}
-            >
-              {t("dashboard.batch.modeCard")}
-            </button>
-            <button
-              className={`${styles.toggleBtn} ${
-                batchMode === "multi" ? styles.active : ""
-              }`}
-              onClick={() => setBatchMode("multi")}
-            >
-              {t("dashboard.batch.modeMulti")}
-            </button>
+      {/* 模型选择栏 */}
+      <div className={styles.modelBar}>
+        <div>
+          <div className={styles.modelLabel}>{t("dashboard.model.selected")}</div>
+          <div className={styles.modelCurrent}>
+            <span className={styles.modelName}>{activeModel.label}</span>
+            <span className={styles.modelPoints}>{activeModel.points}</span>
           </div>
+          <div className={styles.modelDesc}>{activeModel.description}</div>
+        </div>
+        <button
+          className={styles.changeModelBtn}
+          type="button"
+          onClick={() => setShowModelPicker(true)}
+        >
+          {t("dashboard.model.change")}
+        </button>
+      </div>
 
-          {batchMode === "card" && (
-            <>
-              <div className={styles.inputGroup}>
-                <div className={styles.sectionHeader}>
-                  <label className={styles.label}>{t("dashboard.batch.prompt")}</label>
-                  <button
-                    className={styles.linkBtn}
+      {/* 提示词卡片列表 */}
+      <div className={batchStyles.cardList}>
+        {promptCards.map((card, index) => (
+          <div key={card.id} className={batchStyles.promptCard}>
+            <div className={batchStyles.cardHeader}>
+              <div className={batchStyles.cardTitle}>
+                {t("dashboard.batchNew.promptN", { n: index + 1 })}
+              </div>
+              {promptCards.length > 1 && (
+                <button
+                  className={batchStyles.removeCardBtn}
+                  onClick={() => removeCard(card.id)}
+                  aria-label={t("dashboard.common.removeImage")}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+
+            <div className={batchStyles.cardContent}>
+              {/* 左侧：参考图上传 */}
+              <div className={batchStyles.refSection}>
+                <div className={batchStyles.refLabel}>{t("dashboard.batchNew.refImage")}</div>
+                {card.referenceImage ? (
+                  <div className={batchStyles.refPreview}>
+                    <img src={card.referenceImage.url} alt={card.referenceImage.name} />
+                    <button
+                      className={batchStyles.refRemoveBtn}
+                      onClick={() => updateCard(card.id, { referenceImage: null })}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className={batchStyles.refUpload}
                     onClick={() => {
-                      setTemplateTarget("batch");
-                      setShowTemplates(true);
+                      const input = fileInputRefs.current.get(card.id);
+                      if (input) input.click();
                     }}
                   >
-                    {t("dashboard.generate.promptTemplates")}
-                  </button>
-                </div>
-                <textarea
-                  className={styles.textarea}
-                  rows={5}
-                  value={cardPrompt}
-                  placeholder={t("dashboard.templatePrompts.batch")}
-                  onChange={(e) => setCardPrompt(e.target.value)}
-                />
-                <div className={styles.inputNote}>
-                  {t("dashboard.batch.noteSinglePrompt")}
-                </div>
-              </div>
-
-              <div className={styles.sliderRow}>
-                <label className={styles.label}>{t("dashboard.batch.countLabel")}</label>
-                <div className={styles.sliderValue}>
-                  {t("dashboard.batch.countSuffix", { n: cardCount })}
-                </div>
+                    <div className={batchStyles.refUploadIcon}>🖼️</div>
+                    <div className={batchStyles.refUploadText}>
+                      {t("dashboard.batchNew.uploadRef")}
+                    </div>
+                  </div>
+                )}
                 <input
-                  type="range"
-                  min={2}
-                  max={10}
-                  value={cardCount}
-                  onChange={(e) => setCardCount(parseInt(e.target.value, 10))}
+                  ref={(el) => {
+                    if (el) fileInputRefs.current.set(card.id, el);
+                  }}
+                  type="file"
+                  className={styles.hiddenInput}
+                  accept="image/*"
+                  onChange={(e) => {
+                    const files = Array.from(e.currentTarget.files || []);
+                    if (e.currentTarget) e.currentTarget.value = "";
+                    handleFileUpload(card.id, files);
+                  }}
                 />
               </div>
-            </>
-          )}
 
-          {batchMode === "multi" && (
-            <div className={styles.inputGroup}>
-              <div className={styles.sectionHeader}>
-                <label className={styles.label}>{t("dashboard.batch.multiPrompt")}</label>
-                <button
-                  className={styles.linkBtn}
-                  onClick={() => {
-                    setTemplateTarget("batch-multi");
-                    setShowTemplates(true);
-                  }}
-                >
-                  {t("dashboard.generate.promptTemplates")}
-                </button>
-              </div>
-              <textarea
-                className={styles.textarea}
-                rows={7}
-                value={batchPrompts}
-                placeholder={t("dashboard.templatePrompts.batchMulti")}
-                onChange={(e) => setBatchPrompts(e.target.value)}
-              />
-              <div className={styles.inputNote}>
-                {t("dashboard.batch.noteMultiPrompt")}
+              {/* 右侧：提示词和设置 */}
+              <div className={batchStyles.promptSection}>
+                <div className={styles.inputGroup}>
+                  <div className={styles.sectionHeader}>
+                    <label className={styles.label}>{t("dashboard.batch.prompt")}</label>
+                    <button
+                      className={styles.linkBtn}
+                      onClick={() => {
+                        setTemplateTarget("batch");
+                        setShowTemplates(true);
+                      }}
+                    >
+                      {t("dashboard.generate.promptTemplates")}
+                    </button>
+                  </div>
+                  <textarea
+                    className={`${styles.textarea} ${batchStyles.promptTextarea}`}
+                    rows={3}
+                    value={card.prompt}
+                    placeholder={t("dashboard.templatePrompts.batch")}
+                    onChange={(e) => updateCard(card.id, { prompt: e.target.value })}
+                  />
+                </div>
+
+                <div className={batchStyles.cardSettings}>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>{t("dashboard.generate.ratio")}</label>
+                    <select
+                      className={styles.select}
+                      value={card.ratio}
+                      onChange={(e) => updateCard(card.id, { ratio: e.target.value as RatioValue })}
+                    >
+                      {ratioOptions.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {t(`dashboard.ratios.${opt.value}`)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className={styles.inputGroup}>
+                    <label className={styles.label}>{t("dashboard.generate.count")}</label>
+                    <select
+                      className={styles.select}
+                      value={card.count}
+                      onChange={(e) => updateCard(card.id, { count: parseInt(e.target.value, 10) })}
+                    >
+                      {[1, 2, 3, 4].map((n) => (
+                        <option key={n} value={n}>
+                          {t("dashboard.generate.countItem", { n })}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
-          )}
+          </div>
+        ))}
 
-          <div className={styles.gridThree}>
+        {/* 添加提示词按钮 */}
+        {promptCards.length < MAX_PROMPTS && (
+          <button className={batchStyles.addCardBtn} onClick={addCard}>
+            <span className={batchStyles.addCardIcon}>+</span>
+            <span>
+              {t("dashboard.batchNew.addPrompt")} ({promptCards.length}/{MAX_PROMPTS})
+            </span>
+          </button>
+        )}
+      </div>
+
+      {/* 全局设置和统计 */}
+      <div className={batchStyles.globalSection}>
+        <div className={batchStyles.globalSettings}>
+          <div className={batchStyles.globalTitle}>{t("dashboard.batchNew.globalSettings")}</div>
+          <div className={styles.gridTwo}>
             <div className={styles.inputGroup}>
-              <label className={styles.label}>{t("dashboard.batch.size")}</label>
+              <label className={styles.label}>{t("dashboard.generate.resolution")}</label>
               <select
                 className={styles.select}
-                value={batchRatio}
-                onChange={(e) => setBatchRatio(e.target.value as BatchRatioValue)}
+                value={resolution}
+                onChange={(e) => setResolution(e.target.value)}
               >
-                <option value="auto">{t("dashboard.batch.sizeAuto")}</option>
-                {ratioOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {t(`dashboard.ratios.${opt.value}`)}
+                {(resolutionOptions[selectedModel] || []).map((res) => (
+                  <option key={res} value={res}>
+                    {res}
                   </option>
                 ))}
-              </select>
-            </div>
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>{t("dashboard.batch.perPrompt")}</label>
-              <select
-                className={styles.select}
-                value={batchCount}
-                onChange={(e) => setBatchCount(e.target.value)}
-              >
-                <option value="1">{t("dashboard.generate.countItem", { n: 1 })}</option>
-                <option value="2">{t("dashboard.generate.countItem", { n: 2 })}</option>
               </select>
             </div>
             <div className={styles.inputGroup}>
               <label className={styles.label}>{t("dashboard.batch.concurrency")}</label>
               <select
                 className={styles.select}
-                value={batchConcurrency}
-                onChange={(e) => setBatchConcurrency(e.target.value)}
+                value={concurrency}
+                onChange={(e) => setConcurrency(parseInt(e.target.value, 10))}
               >
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
-
-          <div className={styles.buttonRow}>
-            <button className={styles.ghostBtn} onClick={() => setBatchResults([])}>
-              {t("dashboard.batch.clear")}
-            </button>
-            <button className={styles.primaryBtn} onClick={handleBatchGenerate}>
-              {t("dashboard.batch.start")}
-            </button>
-          </div>
-          {error && <div className={styles.errorNote}>⚠️ {error}</div>}
         </div>
 
-        <div className={styles.column}>
-          <div className={styles.sectionHeader}>
-            <div>
-              <div className={styles.sectionTitle}>{t("dashboard.batch.refsTitle")}</div>
-              <div className={styles.sectionCaption}>
-                {t("dashboard.batch.refsCaption", { max: REFERENCE_IMAGE_LIMIT })}
-              </div>
+        <div className={batchStyles.statsBox}>
+          <div className={batchStyles.globalTitle}>{t("dashboard.batchNew.stats")}</div>
+          <div className={batchStyles.statsRow}>
+            <div className={batchStyles.statItem}>
+              <div className={batchStyles.statLabel}>{t("dashboard.batchNew.totalImages")}</div>
+              <div className={batchStyles.statValue}>{totalImages}</div>
             </div>
-            <button
-              className={styles.linkBtn}
-              onClick={() => openFileDialog(batchReferenceInputRef)}
-            >
-              {t("dashboard.batch.upload")}
-            </button>
-          </div>
-          <div
-            className={styles.uploadArea}
-            onClick={() => openFileDialog(batchReferenceInputRef)}
-          >
-            <div className={styles.uploadIcon}>🖇️</div>
-            <div className={styles.uploadTitle}>{t("dashboard.batch.paste")}</div>
-            <div className={styles.uploadHint}>
-              {t("dashboard.batch.pasteHint", { max: REFERENCE_IMAGE_LIMIT })}
+            <div className={batchStyles.statItem}>
+              <div className={batchStyles.statLabel}>{t("dashboard.batchNew.totalCredits")}</div>
+              <div className={batchStyles.statValue}>{totalCredits}</div>
             </div>
-            <input
-              ref={batchReferenceInputRef}
-              type="file"
-              className={styles.hiddenInput}
-              multiple
-              accept="image/*"
-              onChange={(e) => {
-                const files = Array.from(e.currentTarget.files || []);
-                if (e.currentTarget) e.currentTarget.value = "";
-                handleImageUploadFiles(
-                  files,
-                  setBatchReferenceImages,
-                  REFERENCE_IMAGE_LIMIT
-                );
-              }}
-            />
           </div>
-          {renderUploadList(batchReferenceImages, (id) =>
-            removeImage(id, setBatchReferenceImages)
-          )}
-
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionTitle}>{t("dashboard.batch.resultsTitle")}</div>
-            <div className={styles.sectionCaption}>{t("dashboard.batch.resultsCaption")}</div>
-          </div>
-          <div className={styles.resultGrid}>
-            {batchResults.length ? (
-              batchResults.map((item) => (
-                <div key={item.id} className={styles.resultCard}>
-                  <div className={styles.resultImageFrame}>
-                    <img
-                      src={item.url}
-                      alt={item.prompt}
-                      loading="lazy"
-                      onClick={() => openPreview(item.url, item.promptLabel)}
-                    />
-                  </div>
-                  <div className={styles.resultMeta}>
-                    <div className={styles.resultTitle}>{item.promptLabel}</div>
-                    <div className={styles.resultInfo}>
-                      {item.ratio} · {item.model}
-                    </div>
-                  </div>
-                  <div className={styles.resultActions}>
-                    <button
-                      className={styles.ghostBtn}
-                      onClick={() => downloadImage(item.url, `${item.id}.png`)}
-                    >
-                      {t("dashboard.result.download")}
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className={styles.placeholder}>
-                <div className={styles.placeholderIcon}>🧩</div>
-                <p>{t("dashboard.batch.empty")}</p>
-              </div>
-            )}
-          </div>
-
-          {(isBatching || batchProgress > 0) && (
-            <div className={styles.progressBlock}>
-              <div className={styles.progressBar}>
-                <div
-                  className={styles.progressFill}
-                  style={{ width: `${batchProgress}%` }}
-                />
-              </div>
-              <div className={styles.progressText}>
-                {t("dashboard.batch.progress", {
-                  percent: batchProgress.toFixed(0),
-                })}
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* 操作按钮 */}
+      <div className={batchStyles.actionRow}>
+        <button className={styles.ghostBtn} onClick={clearAll}>
+          {t("dashboard.batch.clear")}
+        </button>
+        <button
+          className={styles.primaryBtn}
+          onClick={handleBatchGenerate}
+          disabled={isBatching}
+        >
+          {isBatching
+            ? t("dashboard.generate.generating")
+            : t("dashboard.batchNew.startBatch", { credits: totalCredits })}
+        </button>
+      </div>
+
+      {error && <div className={styles.errorNote}>⚠️ {error}</div>}
+
+      {/* 进度条 */}
+      {(isBatching || progress > 0) && (
+        <div className={styles.progressBlock}>
+          <div className={styles.progressBar}>
+            <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+          </div>
+          <div className={styles.progressText}>
+            {progressText && <span className={styles.progressStage}>{progressText}</span>}
+            <span>{progress}%</span>
+          </div>
+        </div>
+      )}
+
+      {/* 生成结果 */}
+      {resultGroups.length > 0 && (
+        <div className={batchStyles.resultsSection}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionTitle}>{t("dashboard.batch.resultsTitle")}</div>
+            <div className={styles.sectionCaption}>{t("dashboard.batchNew.resultsGrouped")}</div>
+          </div>
+
+          {resultGroups.map((group) => (
+            <div key={group.promptId} className={batchStyles.resultGroup}>
+              <div className={batchStyles.resultGroupHeader}>
+                <div className={batchStyles.resultGroupTitle}>
+                  {group.prompt.slice(0, 50)}
+                  {group.prompt.length > 50 ? "..." : ""}
+                </div>
+                <div className={batchStyles.resultGroupMeta}>
+                  {t(`dashboard.ratios.${group.ratio}`)} · {group.results.length}{" "}
+                  {t("dashboard.batchNew.images")}
+                </div>
+              </div>
+              <div className={batchStyles.resultGroupGrid}>
+                {group.results.map((result) => (
+                  <div key={result.id} className={batchStyles.resultItem}>
+                    <div className={batchStyles.resultImageFrame}>
+                      <img
+                        src={result.url}
+                        alt={group.prompt}
+                        loading="lazy"
+                        onClick={() => openPreview(result.url, group.prompt)}
+                      />
+                    </div>
+                    <div className={batchStyles.resultActions}>
+                      <button
+                        className={styles.ghostBtn}
+                        onClick={() => downloadImage(result.url, `${result.id}.png`)}
+                      >
+                        {t("dashboard.result.download")}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 空状态 */}
+      {resultGroups.length === 0 && !isBatching && (
+        <div className={styles.placeholder}>
+          <div className={styles.placeholderIcon}>🧩</div>
+          <p>{t("dashboard.batch.empty")}</p>
+        </div>
+      )}
     </div>
   );
 };
