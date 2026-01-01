@@ -6,6 +6,7 @@ import CommunityGallery from "@/components/CommunityGallery";
 import WhyChoose from "@/components/WhyChoose";
 import Stats from "@/components/Stats";
 import Testimonials from "@/components/Testimonials";
+import ModelComparison from "@/components/ModelComparison";
 import PricingCards from "@/components/PricingCards";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
@@ -21,6 +22,7 @@ export default function Home() {
       <WhyChoose />
       <Stats />
       <Testimonials />
+      <ModelComparison />
       <PricingCards />
       <FAQ />
       <Footer />
