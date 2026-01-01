@@ -73,15 +73,36 @@ export const downloadImage = async (url: string, name?: string) => {
     return;
   }
 
+  // 尝试直接 fetch
   try {
     const res = await fetch(url);
-    const blob = await res.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    trigger(objectUrl);
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 5_000);
+    if (res.ok) {
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      trigger(objectUrl);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 5_000);
+      return;
+    }
   } catch {
-    trigger(url);
+    // 直接 fetch 失败，尝试使用代理
   }
+
+  // 使用代理 API 获取图片（解决 CORS 问题）
+  try {
+    const proxyRes = await fetch(`/api/image/proxy?url=${encodeURIComponent(url)}`);
+    if (proxyRes.ok) {
+      const data = await proxyRes.json();
+      if (data.dataUrl) {
+        trigger(data.dataUrl);
+        return;
+      }
+    }
+  } catch {
+    // 代理也失败
+  }
+
+  // 最后尝试直接打开链接（可能不会触发下载）
+  trigger(url);
 };
 
 export const toDataUrl = async (imageUrl: string) => {

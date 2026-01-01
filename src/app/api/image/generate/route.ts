@@ -99,6 +99,44 @@ const extractDataUrls = (text: string) => {
   return urls;
 };
 
+/**
+ * 将外部图片 URL 转换为 base64
+ * 用于处理 Flux 等模型返回的外部 URL，确保客户端可以直接下载
+ */
+const fetchImageAsBase64 = async (
+  imageUrl: string
+): Promise<{ data: string; mimeType: string } | null> => {
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) return null;
+
+    const contentType = response.headers.get("content-type") || "image/png";
+    const arrayBuffer = await response.arrayBuffer();
+
+    // 使用 Web API 或 Node Buffer 转换为 base64
+    let base64: string;
+    if (typeof btoa === "function") {
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = "";
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      base64 = btoa(binary);
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const BufferRef = (globalThis as any).Buffer as
+        | { from(data: ArrayBuffer): { toString(encoding: string): string } }
+        | undefined;
+      if (!BufferRef) return null;
+      base64 = BufferRef.from(arrayBuffer).toString("base64");
+    }
+
+    return { data: base64, mimeType: contentType };
+  } catch {
+    return null;
+  }
+};
+
 const readUpstreamError = async (response: Response) => {
   try {
     const data: unknown = await response.json();
@@ -493,6 +531,16 @@ export async function POST(req: NextRequest) {
           });
         }
         if (item?.url) {
+          // 将外部 URL 转换为 base64，确保客户端可以直接下载
+          const imageBase64 = await fetchImageAsBase64(item.url);
+          if (imageBase64) {
+            await markSucceeded();
+            return success({
+              imageData: imageBase64.data,
+              mimeType: imageBase64.mimeType,
+            });
+          }
+          // 如果转换失败，返回原始 URL（客户端需要通过代理下载）
           await markSucceeded();
           return success({ imageUrl: item.url as string });
         }
@@ -557,6 +605,16 @@ export async function POST(req: NextRequest) {
         });
       }
       if (item?.url) {
+        // 将外部 URL 转换为 base64，确保客户端可以直接下载
+        const imageBase64 = await fetchImageAsBase64(item.url);
+        if (imageBase64) {
+          await markSucceeded();
+          return success({
+            imageData: imageBase64.data,
+            mimeType: imageBase64.mimeType,
+          });
+        }
+        // 如果转换失败，返回原始 URL（客户端需要通过代理下载）
         await markSucceeded();
         return success({ imageUrl: item.url as string });
       }

@@ -7,6 +7,12 @@ const ALLOWED_DOMAINS = [
   "image.ainanobanana.io",
 ];
 
+// 允许代理的域名后缀（用于匹配子域名）
+const ALLOWED_DOMAIN_SUFFIXES = [
+  ".blob.core.windows.net", // Azure Blob Storage (Flux Kontext)
+  ".r2.dev", // Cloudflare R2
+];
+
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get("url");
 
@@ -18,7 +24,11 @@ export async function GET(request: NextRequest) {
     const parsedUrl = new URL(url);
 
     // 检查域名是否在白名单中
-    if (!ALLOWED_DOMAINS.includes(parsedUrl.hostname)) {
+    const isAllowed =
+      ALLOWED_DOMAINS.includes(parsedUrl.hostname) ||
+      ALLOWED_DOMAIN_SUFFIXES.some((suffix) => parsedUrl.hostname.endsWith(suffix));
+
+    if (!isAllowed) {
       return NextResponse.json(
         { error: "Domain not allowed" },
         { status: 403 }
