@@ -225,7 +225,7 @@ export const siteContentZh: SiteContent = {
       {
         icon: "🚀",
         title: "闪电般的处理速度",
-        description: "不到 1 秒生成专业图片——比传统 AI 模型快 10 倍。",
+        description: "60 秒内生成专业图片——比传统 AI 模型快 10 倍。",
       },
       {
         icon: "👤",
@@ -241,11 +241,6 @@ export const siteContentZh: SiteContent = {
         icon: "🔒",
         title: "企业级安全",
         description: "通过 SOC 2、GDPR、ISO 27001 认证——专业团队可信赖。",
-      },
-      {
-        icon: "💳",
-        title: "无需信用卡",
-        description: "立即开始创作——无门槛注册，快速体验强大的 AI 工具。",
       },
     ],
   },
@@ -437,7 +432,7 @@ export const siteContentZh: SiteContent = {
       {
         question: "出图速度有多快？",
         answer:
-          "在优化的基础设施与算法加持下，Nano Banana AI 可在 1 秒内生成专业图片——比传统 AI 模型快 10 倍。",
+          "在优化的基础设施与算法加持下，Nano Banana AI 可在 60 秒内生成专业图片——比传统 AI 模型快 10 倍。",
       },
       {
         question: "什么是面部补全技术？",
@@ -448,11 +443,6 @@ export const siteContentZh: SiteContent = {
         question: "可以用于商业项目吗？",
         answer:
           "可以！所有付费套餐都包含商业使用权，你可以将生成图片用于业务、营销或任何商业用途。",
-      },
-      {
-        question: "开始使用需要信用卡吗？",
-        answer:
-          "不需要。无需信用卡即可开始创作，我们提供即时访问强大的 AI 工具。",
       },
       {
         question: "什么是角色一致性？",

@@ -231,7 +231,7 @@ export const siteContentEn = {
         icon: "🚀",
         title: "Lightning-Fast Processing",
         description:
-          "Nano Banana AI Generate professional images in under 1 second - 10x faster than traditional AI models.",
+          "Nano Banana AI Generate professional images in 60 seconds - 10x faster than traditional AI models.",
       },
       {
         icon: "👤",
@@ -250,12 +250,6 @@ export const siteContentEn = {
         title: "Enterprise Security",
         description:
           "SOC 2, GDPR, and ISO 27001 certified - Nano Banana AI trusted by professional teams worldwide.",
-      },
-      {
-        icon: "💳",
-        title: "No Credit Card Required",
-        description:
-          "Nano Banana AI Start creating immediately - no registration barriers, just instant access to powerful AI.",
       },
     ],
   },
@@ -448,7 +442,7 @@ export const siteContentEn = {
       {
         question: "How fast is image generation?",
         answer:
-          "Nano Banana AI generates professional images in under 1 second - 10x faster than traditional AI models, thanks to our optimized infrastructure and advanced algorithms.",
+          "Nano Banana AI generates professional images in 60 seconds - 10x faster than traditional AI models, thanks to our optimized infrastructure and advanced algorithms.",
       },
       {
         question: "What is face completion technology?",
@@ -459,11 +453,6 @@ export const siteContentEn = {
         question: "Can I use Nano Banana AI for commercial projects?",
         answer:
           "Yes! All our paid plans include commercial usage rights. You can use the generated images for your business, marketing, or any commercial purpose.",
-      },
-      {
-        question: "Do I need a credit card to start?",
-        answer:
-          "No, you can start creating immediately without a credit card. We offer instant access to our powerful AI tools.",
       },
       {
         question: "What is character consistency?",

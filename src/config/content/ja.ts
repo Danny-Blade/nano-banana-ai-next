@@ -230,7 +230,7 @@ export const siteContentJa: SiteContent = {
         icon: "🚀",
         title: "超高速処理",
         description:
-          "1秒未満でプロ品質の画像を生成。従来モデルの10倍の速さです。",
+          "60秒以内にプロ品質の画像を生成。従来モデルの10倍の速さです。",
       },
       {
         icon: "👤",
@@ -249,12 +249,6 @@ export const siteContentJa: SiteContent = {
         title: "エンタープライズ級セキュリティ",
         description:
           "SOC 2 / GDPR / ISO 27001 準拠。プロチームに信頼されています。",
-      },
-      {
-        icon: "💳",
-        title: "カード不要",
-        description:
-          "すぐに開始。登録のハードルなしで強力なAIツールに即アクセスできます。",
       },
     ],
   },
@@ -447,7 +441,7 @@ export const siteContentJa: SiteContent = {
       {
         question: "生成速度は？",
         answer:
-          "最適化された基盤により、1秒未満でプロ品質の画像を生成。従来モデルの10倍の速さです。",
+          "最適化された基盤により、60秒以内にプロ品質の画像を生成。従来モデルの10倍の速さです。",
       },
       {
         question: "顔補完技術とは？",
@@ -458,11 +452,6 @@ export const siteContentJa: SiteContent = {
         question: "商用利用できますか？",
         answer:
           "はい。すべての有料プランに商用利用権が含まれます。ビジネスやマーケティング用途にも利用可能です。",
-      },
-      {
-        question: "クレジットカードは必要？",
-        answer:
-          "不要です。カードなしで今すぐ開始でき、強力なAIツールに即アクセスできます。",
       },
       {
         question: "キャラクター一貫性とは？",

@@ -225,7 +225,7 @@ export const siteContentKo: SiteContent = {
       {
         icon: "🚀",
         title: "번개처럼 빠른 처리",
-        description: "1초 미만으로 프로급 이미지를 생성 — 기존 모델 대비 10배 빠릅니다.",
+        description: "60초 이내에 프로급 이미지를 생성 — 기존 모델 대비 10배 빠릅니다.",
       },
       {
         icon: "👤",
@@ -241,11 +241,6 @@ export const siteContentKo: SiteContent = {
         icon: "🔒",
         title: "엔터프라이즈 보안",
         description: "SOC 2, GDPR, ISO 27001 준수 — 전 세계 프로 팀이 신뢰합니다.",
-      },
-      {
-        icon: "💳",
-        title: "카드 없이 시작",
-        description: "즉시 시작 — 등록 장벽 없이 강력한 AI 도구에 바로 접근하세요.",
       },
     ],
   },
@@ -437,7 +432,7 @@ export const siteContentKo: SiteContent = {
       {
         question: "생성 속도는 얼마나 빠른가요?",
         answer:
-          "최적화된 인프라로 1초 미만에 프로급 이미지를 생성합니다. 기존 AI 모델 대비 10배 빠릅니다.",
+          "최적화된 인프라로 60초 이내에 프로급 이미지를 생성합니다. 기존 AI 모델 대비 10배 빠릅니다.",
       },
       {
         question: "얼굴 보정 기술이란?",
@@ -448,11 +443,6 @@ export const siteContentKo: SiteContent = {
         question: "상업적으로 사용해도 되나요?",
         answer:
           "네! 모든 유료 플랜에는 상업적 사용 권한이 포함되어 비즈니스/마케팅 등 상업 목적에 사용할 수 있습니다.",
-      },
-      {
-        question: "시작하려면 카드가 필요하나요?",
-        answer:
-          "아니요. 카드 없이도 바로 시작할 수 있으며 강력한 AI 도구에 즉시 접근 가능합니다.",
       },
       {
         question: "캐릭터 일관성이란?",
