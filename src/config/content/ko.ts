@@ -2,7 +2,7 @@ import type { SiteContent } from "@/config/content/types";
 
 export const siteContentKo: SiteContent = {
   header: {
-    logo: "Nano Banana AI",
+    logo: "Nano Banana Pro AI",
     logoImage: "https://cdn.ainanobanana.io/icon.png",
     navLinks: [
       { label: "홈", href: "/" },
@@ -16,23 +16,23 @@ export const siteContentKo: SiteContent = {
     toggleMenuAriaLabel: "메뉴 토글",
   },
   hero: {
-    title: "Nano Banana AI — Gemini 3.0 Flash Image 기반 생성·편집 스튜디오",
+    title: "Nano Banana Pro AI — Gemini 3.0 Flash Image 기반 생성·편집 스튜디오",
     subtitle:
-      "Google의 혁신적인 Nano Banana AI(Gemini 3.0 Flash Image)로 고급 이미지 생성과 편집을 경험하세요. Nano Banana AI에서 생성, 합성, 보정을 손쉽게 수행할 수 있습니다( Google AI Studio 대안).",
+      "Google의 혁신적인 Nano Banana Pro AI(Gemini 3.0 Flash Image)로 고급 이미지 생성과 편집을 경험하세요. Nano Banana Pro AI에서 생성, 합성, 보정을 손쉽게 수행할 수 있습니다( Google AI Studio 대안).",
     ctaPrimary: "지금 시작하기",
     ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
     ctaSecondaryHref: "",
   },
   editor: {
-    title: "Nano Banana AI - 고급 이미지 편집기",
+    title: "Nano Banana Pro AI - 고급 이미지 편집기",
     subtitle:
-      "강력한 Nano Banana AI 모델로 이미지를 변환·편집하세요. 간단한 프롬프트만으로 전문가급 결과를 얻을 수 있습니다.",
+      "강력한 Nano Banana Pro AI 모델로 이미지를 변환·편집하세요. 간단한 프롬프트만으로 전문가급 결과를 얻을 수 있습니다.",
   },
   textToImage: {
     title: "텍스트로 멋진 이미지 생성",
     subtitle:
-      "원하는 것을 설명하기만 하면 Nano Banana AI가 사실적인 이미지로 구현합니다",
+      "원하는 것을 설명하기만 하면 Nano Banana Pro AI가 사실적인 이미지로 구현합니다",
     promptLabel: "프롬프트",
     tryItLabel: "체험하기",
     moreLabel: "더 보기",
@@ -187,13 +187,13 @@ export const siteContentKo: SiteContent = {
     ],
   },
   communityGallery: {
-    title: "Nano Banana AI 커뮤니티 작품",
+    title: "Nano Banana Pro AI 커뮤니티 작품",
     subtitle: "아이디어가 현실이 되는 과정을 확인하세요 — 콘셉트부터 결과물까지 단 몇 초",
     promptLabel: "프롬프트",
     videoPromptLabel: "비디오 프롬프트",
     showcases: [
       {
-        title: "Nano Banana AI 변환 파이프라인(전체)",
+        title: "Nano Banana Pro AI 변환 파이프라인(전체)",
         prompt:
           "이 애니 캐릭터를 피규어 제품 쇼케이스로 변환: 투명한 원형 받침대 위에 서 있는 PVC 피규어를 만들고, 뒤에 캐릭터 아트가 있는 제품 박스를 두며, Blender에서 3D 모델링 과정을 보여주는 모니터를 추가해줘.",
         videoPrompt: "애니 캐릭터를 살아 움직이게: 부드럽게 미소 짓고 자연스럽게 깜빡이며 바람에 머리카락이 살짝 흔들리게",
@@ -201,20 +201,20 @@ export const siteContentKo: SiteContent = {
         video: "https://image.ainanobanana.io/ai-nanobanana.mp4",
       },
       {
-        title: "Nano Banana AI 사이버펑크 인물",
+        title: "Nano Banana Pro AI 사이버펑크 인물",
         prompt: "네온과 미래 요소가 있는 사이버펑크 스타일 인물 사진으로 변환",
         image:
           "https://cdn.ainanobanana.io/flux-kontext-dev/1e9de2c2-1fea-473c-a2c0-73191a02940c.png",
       },
       {
-        title: "Nano Banana AI 사진 복원",
+        title: "Nano Banana Pro AI 사진 복원",
         prompt: "스크래치와 손상을 복구하고 오래된 사진을 컬러화",
         image: "https://cdn.ainanobanana.io/restore-image.png",
       },
     ],
   },
   whyChoose: {
-    title: "크리에이터가 Nano Banana AI를 선택하는 이유",
+    title: "크리에이터가 Nano Banana Pro AI를 선택하는 이유",
     subtitle: "Flux Kontext를 뛰어넘는 속도와 정확도",
     features: [
       {
@@ -277,7 +277,7 @@ export const siteContentKo: SiteContent = {
         name: "김서연",
         role: "디지털 아티스트",
         avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-        content: "Nano Banana AI는 제 작업 방식을 완전히 바꿔놓았습니다. 이미지 품질이 놀랍고 속도는 비교할 수 없습니다. 이제 컨셉 아트를 이전보다 10배 빠르게 만들 수 있어요.",
+        content: "Nano Banana Pro AI는 제 작업 방식을 완전히 바꿔놓았습니다. 이미지 품질이 놀랍고 속도는 비교할 수 없습니다. 이제 컨셉 아트를 이전보다 10배 빠르게 만들 수 있어요.",
         rating: 5,
       },
       {
@@ -305,7 +305,7 @@ export const siteContentKo: SiteContent = {
         name: "최민지",
         role: "일러스트레이터",
         avatar: "https://randomuser.me/api/portraits/women/22.jpg",
-        content: "Nano Banana AI의 다양한 스타일 지원이 정말 좋아요. 수채화부터 유화까지, 클라이언트가 원하는 어떤 스타일도 빠르게 구현할 수 있습니다.",
+        content: "Nano Banana Pro AI의 다양한 스타일 지원이 정말 좋아요. 수채화부터 유화까지, 클라이언트가 원하는 어떤 스타일도 빠르게 구현할 수 있습니다.",
         rating: 5,
       },
       {
@@ -347,7 +347,7 @@ export const siteContentKo: SiteContent = {
         name: "신하늘",
         role: "인디 개발자",
         avatar: "https://randomuser.me/api/portraits/women/41.jpg",
-        content: "혼자서 게임을 개발하는데, Nano Banana AI 덕분에 아트 에셋 제작 시간이 크게 단축되었습니다. 정말 강력 추천해요!",
+        content: "혼자서 게임을 개발하는데, Nano Banana Pro AI 덕분에 아트 에셋 제작 시간이 크게 단축되었습니다. 정말 강력 추천해요!",
         rating: 5,
       },
       {
@@ -361,7 +361,7 @@ export const siteContentKo: SiteContent = {
   },
   modelComparison: {
     title: "AI 이미지 생성 모델 비교",
-    subtitle: "Nano Banana AI와 다른 주요 AI 이미지 생성 도구 비교",
+    subtitle: "Nano Banana Pro AI와 다른 주요 AI 이미지 생성 도구 비교",
     tableHeaders: {
       model: "모델",
       speed: "속도",
@@ -373,7 +373,7 @@ export const siteContentKo: SiteContent = {
     },
     models: [
       {
-        name: "Nano Banana AI",
+        name: "Nano Banana Pro AI",
         icon: "🍌",
         isHighlighted: true,
         speed: { value: "60초", rating: 5, label: "초고속" },
@@ -442,7 +442,7 @@ export const siteContentKo: SiteContent = {
     footer: "* 2025년 공개 정보 기준 비교입니다. 실제 성능은 다를 수 있습니다.",
   },
   pricing: {
-    title: "모든 크리에이터를 위한 Nano Banana AI",
+    title: "모든 크리에이터를 위한 Nano Banana Pro AI",
     subtitle: "취미부터 프로까지 — 매일 수백만 장을 생성하는 커뮤니티에 참여하세요.",
     toggleLabels: {
       monthly: "월간",
@@ -615,16 +615,16 @@ export const siteContentKo: SiteContent = {
     ],
   },
   tweets: {
-    title: "Nano Banana AI 트윗 탐색",
+    title: "Nano Banana Pro AI 트윗 탐색",
     subtitle: "크리에이터들의 이야기를 확인하세요",
   },
   faq: {
-    title: "Nano Banana AI 자주 묻는 질문",
+    title: "Nano Banana Pro AI 자주 묻는 질문",
     items: [
       {
-        question: "Nano Banana AI란 무엇인가요?",
+        question: "Nano Banana Pro AI란 무엇인가요?",
         answer:
-          "Nano Banana AI는 Google의 Gemini 3.0 Flash Image 기술로 구동되는 고급 이미지 생성·편집 플랫폼입니다. 간단한 프롬프트로 생성/편집/변환이 가능합니다.",
+          "Nano Banana Pro AI는 Google의 Gemini 3.0 Flash Image 기술로 구동되는 고급 이미지 생성·편집 플랫폼입니다. 간단한 프롬프트로 생성/편집/변환이 가능합니다.",
       },
       {
         question: "생성 속도는 얼마나 빠른가요?",
@@ -691,16 +691,16 @@ export const siteContentKo: SiteContent = {
     copied: "복사됨!",
     tryItLabel: "바로 체험",
     ctaTitle: "나만의 작품을 만들 준비가 되셨나요?",
-    ctaSubtitle: "Nano Banana AI로 멋진 이미지 생성을 시작하세요",
+    ctaSubtitle: "Nano Banana Pro AI로 멋진 이미지 생성을 시작하세요",
     ctaButton: "지금 Nano Banana 체험하기",
     modelLabel: "Nano Banana Pro"
   },
   explore: {
-    title: "Nano Banana AI 탐색",
+    title: "Nano Banana Pro AI 탐색",
     subtitle: "100만 개의 프롬프트에서 영감을 찾아 상상력을 펼쳐보세요!",
     emptyMessage: "이미지를 찾을 수 없습니다",
     imageAltPrefix: "탐색 아이템",
-    overlayModel: "Nano Banana AI",
+    overlayModel: "Nano Banana Pro AI",
     overlayPrompt: "크리에이티브 생성...",
     images: [
       "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
@@ -747,7 +747,7 @@ export const siteContentKo: SiteContent = {
           {
             heading: "어떻게 도와드릴까요?",
             paragraphs: [
-              "Nano Banana AI 지원 센터에 오신 것을 환영합니다. 저희 AI 이미지 생성 플랫폼을 최대한 활용하실 수 있도록 도와드리겠습니다.",
+              "Nano Banana Pro AI 지원 센터에 오신 것을 환영합니다. 저희 AI 이미지 생성 플랫폼을 최대한 활용하실 수 있도록 도와드리겠습니다.",
               "지원팀에서는 계정 문제, 결제 문의, 기술적 문제, 서비스에 관한 일반적인 문의를 도와드립니다.",
             ],
           },
@@ -783,14 +783,14 @@ export const siteContentKo: SiteContent = {
           {
             heading: "1. 약관 동의",
             paragraphs: [
-              "Nano Banana AI(이하 '서비스')에 접근하거나 사용함으로써 본 서비스 이용약관에 구속되는 것에 동의합니다. 본 약관에 동의하지 않는 경우 서비스를 사용하지 마십시오.",
+              "Nano Banana Pro AI(이하 '서비스')에 접근하거나 사용함으로써 본 서비스 이용약관에 구속되는 것에 동의합니다. 본 약관에 동의하지 않는 경우 서비스를 사용하지 마십시오.",
               "당사는 언제든지 본 약관을 수정할 권리를 보유합니다. 변경 후에도 서비스를 계속 사용하면 수정된 약관에 동의하는 것으로 간주됩니다.",
             ],
           },
           {
             heading: "2. 서비스 설명",
             paragraphs: [
-              "Nano Banana AI는 AI 기반 이미지 생성 및 편집 서비스를 제공합니다. 사용자는 텍스트 프롬프트와 참조 이미지를 사용하여 이미지를 생성, 편집 및 변환할 수 있습니다.",
+              "Nano Banana Pro AI는 AI 기반 이미지 생성 및 편집 서비스를 제공합니다. 사용자는 텍스트 프롬프트와 참조 이미지를 사용하여 이미지를 생성, 편집 및 변환할 수 있습니다.",
               "서비스는 '있는 그대로' 제공되며 당사의 AI 모델을 사용하여 특정 결과나 성과를 보장하지 않습니다.",
             ],
           },
@@ -827,7 +827,7 @@ export const siteContentKo: SiteContent = {
           {
             heading: "7. 책임 제한",
             paragraphs: [
-              "법률이 허용하는 최대 범위 내에서 Nano Banana AI는 서비스 사용으로 인한 간접적, 우발적, 특별 또는 결과적 손해에 대해 책임을 지지 않습니다.",
+              "법률이 허용하는 최대 범위 내에서 Nano Banana Pro AI는 서비스 사용으로 인한 간접적, 우발적, 특별 또는 결과적 손해에 대해 책임을 지지 않습니다.",
               "당사의 총 책임은 청구가 발생하기 전 12개월 동안 서비스에 대해 지불한 금액을 초과하지 않습니다.",
             ],
           },
@@ -938,7 +938,7 @@ export const siteContentKo: SiteContent = {
           {
             heading: "환불 대상",
             paragraphs: [
-              "Nano Banana AI에 만족하시길 바랍니다. 구매에 만족하지 않으시면 다음 조건에 따라 환불을 제공합니다:",
+              "Nano Banana Pro AI에 만족하시길 바랍니다. 구매에 만족하지 않으시면 다음 조건에 따라 환불을 제공합니다:",
               "구독 플랜: 할당된 크레딧의 20% 이상을 사용하지 않은 경우 최초 구독 구매 후 7일 이내에 전액 환불을 요청할 수 있습니다.",
               "추가 크레딧 패키지: 크레딧 패키지 구매는 크레딧이 사용된 경우 일반적으로 환불되지 않습니다. 미사용 크레딧 패키지는 구매 후 14일 이내에 환불될 수 있습니다.",
             ],

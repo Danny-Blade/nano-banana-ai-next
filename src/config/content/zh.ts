@@ -2,7 +2,7 @@ import type { SiteContent } from "@/config/content/types";
 
 export const siteContentZh: SiteContent = {
   header: {
-    logo: "Nano Banana AI",
+    logo: "Nano Banana Pro AI",
     logoImage: "https://cdn.ainanobanana.io/icon.png",
     navLinks: [
       { label: "首页", href: "/" },
@@ -16,23 +16,23 @@ export const siteContentZh: SiteContent = {
     toggleMenuAriaLabel: "切换菜单",
   },
   hero: {
-    title: "Nano Banana AI —— 由 Gemini 3.0 Flash Image 驱动的生图与编辑工作室",
+    title: "Nano Banana Pro AI —— 由 Gemini 3.0 Flash Image 驱动的生图与编辑工作室",
     subtitle:
-      "体验 Google 革命性的 Nano Banana AI（Gemini 3.0 Flash Image），用于高级图像生成与编辑。通过先进的 AI 技术在 Nano Banana AI 中创建、融合与增强图片（可替代 Google AI Studio）。",
+      "体验 Google 革命性的 Nano Banana Pro AI（Gemini 3.0 Flash Image），用于高级图像生成与编辑。通过先进的 AI 技术在 Nano Banana Pro AI 中创建、融合与增强图片（可替代 Google AI Studio）。",
     ctaPrimary: "开始体验",
     ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
     ctaSecondaryHref: "",
   },
   editor: {
-    title: "Nano Banana AI - 高级图片编辑器",
+    title: "Nano Banana Pro AI - 高级图片编辑器",
     subtitle:
-      "用强大的 Nano Banana AI 模型编辑与重塑你的图片 —— 只需简单提示词，即可获得专业级效果",
+      "用强大的 Nano Banana Pro AI 模型编辑与重塑你的图片 —— 只需简单提示词，即可获得专业级效果",
   },
   textToImage: {
     title: "用文字创造惊艳图像",
     subtitle:
-      "只需描述你的想象，Nano Banana AI 就能为你呈现照片级真实的图像作品",
+      "只需描述你的想象，Nano Banana Pro AI 就能为你呈现照片级真实的图像作品",
     promptLabel: "提示词",
     tryItLabel: "立即体验",
     moreLabel: "查看更多",
@@ -187,13 +187,13 @@ export const siteContentZh: SiteContent = {
     ],
   },
   communityGallery: {
-    title: "来自 Nano Banana AI 社区的惊艳作品",
-    subtitle: "见证 Nano Banana AI 把你的想法变成现实——从概念到成品只需几秒",
+    title: "来自 Nano Banana Pro AI 社区的惊艳作品",
+    subtitle: "见证 Nano Banana Pro AI 把你的想法变成现实——从概念到成品只需几秒",
     promptLabel: "提示词",
     videoPromptLabel: "视频提示词",
     showcases: [
       {
-        title: "完整的 Nano Banana AI 转化流程",
+        title: "完整的 Nano Banana Pro AI 转化流程",
         prompt:
           "把这个动漫角色变成手办产品展示：制作一个站在透明圆形底座上的 PVC 实体手办，背后放一个印有角色插画的产品盒，并加入一台电脑显示在 Blender 中进行 3D 建模的过程。",
         videoPrompt: "让动漫角色'活起来'：轻轻微笑、自然眨眼，头发在微风中轻轻摆动",
@@ -201,20 +201,20 @@ export const siteContentZh: SiteContent = {
         video: "https://image.ainanobanana.io/ai-nanobanana.mp4",
       },
       {
-        title: "Nano Banana AI 赛博朋克人像",
+        title: "Nano Banana Pro AI 赛博朋克人像",
         prompt: "将人物转换为赛博朋克风格人像，加入霓虹灯与未来元素",
         image:
           "https://cdn.ainanobanana.io/flux-kontext-dev/1e9de2c2-1fea-473c-a2c0-73191a02940c.png",
       },
       {
-        title: "Nano Banana AI 老照片修复",
+        title: "Nano Banana Pro AI 老照片修复",
         prompt: "修复划痕与损坏，并为老照片上色",
         image: "https://cdn.ainanobanana.io/restore-image.png",
       },
     ],
   },
   whyChoose: {
-    title: "为什么创作者选择 Nano Banana AI",
+    title: "为什么创作者选择 Nano Banana Pro AI",
     subtitle: "以无与伦比的速度与准确率，带来超越 Flux Kontext 的革命性体验",
     features: [
       {
@@ -277,7 +277,7 @@ export const siteContentZh: SiteContent = {
         name: "陈思雨",
         role: "数字艺术家",
         avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-        content: "Nano Banana AI 彻底改变了我的工作流程。图像质量令人惊叹，速度无与伦比。现在我创作概念图的速度比以前快了10倍。",
+        content: "Nano Banana Pro AI 彻底改变了我的工作流程。图像质量令人惊叹，速度无与伦比。现在我创作概念图的速度比以前快了10倍。",
         rating: 5,
       },
       {
@@ -361,7 +361,7 @@ export const siteContentZh: SiteContent = {
   },
   modelComparison: {
     title: "AI 图像生成模型对比",
-    subtitle: "了解 Nano Banana AI 与其他主流 AI 图像生成工具的对比",
+    subtitle: "了解 Nano Banana Pro AI 与其他主流 AI 图像生成工具的对比",
     tableHeaders: {
       model: "模型",
       speed: "速度",
@@ -373,7 +373,7 @@ export const siteContentZh: SiteContent = {
     },
     models: [
       {
-        name: "Nano Banana AI",
+        name: "Nano Banana Pro AI",
         icon: "🍌",
         isHighlighted: true,
         speed: { value: "60秒", rating: 5, label: "极速" },
@@ -442,8 +442,8 @@ export const siteContentZh: SiteContent = {
     footer: "* 对比数据基于2025年公开信息，实际性能可能有所不同。",
   },
   pricing: {
-    title: "为每一位创作者准备的 Nano Banana AI",
-    subtitle: "从爱好者到专业团队——加入每天生成海量图片的 Nano Banana AI 社区。",
+    title: "为每一位创作者准备的 Nano Banana Pro AI",
+    subtitle: "从爱好者到专业团队——加入每天生成海量图片的 Nano Banana Pro AI 社区。",
     toggleLabels: {
       monthly: "按月订阅",
       yearly: "按年订阅",
@@ -615,21 +615,21 @@ export const siteContentZh: SiteContent = {
     ],
   },
   tweets: {
-    title: "Nano Banana AI 推文探索",
-    subtitle: "看看创作者们如何评价 Nano Banana AI",
+    title: "Nano Banana Pro AI 推文探索",
+    subtitle: "看看创作者们如何评价 Nano Banana Pro AI",
   },
   faq: {
-    title: "关于 Nano Banana AI 的常见问题",
+    title: "关于 Nano Banana Pro AI 的常见问题",
     items: [
       {
-        question: "什么是 Nano Banana AI？",
+        question: "什么是 Nano Banana Pro AI？",
         answer:
-          "Nano Banana AI 是由 Google 的 Gemini 3.0 Flash Image 技术驱动的高级图像生成与编辑平台。你可以通过简单的提示词来创建、编辑与转换图片。",
+          "Nano Banana Pro AI 是由 Google 的 Gemini 3.0 Flash Image 技术驱动的高级图像生成与编辑平台。你可以通过简单的提示词来创建、编辑与转换图片。",
       },
       {
         question: "出图速度有多快？",
         answer:
-          "在优化的基础设施与算法加持下，Nano Banana AI 可在 60 秒内生成专业图片——比传统 AI 模型快 10 倍。",
+          "在优化的基础设施与算法加持下，Nano Banana Pro AI 可在 60 秒内生成专业图片——比传统 AI 模型快 10 倍。",
       },
       {
         question: "什么是面部补全技术？",
@@ -647,7 +647,7 @@ export const siteContentZh: SiteContent = {
           "角色一致性可以让同一角色在不同姿势与场景的多次生成中保持一致，非常适合打造 AI 虚拟人物或品牌角色。",
       },
       {
-        question: "Nano Banana AI 有哪些安全认证？",
+        question: "Nano Banana Pro AI 有哪些安全认证？",
         answer:
           "我们通过 SOC 2、GDPR、ISO 27001 认证。你的数据与作品受到企业级安全保护，深受专业团队信赖。",
       },
@@ -690,16 +690,16 @@ export const siteContentZh: SiteContent = {
     copied: "已复制！",
     tryItLabel: "立即体验",
     ctaTitle: "准备好创建你自己的作品了吗？",
-    ctaSubtitle: "使用 Nano Banana AI 开始生成精彩图片",
+    ctaSubtitle: "使用 Nano Banana Pro AI 开始生成精彩图片",
     ctaButton: "立即体验 Nano Banana",
     modelLabel: "Nano Banana Pro"
   },
   explore: {
-    title: "Nano Banana AI 探索",
+    title: "Nano Banana Pro AI 探索",
     subtitle: "在 100 万条提示词中寻找灵感，释放你的想象力！",
     emptyMessage: "未找到图片",
     imageAltPrefix: "探索图片",
-    overlayModel: "Nano Banana AI",
+    overlayModel: "Nano Banana Pro AI",
     overlayPrompt: "创意生成中…",
     images: [
       "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
@@ -746,7 +746,7 @@ export const siteContentZh: SiteContent = {
           {
             heading: "我们能如何帮助您？",
             paragraphs: [
-              "欢迎来到 Nano Banana AI 支持中心。我们将帮助您充分利用我们的 AI 图像生成平台。",
+              "欢迎来到 Nano Banana Pro AI 支持中心。我们将帮助您充分利用我们的 AI 图像生成平台。",
               "我们的支持团队可以协助您处理账户问题、账单疑问、技术问题以及有关我们服务的一般咨询。",
             ],
           },
@@ -782,14 +782,14 @@ export const siteContentZh: SiteContent = {
           {
             heading: "1. 条款接受",
             paragraphs: [
-              "访问或使用 Nano Banana AI（「服务」）即表示您同意受本服务条款的约束。如果您不同意这些条款，请勿使用我们的服务。",
+              "访问或使用 Nano Banana Pro AI（「服务」）即表示您同意受本服务条款的约束。如果您不同意这些条款，请勿使用我们的服务。",
               "我们保留随时修改这些条款的权利。在条款变更后继续使用服务即表示接受修改后的条款。",
             ],
           },
           {
             heading: "2. 服务说明",
             paragraphs: [
-              "Nano Banana AI 提供基于 AI 的图像生成和编辑服务。用户可以使用文本提示词和参考图像来创建、编辑和转换图像。",
+              "Nano Banana Pro AI 提供基于 AI 的图像生成和编辑服务。用户可以使用文本提示词和参考图像来创建、编辑和转换图像。",
               "服务按「现状」提供，我们不保证使用我们的 AI 模型能获得特定的结果或效果。",
             ],
           },
@@ -826,7 +826,7 @@ export const siteContentZh: SiteContent = {
           {
             heading: "7. 责任限制",
             paragraphs: [
-              "在法律允许的最大范围内，Nano Banana AI 不对因使用本服务而产生的任何间接、附带、特殊或后果性损害承担责任。",
+              "在法律允许的最大范围内，Nano Banana Pro AI 不对因使用本服务而产生的任何间接、附带、特殊或后果性损害承担责任。",
               "我们的总责任不超过您在索赔发生前 12 个月内为服务支付的金额。",
             ],
           },
@@ -937,7 +937,7 @@ export const siteContentZh: SiteContent = {
           {
             heading: "退款资格",
             paragraphs: [
-              "我们希望您对 Nano Banana AI 感到满意。如果您对购买不满意，我们在以下条件下提供退款：",
+              "我们希望您对 Nano Banana Pro AI 感到满意。如果您对购买不满意，我们在以下条件下提供退款：",
               "订阅计划：如果您使用的积分不超过分配积分的 20%，您可以在首次订阅购买后 7 天内申请全额退款。",
               "加购积分包：一旦积分被使用，积分包购买通常不可退款。未使用的积分包可在购买后 14 天内退款。",
             ],

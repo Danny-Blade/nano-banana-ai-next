@@ -8,7 +8,7 @@ export const messagesEn: Messages = {
   },
   auth: {
     welcomeBack: "Welcome back",
-    subtitle: "Sign in to continue to Nano Banana AI",
+    subtitle: "Sign in to continue to Nano Banana Pro AI",
     continueWithGoogle: "Continue with Google",
     continueWithDev: "Continue with Dev (local)",
     continueWithFacebook: "Continue with Facebook",

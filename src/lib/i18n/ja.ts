@@ -8,7 +8,7 @@ export const messagesJa: Messages = {
   },
   auth: {
     welcomeBack: "おかえりなさい",
-    subtitle: "Nano Banana AI を続けるにはログインしてください",
+    subtitle: "Nano Banana Pro AI を続けるにはログインしてください",
     continueWithGoogle: "Google で続行",
     continueWithDev: "Dev で続行（ローカル）",
     continueWithFacebook: "Facebook で続行",

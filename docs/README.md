@@ -1,6 +1,6 @@
-# Nano Banana AI 项目文档
+# Nano Banana Pro AI 项目文档
 
-本文档包含了 Nano Banana AI 项目的完整架构设计和流程图，便于开发团队理解和维护系统。
+本文档包含了 Nano Banana Pro AI 项目的完整架构设计和流程图，便于开发团队理解和维护系统。
 
 ## 📚 文档目录
 
@@ -42,7 +42,7 @@
 
 ## 🏗️ 系统概览
 
-Nano Banana AI 是一个基于 Next.js 16 的 AI 图像生成和编辑平台，具有以下核心特性：
+Nano Banana Pro AI 是一个基于 Next.js 16 的 AI 图像生成和编辑平台，具有以下核心特性：
 
 ### 技术栈
 - **前端**: Next.js 16 + React 19 + TypeScript

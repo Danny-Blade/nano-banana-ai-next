@@ -8,7 +8,7 @@ export const messagesZh: Messages = {
   },
   auth: {
     welcomeBack: "欢迎回来",
-    subtitle: "登录后继续使用 Nano Banana AI",
+    subtitle: "登录后继续使用 Nano Banana Pro AI",
     continueWithGoogle: "使用 Google 继续",
     continueWithDev: "本地 Dev 登录",
     continueWithFacebook: "使用 Facebook 继续",

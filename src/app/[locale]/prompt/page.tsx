@@ -51,7 +51,7 @@ export default function PromptPage() {
         copied: "Copied!",
         tryItLabel: "Try it",
         ctaTitle: "Ready to create your own?",
-        ctaSubtitle: "Start generating amazing images with Nano Banana AI",
+        ctaSubtitle: "Start generating amazing images with Nano Banana Pro AI",
         ctaButton: "Try Nano Banana Now",
         modelLabel: "Nano Banana Pro"
     };
@@ -150,7 +150,7 @@ export default function PromptPage() {
 
                     {/* Text to Image Gallery */}
                     {activeTab === "textToImage" && (
-                        <div className={styles.gallerySection}>
+                        <div className={styles.gallerySection} key="textToImage">
                             <div className={styles.sectionHeader}>
                                 <div>
                                     <h2 className={styles.sectionTitle}>{promptContent.textToImageTitle}</h2>
@@ -163,6 +163,7 @@ export default function PromptPage() {
                                     <div
                                         key={index}
                                         className={styles.galleryItem}
+                                        style={{ animationDelay: `${index * 80}ms` }}
                                         onClick={() => setPreviewImage({ url: item.image, prompt: item.prompt })}
                                     >
                                         <img
@@ -203,7 +204,7 @@ export default function PromptPage() {
 
                     {/* Image to Image Section */}
                     {activeTab === "imageToImage" && currentCompareItem && (
-                        <div className={styles.compareSection}>
+                        <div className={styles.compareSection} key="imageToImage">
                             <div className={styles.sectionHeader}>
                                 <div>
                                     <h2 className={styles.sectionTitle}>{promptContent.imageToImageTitle}</h2>
@@ -286,6 +287,7 @@ export default function PromptPage() {
                                         <div
                                             key={index}
                                             className={`${styles.thumbnail} ${selectedCompareIndex === index ? styles.thumbnailActive : ""}`}
+                                            style={{ animationDelay: `${200 + index * 80}ms` }}
                                             onClick={() => {
                                                 setSelectedCompareIndex(index);
                                                 setSliderPosition(50);

@@ -2,7 +2,7 @@ import type { SiteContent } from "@/config/content/types";
 
 export const siteContentJa: SiteContent = {
   header: {
-    logo: "Nano Banana AI",
+    logo: "Nano Banana Pro AI",
     logoImage: "https://cdn.ainanobanana.io/icon.png",
     navLinks: [
       { label: "ホーム", href: "/" },
@@ -16,23 +16,23 @@ export const siteContentJa: SiteContent = {
     toggleMenuAriaLabel: "メニュー切替",
   },
   hero: {
-    title: "Nano Banana AI — Gemini 3.0 Flash Image 搭載の生成・編集スタジオ",
+    title: "Nano Banana Pro AI — Gemini 3.0 Flash Image 搭載の生成・編集スタジオ",
     subtitle:
-      "Google の革新的な Nano Banana AI（Gemini 3.0 Flash Image）で高度な画像生成と編集を体験。Nano Banana AI で画像の作成・合成・強化を行えます（Google AI Studio の代替として）。",
+      "Google の革新的な Nano Banana Pro AI（Gemini 3.0 Flash Image）で高度な画像生成と編集を体験。Nano Banana Pro AI で画像の作成・合成・強化を行えます（Google AI Studio の代替として）。",
     ctaPrimary: "今すぐ試す",
     ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
     ctaSecondaryHref: "",
   },
   editor: {
-    title: "Nano Banana AI - 高度な画像エディター",
+    title: "Nano Banana Pro AI - 高度な画像エディター",
     subtitle:
-      "強力な Nano Banana AI モデルで画像を編集・変換。短いプロンプトだけでプロ品質の編集を実現します。",
+      "強力な Nano Banana Pro AI モデルで画像を編集・変換。短いプロンプトだけでプロ品質の編集を実現します。",
   },
   textToImage: {
     title: "テキストから美しい画像を生成",
     subtitle:
-      "思い描くものを言葉で伝えるだけで、Nano Banana AI がフォトリアルな画像を生成します",
+      "思い描くものを言葉で伝えるだけで、Nano Banana Pro AI がフォトリアルな画像を生成します",
     promptLabel: "プロンプト",
     tryItLabel: "試してみる",
     moreLabel: "もっと見る",
@@ -187,14 +187,14 @@ export const siteContentJa: SiteContent = {
     ],
   },
   communityGallery: {
-    title: "Nano Banana AI コミュニティの作品集",
+    title: "Nano Banana Pro AI コミュニティの作品集",
     subtitle:
       "アイデアが現実になる瞬間を体験。コンセプトからプロダクトまで数秒で。",
     promptLabel: "プロンプト",
     videoPromptLabel: "動画プロンプト",
     showcases: [
       {
-        title: "Nano Banana AI 変換パイプライン（完全版）",
+        title: "Nano Banana Pro AI 変換パイプライン（完全版）",
         prompt:
           "このアニメキャラをフィギュアの製品展示に変換：透明の丸台座に立つPVCフィギュアを作り、背面にキャラアートの箱を置き、Blenderでの3Dモデリング作業を表示するモニターも追加する。",
         videoPrompt:
@@ -203,20 +203,20 @@ export const siteContentJa: SiteContent = {
         video: "https://image.ainanobanana.io/ai-nanobanana.mp4",
       },
       {
-        title: "Nano Banana AI サイバーパンク・ポートレート",
+        title: "Nano Banana Pro AI サイバーパンク・ポートレート",
         prompt: "ネオンと未来要素を加えたサイバーパンク風ポートレートに変換",
         image:
           "https://cdn.ainanobanana.io/flux-kontext-dev/1e9de2c2-1fea-473c-a2c0-73191a02940c.png",
       },
       {
-        title: "Nano Banana AI 写真修復",
+        title: "Nano Banana Pro AI 写真修復",
         prompt: "傷や破損を修復し、古い写真をカラー化する",
         image: "https://cdn.ainanobanana.io/restore-image.png",
       },
     ],
   },
   whyChoose: {
-    title: "クリエイターが Nano Banana AI を選ぶ理由",
+    title: "クリエイターが Nano Banana Pro AI を選ぶ理由",
     subtitle:
       "Flux Kontext を超える、圧倒的な速度と精度の革新的テクノロジー",
     features: [
@@ -288,7 +288,7 @@ export const siteContentJa: SiteContent = {
         name: "佐藤美咲",
         role: "デジタルアーティスト",
         avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-        content: "Nano Banana AIは私のワークフローを完全に変えました。画質は驚くほど美しく、スピードは他に類を見ません。コンセプトアートの制作が以前の10倍速くなりました。",
+        content: "Nano Banana Pro AIは私のワークフローを完全に変えました。画質は驚くほど美しく、スピードは他に類を見ません。コンセプトアートの制作が以前の10倍速くなりました。",
         rating: 5,
       },
       {
@@ -372,7 +372,7 @@ export const siteContentJa: SiteContent = {
   },
   modelComparison: {
     title: "AI画像生成モデル比較",
-    subtitle: "Nano Banana AIと他の主要AI画像生成ツールとの比較",
+    subtitle: "Nano Banana Pro AIと他の主要AI画像生成ツールとの比較",
     tableHeaders: {
       model: "モデル",
       speed: "速度",
@@ -384,7 +384,7 @@ export const siteContentJa: SiteContent = {
     },
     models: [
       {
-        name: "Nano Banana AI",
+        name: "Nano Banana Pro AI",
         icon: "🍌",
         isHighlighted: true,
         speed: { value: "60秒", rating: 5, label: "超高速" },
@@ -453,7 +453,7 @@ export const siteContentJa: SiteContent = {
     footer: "* 2025年時点の公開情報に基づく比較です。実際のパフォーマンスは異なる場合があります。",
   },
   pricing: {
-    title: "すべてのクリエイターへ — Nano Banana AI",
+    title: "すべてのクリエイターへ — Nano Banana Pro AI",
     subtitle:
       "趣味からプロまで。毎日数百万枚を生成するコミュニティへ参加しよう。",
     toggleLabels: {
@@ -627,16 +627,16 @@ export const siteContentJa: SiteContent = {
     ],
   },
   tweets: {
-    title: "Nano Banana AI Tweets 探索",
+    title: "Nano Banana Pro AI Tweets 探索",
     subtitle: "クリエイターの声をチェック",
   },
   faq: {
-    title: "Nano Banana AI よくある質問",
+    title: "Nano Banana Pro AI よくある質問",
     items: [
       {
-        question: "Nano Banana AI とは？",
+        question: "Nano Banana Pro AI とは？",
         answer:
-          "Nano Banana AI は Google の Gemini 3.0 Flash Image 技術を搭載した画像生成・編集プラットフォームです。短いプロンプトで作成・編集・変換ができます。",
+          "Nano Banana Pro AI は Google の Gemini 3.0 Flash Image 技術を搭載した画像生成・編集プラットフォームです。短いプロンプトで作成・編集・変換ができます。",
       },
       {
         question: "生成速度は？",
@@ -703,16 +703,16 @@ export const siteContentJa: SiteContent = {
     copied: "コピーしました！",
     tryItLabel: "試してみる",
     ctaTitle: "自分だけの作品を作る準備はできましたか？",
-    ctaSubtitle: "Nano Banana AIで素晴らしい画像の生成を始めよう",
+    ctaSubtitle: "Nano Banana Pro AIで素晴らしい画像の生成を始めよう",
     ctaButton: "今すぐNano Bananaを試す",
     modelLabel: "Nano Banana Pro"
   },
   explore: {
-    title: "Nano Banana AI 探索",
+    title: "Nano Banana Pro AI 探索",
     subtitle: "100万のプロンプトからインスピレーションを見つけよう！",
     emptyMessage: "画像が見つかりません",
     imageAltPrefix: "探索アイテム",
-    overlayModel: "Nano Banana AI",
+    overlayModel: "Nano Banana Pro AI",
     overlayPrompt: "クリエイティブ生成…",
     images: [
       "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
@@ -759,7 +759,7 @@ export const siteContentJa: SiteContent = {
           {
             heading: "どのようなお手伝いができますか？",
             paragraphs: [
-              "Nano Banana AI サポートセンターへようこそ。当社のAI画像生成プラットフォームを最大限にご活用いただけるようサポートいたします。",
+              "Nano Banana Pro AI サポートセンターへようこそ。当社のAI画像生成プラットフォームを最大限にご活用いただけるようサポートいたします。",
               "サポートチームでは、アカウントに関する問題、請求に関するご質問、技術的な問題、サービスに関する一般的なお問い合わせに対応しております。",
             ],
           },
@@ -795,14 +795,14 @@ export const siteContentJa: SiteContent = {
           {
             heading: "1. 規約への同意",
             paragraphs: [
-              "Nano Banana AI（以下「本サービス」）にアクセスまたは使用することにより、本利用規約に拘束されることに同意するものとします。本規約に同意されない場合は、本サービスをご利用にならないでください。",
+              "Nano Banana Pro AI（以下「本サービス」）にアクセスまたは使用することにより、本利用規約に拘束されることに同意するものとします。本規約に同意されない場合は、本サービスをご利用にならないでください。",
               "当社は、いつでも本規約を変更する権利を留保します。変更後も本サービスを継続してご利用になった場合、変更後の規約に同意したものとみなされます。",
             ],
           },
           {
             heading: "2. サービスの説明",
             paragraphs: [
-              "Nano Banana AIは、AIを活用した画像生成・編集サービスを提供します。ユーザーは、テキストプロンプトや参考画像を使用して、画像の作成、編集、変換を行うことができます。",
+              "Nano Banana Pro AIは、AIを活用した画像生成・編集サービスを提供します。ユーザーは、テキストプロンプトや参考画像を使用して、画像の作成、編集、変換を行うことができます。",
               "本サービスは「現状有姿」で提供され、当社のAIモデルを使用することで特定の結果や成果が得られることを保証するものではありません。",
             ],
           },
@@ -839,7 +839,7 @@ export const siteContentJa: SiteContent = {
           {
             heading: "7. 責任の制限",
             paragraphs: [
-              "法律で許容される最大限の範囲において、Nano Banana AIは、本サービスのご利用に起因する間接的、偶発的、特別、または結果的な損害について責任を負いません。",
+              "法律で許容される最大限の範囲において、Nano Banana Pro AIは、本サービスのご利用に起因する間接的、偶発的、特別、または結果的な損害について責任を負いません。",
               "当社の総責任は、請求が発生する前の12か月間にお客様が本サービスに対して支払った金額を超えないものとします。",
             ],
           },
@@ -950,7 +950,7 @@ export const siteContentJa: SiteContent = {
           {
             heading: "返金の対象",
             paragraphs: [
-              "Nano Banana AIにご満足いただけることを願っております。ご購入にご満足いただけない場合、以下の条件で返金を提供いたします：",
+              "Nano Banana Pro AIにご満足いただけることを願っております。ご購入にご満足いただけない場合、以下の条件で返金を提供いたします：",
               "サブスクリプションプラン：割り当てられたクレジットの20%以上を使用していない場合、初回サブスクリプション購入から7日以内に全額返金をリクエストできます。",
               "追加クレジットパッケージ：クレジットパッケージの購入は、クレジットが使用された場合、通常は返金対象外です。未使用のクレジットパッケージは、購入から14日以内に返金される場合があります。",
             ],

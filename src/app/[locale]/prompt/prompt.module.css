@@ -96,6 +96,18 @@
 /* Text to Image Gallery */
 .gallerySection {
     margin-bottom: 80px;
+    animation: sectionFadeIn 400ms ease-out forwards;
+}
+
+@keyframes sectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .galleryGrid {
@@ -113,6 +125,19 @@
     border: 1px solid #e5e7eb;
     cursor: pointer;
     transition: all 250ms ease-out;
+    animation: cardFadeIn 400ms ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .galleryItem:hover {
@@ -224,6 +249,7 @@
 /* Image to Image Section */
 .compareSection {
     margin-bottom: 80px;
+    animation: sectionFadeIn 400ms ease-out forwards;
 }
 
 .compareContainer {
@@ -232,6 +258,9 @@
     padding: 32px;
     border: 1px solid #e5e7eb;
     transition: all 250ms ease-out;
+    animation: cardFadeIn 400ms ease-out forwards;
+    animation-delay: 100ms;
+    opacity: 0;
 }
 
 .compareContainer:hover {
@@ -406,7 +435,19 @@
     cursor: pointer;
     border: 3px solid transparent;
     transition: all 0.2s ease;
-    opacity: 0.6;
+    animation: thumbnailFadeIn 400ms ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes thumbnailFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 0.6;
+        transform: translateY(0);
+    }
 }
 
 .thumbnail:hover {
@@ -416,6 +457,18 @@
 .thumbnailActive {
     border-color: #8b5cf6;
     opacity: 1;
+    animation: thumbnailActiveFadeIn 400ms ease-out forwards;
+}
+
+@keyframes thumbnailActiveFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .thumbnailImage {

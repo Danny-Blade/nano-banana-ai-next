@@ -5,8 +5,8 @@ import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/types";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Nano Banana AI - Google Gemini 3.0 Flash Image Generation & Editing Studio",
-  description: "Experience Google's revolutionary Nano Banana AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana AI （alternative Google AI Studio and Imarena). Professional image editing made simple.",
+  title: "Nano Banana Pro AI - Google Gemini 3.0 Flash Image Generation & Editing Studio",
+  description: "Experience Google's revolutionary Nano Banana Pro AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana Pro AI （alternative Google AI Studio and Imarena). Professional image editing made simple.",
   icons: {
     icon: "https://cdn.ainanobanana.io/icon.png",
   },

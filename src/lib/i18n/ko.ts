@@ -8,7 +8,7 @@ export const messagesKo: Messages = {
   },
   auth: {
     welcomeBack: "다시 오신 것을 환영합니다",
-    subtitle: "계속하려면 Nano Banana AI에 로그인하세요",
+    subtitle: "계속하려면 Nano Banana Pro AI에 로그인하세요",
     continueWithGoogle: "Google로 계속",
     continueWithDev: "Dev로 계속(로컬)",
     continueWithFacebook: "Facebook으로 계속",

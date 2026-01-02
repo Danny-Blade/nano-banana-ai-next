@@ -1,6 +1,6 @@
 export const siteContentEn = {
   header: {
-    logo: "Nano Banana AI",
+    logo: "Nano Banana Pro AI",
     logoImage: "https://cdn.ainanobanana.io/icon.png",
     navLinks: [
       { label: "Home", href: "/" },
@@ -15,23 +15,23 @@ export const siteContentEn = {
   },
   hero: {
     title:
-      "Nano Banana AI -- Powered By Gemini 3.0 Flash Image Generation & Editing Studio",
+      "Nano Banana Pro AI -- Powered By Gemini 3.0 Flash Image Generation & Editing Studio",
     subtitle:
-      "Experience Google's revolutionary Nano Banana AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana AI （alternative Google AI Studio).",
+      "Experience Google's revolutionary Nano Banana Pro AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana Pro AI （alternative Google AI Studio).",
     ctaPrimary: "Try Nano Banana",
     ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
     ctaSecondaryHref: "",
   },
   editor: {
-    title: "Nano Banana AI - Advanced Image Editor",
+    title: "Nano Banana Pro AI - Advanced Image Editor",
     subtitle:
-      "Transform and edit your images with the powerful Nano Banana AI model - achieve professional-grade image editing with simple text prompts",
+      "Transform and edit your images with the powerful Nano Banana Pro AI model - achieve professional-grade image editing with simple text prompts",
   },
   textToImage: {
     title: "Create Stunning Images from Text",
     subtitle:
-      "Simply describe what you want, and watch Nano Banana AI bring your imagination to life with photorealistic quality",
+      "Simply describe what you want, and watch Nano Banana Pro AI bring your imagination to life with photorealistic quality",
     promptLabel: "Prompt",
     tryItLabel: "Try it",
     moreLabel: "View More",
@@ -187,14 +187,14 @@ export const siteContentEn = {
     ],
   },
   communityGallery: {
-    title: "Stunning Creations from Nano Banana AI Community",
+    title: "Stunning Creations from Nano Banana Pro AI Community",
     subtitle:
-      "Watch as Nano Banana AI transforms your ideas into stunning reality - from concept to product in seconds",
+      "Watch as Nano Banana Pro AI transforms your ideas into stunning reality - from concept to product in seconds",
     promptLabel: "Prompt",
     videoPromptLabel: "Video Prompt",
     showcases: [
       {
-        title: "Complete Nano Banana AI Transformation Pipeline",
+        title: "Complete Nano Banana Pro AI Transformation Pipeline",
         prompt:
           "Transform this anime character into a collectible figure product showcase: Create a physical PVC figure standing on a clear round base, place a product box with the character artwork behind it, and add a computer monitor showing the 3D modeling process in Blender.",
         videoPrompt:
@@ -203,21 +203,21 @@ export const siteContentEn = {
         video: "https://image.ainanobanana.io/ai-nanobanana.mp4",
       },
       {
-        title: "Nano Banana AI Cyberpunk Portrait",
+        title: "Nano Banana Pro AI Cyberpunk Portrait",
         prompt:
           "Transform into a cyberpunk style portrait with neon lights and futuristic elements",
         image:
           "https://cdn.ainanobanana.io/flux-kontext-dev/1e9de2c2-1fea-473c-a2c0-73191a02940c.png",
       },
       {
-        title: "Nano Banana AI Restore Image",
+        title: "Nano Banana Pro AI Restore Image",
         prompt: "fix scratches and damage, and colorize old photos",
         image: "https://cdn.ainanobanana.io/restore-image.png",
       },
     ],
   },
   whyChoose: {
-    title: "Why Creators Choose Nano Banana AI",
+    title: "Why Creators Choose Nano Banana Pro AI",
     subtitle:
       "Revolutionary technology that outperforms Flux Kontext with unmatched speed and accuracy",
     features: [
@@ -225,31 +225,31 @@ export const siteContentEn = {
         icon: "⚡",
         title: "One-Shot Perfect Generation",
         description:
-          "Nano Banana AI Achieve 95% first-try success with natural language editing - no complex prompts needed.",
+          "Nano Banana Pro AI Achieve 95% first-try success with natural language editing - no complex prompts needed.",
       },
       {
         icon: "🚀",
         title: "Lightning-Fast Processing",
         description:
-          "Nano Banana AI Generate professional images in 60 seconds - 10x faster than traditional AI models.",
+          "Nano Banana Pro AI Generate professional images in 60 seconds - 10x faster than traditional AI models.",
       },
       {
         icon: "👤",
         title: "Face Completion Technology",
         description:
-          "Nano Banana AI Advanced facial reconstruction that preserves identity with photorealistic accuracy.",
+          "Nano Banana Pro AI Advanced facial reconstruction that preserves identity with photorealistic accuracy.",
       },
       {
         icon: "🎭",
         title: "Consistent Character Editing",
         description:
-          "Nano Banana AI Maintain character consistency across multiple generations - perfect for AI influencers.",
+          "Nano Banana Pro AI Maintain character consistency across multiple generations - perfect for AI influencers.",
       },
       {
         icon: "🔒",
         title: "Enterprise Security",
         description:
-          "SOC 2, GDPR, and ISO 27001 certified - Nano Banana AI trusted by professional teams worldwide.",
+          "SOC 2, GDPR, and ISO 27001 certified - Nano Banana Pro AI trusted by professional teams worldwide.",
       },
       {
         icon: "🎨",
@@ -289,7 +289,7 @@ export const siteContentEn = {
         name: "Sarah Chen",
         role: "Digital Artist",
         avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-        content: "Nano Banana AI has completely transformed my workflow. The image quality is incredible and the speed is unmatched. I can now create concept art 10x faster than before.",
+        content: "Nano Banana Pro AI has completely transformed my workflow. The image quality is incredible and the speed is unmatched. I can now create concept art 10x faster than before.",
         rating: 5,
       },
       {
@@ -373,7 +373,7 @@ export const siteContentEn = {
   },
   modelComparison: {
     title: "AI Image Generation Model Comparison",
-    subtitle: "See how Nano Banana AI compares to other leading AI image generation tools",
+    subtitle: "See how Nano Banana Pro AI compares to other leading AI image generation tools",
     tableHeaders: {
       model: "Model",
       speed: "Speed",
@@ -385,7 +385,7 @@ export const siteContentEn = {
     },
     models: [
       {
-        name: "Nano Banana AI",
+        name: "Nano Banana Pro AI",
         icon: "🍌",
         isHighlighted: true,
         speed: { value: "60s", rating: 5, label: "Ultra Fast" },
@@ -454,9 +454,9 @@ export const siteContentEn = {
     footer: "* Comparison based on publicly available information as of 2025. Performance may vary.",
   },
   pricing: {
-    title: "Nano Banana AI for Every Creator",
+    title: "Nano Banana Pro AI for Every Creator",
     subtitle:
-      "From hobbyists to professionals - join the Nano Banana AI community generating millions of images daily.",
+      "From hobbyists to professionals - join the Nano Banana Pro AI community generating millions of images daily.",
     toggleLabels: {
       monthly: "Monthly",
       yearly: "Yearly",
@@ -628,21 +628,21 @@ export const siteContentEn = {
     ],
   },
   tweets: {
-    title: "Nano Banana AI Tweets Explore",
-    subtitle: "See what creators are saying about Nano Banana AI",
+    title: "Nano Banana Pro AI Tweets Explore",
+    subtitle: "See what creators are saying about Nano Banana Pro AI",
   },
   faq: {
-    title: "Frequently Asked Question about Nano Banana AI",
+    title: "Frequently Asked Question about Nano Banana Pro AI",
     items: [
       {
-        question: "What is Nano Banana AI?",
+        question: "What is Nano Banana Pro AI?",
         answer:
-          "Nano Banana AI is an advanced image generation and editing platform powered by Google's Gemini 3.0 Flash Image technology. It allows you to create, edit, and transform images using simple text prompts.",
+          "Nano Banana Pro AI is an advanced image generation and editing platform powered by Google's Gemini 3.0 Flash Image technology. It allows you to create, edit, and transform images using simple text prompts.",
       },
       {
         question: "How fast is image generation?",
         answer:
-          "Nano Banana AI generates professional images in 60 seconds - 10x faster than traditional AI models, thanks to our optimized infrastructure and advanced algorithms.",
+          "Nano Banana Pro AI generates professional images in 60 seconds - 10x faster than traditional AI models, thanks to our optimized infrastructure and advanced algorithms.",
       },
       {
         question: "What is face completion technology?",
@@ -650,7 +650,7 @@ export const siteContentEn = {
           "Our advanced facial reconstruction technology preserves identity with photorealistic accuracy, ensuring that faces in generated images are realistic, detailed, and consistent.",
       },
       {
-        question: "Can I use Nano Banana AI for commercial projects?",
+        question: "Can I use Nano Banana Pro AI for commercial projects?",
         answer:
           "Yes! All our paid plans include commercial usage rights. You can use the generated images for your business, marketing, or any commercial purpose.",
       },
@@ -660,7 +660,7 @@ export const siteContentEn = {
           "Character consistency allows you to maintain the same character across multiple generations in different poses and settings - perfect for creating AI influencers or consistent brand characters.",
       },
       {
-        question: "What security certifications does Nano Banana AI have?",
+        question: "What security certifications does Nano Banana Pro AI have?",
         answer:
           "We are SOC 2, GDPR, and ISO 27001 certified. Your data and creations are protected by enterprise-grade security trusted by professional teams worldwide.",
       },
@@ -704,17 +704,17 @@ export const siteContentEn = {
     copied: "Copied!",
     tryItLabel: "Try it",
     ctaTitle: "Ready to create your own?",
-    ctaSubtitle: "Start generating amazing images with Nano Banana AI",
+    ctaSubtitle: "Start generating amazing images with Nano Banana Pro AI",
     ctaButton: "Try Nano Banana Now",
     modelLabel: "Nano Banana Pro"
   },
   explore: {
-    title: "Nano Banana AI Explore",
+    title: "Nano Banana Pro AI Explore",
     subtitle:
       "Discover the ideal inspiration among 1 million prompts and unleash your imagination!",
     emptyMessage: "No images found",
     imageAltPrefix: "Explore item",
-    overlayModel: "Nano Banana AI",
+    overlayModel: "Nano Banana Pro AI",
     overlayPrompt: "Creative image generation...",
     images: [
       "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
@@ -761,7 +761,7 @@ export const siteContentEn = {
           {
             heading: "How Can We Help?",
             paragraphs: [
-              "Welcome to Nano Banana AI Support Center. We're here to help you get the most out of our AI image generation platform.",
+              "Welcome to Nano Banana Pro AI Support Center. We're here to help you get the most out of our AI image generation platform.",
               "Our support team is available to assist you with account issues, billing questions, technical problems, and general inquiries about our services.",
             ],
           },
@@ -797,14 +797,14 @@ export const siteContentEn = {
           {
             heading: "1. Acceptance of Terms",
             paragraphs: [
-              "By accessing or using Nano Banana AI (\"Service\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.",
+              "By accessing or using Nano Banana Pro AI (\"Service\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.",
               "We reserve the right to modify these terms at any time. Continued use of the Service after changes constitutes acceptance of the modified terms.",
             ],
           },
           {
             heading: "2. Description of Service",
             paragraphs: [
-              "Nano Banana AI provides AI-powered image generation and editing services. Users can create, edit, and transform images using text prompts and reference images.",
+              "Nano Banana Pro AI provides AI-powered image generation and editing services. Users can create, edit, and transform images using text prompts and reference images.",
               "The Service is provided \"as is\" and we do not guarantee specific results or outcomes from using our AI models.",
             ],
           },
@@ -841,7 +841,7 @@ export const siteContentEn = {
           {
             heading: "7. Limitation of Liability",
             paragraphs: [
-              "To the maximum extent permitted by law, Nano Banana AI shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.",
+              "To the maximum extent permitted by law, Nano Banana Pro AI shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.",
               "Our total liability shall not exceed the amount you paid for the Service in the 12 months preceding the claim.",
             ],
           },
@@ -952,7 +952,7 @@ export const siteContentEn = {
           {
             heading: "Refund Eligibility",
             paragraphs: [
-              "We want you to be satisfied with Nano Banana AI. If you're not happy with your purchase, we offer refunds under the following conditions:",
+              "We want you to be satisfied with Nano Banana Pro AI. If you're not happy with your purchase, we offer refunds under the following conditions:",
               "Subscription Plans: You may request a full refund within 7 days of your initial subscription purchase if you have not used more than 20% of your allocated credits.",
               "Add-on Credit Packages: Credit package purchases are generally non-refundable once credits have been used. Unused credit packages may be refunded within 14 days of purchase.",
             ],

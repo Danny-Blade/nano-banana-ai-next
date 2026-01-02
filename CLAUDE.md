@@ -1,4 +1,4 @@
-# Nano Banana AI
+# Nano Banana Pro AI
 
 AI 图像生成平台，基于 Next.js 16 + Cloudflare Workers 部署。
 
