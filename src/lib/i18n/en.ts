@@ -32,6 +32,78 @@ export const messagesEn: Messages = {
       points: "{credits} credits / image",
       pointsEstimated: "Estimated cost: {points}",
       hint: "Best for image-to-image and text-to-image",
+      featured: "Featured",
+    },
+    modelShowcase: {
+      title: "Model Overview",
+      caption: "Pick the right model for your task",
+      strengths: "Strengths",
+      weaknesses: "Limitations",
+      items: [
+        {
+          key: "nano-banana-pro",
+          title: "Nano Banana Pro",
+          subtitle: "Flagship quality and consistency",
+          description:
+            "Best all-rounder for high-fidelity edits, character consistency, and complex prompts.",
+          strengths: [
+            "Rich detail and textures",
+            "Stable character identity",
+            "Great for image-to-image and text-to-image",
+          ],
+          weaknesses: ["Higher credit cost", "Slightly longer generation time"],
+        },
+        {
+          key: "nano-banana",
+          title: "Nano Banana",
+          subtitle: "Fast and budget-friendly",
+          description: "Ideal for quick drafts, concept exploration, and bulk iterations.",
+          strengths: ["Fast turnaround", "Low credit cost", "Good for rough exploration"],
+          weaknesses: ["Fine details less refined", "Complex prompts may simplify"],
+        },
+        {
+          key: "flux-kontext-pro",
+          title: "Flux Kontext Pro",
+          subtitle: "Composition and prompt control",
+          description:
+            "Balanced choice for structured layouts, typography placement, and stylized looks.",
+          strengths: [
+            "Strong composition control",
+            "Handles longer prompts well",
+            "Stylized aesthetics",
+          ],
+          weaknesses: ["Color accuracy can shift", "Photorealism less consistent"],
+        },
+        {
+          key: "flux-kontext-max",
+          title: "Flux Kontext Max",
+          subtitle: "Maximum detail and precision",
+          description:
+            "Highest-fidelity Kontext variant for premium detail, crisp rendering, and complex scenes.",
+          strengths: [
+            "Sharper detail and textures",
+            "Better prompt adherence on complex scenes",
+            "High-end output quality",
+          ],
+          weaknesses: ["Higher credit cost", "Slower generation time"],
+        },
+        {
+          key: "seedream-4-0",
+          title: "Seedream 4.0",
+          subtitle: "Illustration-focused renderer",
+          description: "Great for illustration, poster-like visuals, and clean line work.",
+          strengths: ["Clean lines and shapes", "Nice illustration styles", "Good clarity at lower sizes"],
+          weaknesses: ["Realistic textures less convincing", "Perspective can be softer"],
+        },
+        {
+          key: "sora-image",
+          title: "Sora Image",
+          subtitle: "Cinematic lighting and mood",
+          description: "Best for atmospheric, cinematic frames with strong lighting.",
+          strengths: ["Moody lighting", "Cinematic composition", "Good depth of field"],
+          weaknesses: ["Higher cost", "Can be slower at peak times"],
+        },
+      ],
     },
     generate: {
       title: "Image-to-Image / Text-to-Image",

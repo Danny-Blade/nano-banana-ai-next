@@ -43,6 +43,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   // Read initial values from URL query parameters
   const initialPrompt = searchParams.get("prompt") || "";
   const initialRefImage = searchParams.get("refImage") || "";
+  const initialTab = searchParams.get("tab") as Tab | null;
 
   const DEFAULT_MODEL: ModelValue = "nano-banana-pro";
 
@@ -60,7 +61,11 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     });
   }, [locale, t]);
 
-  const [activeTab, setActiveTab] = React.useState<Tab>("generate");
+  const [activeTab, setActiveTab] = React.useState<Tab>(
+    initialTab && ["generate", "batch", "compare", "history"].includes(initialTab)
+      ? initialTab
+      : "generate"
+  );
   const [selectedModel, setSelectedModel] = React.useState<ModelValue>(DEFAULT_MODEL);
   const [resolution, setResolution] = React.useState(
     resolutionOptions[DEFAULT_MODEL][0]
@@ -91,6 +96,14 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     credits: number;
     required: number;
   } | null>(null);
+
+  // Sync activeTab with URL tab parameter
+  React.useEffect(() => {
+    const tabParam = searchParams.get("tab") as Tab | null;
+    if (tabParam && ["generate", "batch", "compare", "history"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   React.useEffect(() => {
     const defaults = resolutionOptions[selectedModel] || ["Auto"];
@@ -252,7 +265,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     if (!showModelPicker) return null;
     return (
       <div className={styles.modalOverlay} role="dialog" aria-modal="true">
-        <div className={styles.modalCard}>
+        <div className={`${styles.modalCard} ${styles.modelPickerCard}`}>
           <div className={styles.modalHeader}>
             <div>
               <div className={styles.modalTitle}>{t("dashboard.model.pickerTitle")}</div>
@@ -265,12 +278,14 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             </button>
           </div>
           <div className={styles.modelGrid}>
-            {localizedModelOptions.map((model) => (
+            {localizedModelOptions.map((model) => {
+              const isFeatured = model.value === "nano-banana-pro";
+              return (
               <button
                 key={model.value}
                 className={`${styles.modelOption} ${
                   selectedModel === model.value ? styles.active : ""
-                }`}
+                } ${isFeatured ? styles.modelOptionFeatured : ""}`}
                 type="button"
                 onClick={() => handleModelSelect(model.value)}
               >
@@ -281,10 +296,15 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
                 <div className={styles.modelOptionDesc}>{model.description}</div>
                 <div className={styles.modelOptionMeta}>
                   {model.badge && <span className={styles.badge}>{model.badge}</span>}
+                  {isFeatured && (
+                    <span className={styles.featuredTag}>
+                      {t("dashboard.model.featured")}
+                    </span>
+                  )}
                   <span className={styles.modelOptionHint}>{t("dashboard.model.hint")}</span>
                 </div>
               </button>
-            ))}
+            )})}
           </div>
         </div>
       </div>
@@ -395,6 +415,20 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     );
   };
 
+  type ModelShowcaseItem = {
+    key: string;
+    title: string;
+    subtitle: string;
+    description: string;
+    strengths: string[];
+    weaknesses: string[];
+  };
+
+  const modelShowcaseItems = React.useMemo<ModelShowcaseItem[]>(() => {
+    const items = getMessage(locale, "dashboard.modelShowcase.items");
+    return Array.isArray(items) ? (items as ModelShowcaseItem[]) : [];
+  }, [locale]);
+
   const Wrapper = variant === "generateOnly" ? "div" : "section";
 
   return (
@@ -446,6 +480,73 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
             initialRefImage={initialRefImage}
           />
         </div>
+
+        {variant !== "generateOnly" &&
+          activeTab === "generate" &&
+          modelShowcaseItems.length > 0 && (
+            <div className={styles.modelShowcase}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <div className={styles.sectionTitle}>
+                    {t("dashboard.modelShowcase.title")}
+                  </div>
+                  <div className={styles.sectionCaption}>
+                    {t("dashboard.modelShowcase.caption")}
+                  </div>
+                </div>
+              </div>
+              <div className={styles.modelShowcaseListStack}>
+                {modelShowcaseItems.map((item) => {
+                  const isFeatured = item.key === "nano-banana-pro";
+                  return (
+                    <div
+                      key={item.key}
+                      className={`${styles.modelShowcaseItem} ${
+                        isFeatured ? styles.modelShowcaseFeatured : ""
+                      }`}
+                    >
+                      <div className={styles.modelShowcaseHeader}>
+                        <div>
+                          <div className={styles.modelShowcaseName}>{item.title}</div>
+                          <div className={styles.modelShowcaseSubtitle}>
+                            {item.subtitle}
+                          </div>
+                        </div>
+                        {isFeatured && (
+                          <span className={styles.featuredTagLarge}>
+                            {t("dashboard.model.featured")}
+                          </span>
+                        )}
+                      </div>
+                      <p className={styles.modelShowcaseDesc}>{item.description}</p>
+                      <div className={styles.modelShowcaseLists}>
+                        <div>
+                          <div className={styles.modelShowcaseLabel}>
+                            {t("dashboard.modelShowcase.strengths")}
+                          </div>
+                          <ul className={styles.modelShowcaseList}>
+                            {item.strengths.map((point, index) => (
+                              <li key={`${item.key}-s-${index}`}>{point}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <div className={styles.modelShowcaseLabel}>
+                            {t("dashboard.modelShowcase.weaknesses")}
+                          </div>
+                          <ul className={styles.modelShowcaseListMuted}>
+                            {item.weaknesses.map((point, index) => (
+                              <li key={`${item.key}-w-${index}`}>{point}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
         {/* BatchPanel 保持挂载以便生成进度在切换标签时继续 */}
         <div style={{ display: (variant !== "generateOnly" && activeTab === "batch") ? "block" : "none" }}>

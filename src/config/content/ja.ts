@@ -3,7 +3,7 @@ import type { SiteContent } from "@/config/content/types";
 export const siteContentJa: SiteContent = {
   header: {
     logo: "Nano Banana Pro AI",
-    logoImage: "https://cdn.ainanobanana.io/icon.png",
+    logoImage: "https://aiimage.pkgames.org/nano-banana/logo.webp",
     navLinks: [
       { label: "ホーム", href: "/" },
       { label: "ダッシュボード", href: "/dashboard" },
@@ -668,6 +668,31 @@ export const siteContentJa: SiteContent = {
         answer:
           "はい。いつでも解約可能で、請求期間終了まで特典を利用できます。",
       },
+      {
+        question: "Nano Banana Pro AI はプロのクリエイティブ作業に適していますか？",
+        answer:
+          "もちろんです！Nano Banana Pro AI はプロ用途向けに設計されており、4K 解像度出力、商用ライセンス、エンタープライズ級セキュリティ（SOC 2、GDPR、ISO 27001 認証）を提供しています。多くのマーケティング会社、ゲームスタジオ、コンテンツクリエイターが制作品質のアセット制作に活用しています。",
+      },
+      {
+        question: "Nano Banana Pro AI は複数回の編集でキャラクターの一貫性を維持できますか？",
+        answer:
+          "はい、これは私たちの強みの一つです。複数回の生成で 95% のキャラクター一貫性を実現しています。一度キャラクターを作成すれば、異なるポーズ、シーン、スタイルでアイデンティティを維持したまま生成できます。AI インフルエンサー、ブランドマスコット、ゲームキャラクターに最適です。",
+      },
+      {
+        question: "Nano Banana Pro AI ではどのような編集ができますか？",
+        answer:
+          "Nano Banana Pro AI は包括的な画像編集をサポートしています：スタイル変換（アニメ、油絵、水彩など）、背景の置き換え、オブジェクトの削除/追加、古い写真の修復とカラー化、テキストから画像生成、画像から画像への変換、ワイヤーフレームからの UI モックアップ作成など。",
+      },
+      {
+        question: "Nano Banana Pro AI は Flux Kontext とどう違いますか？",
+        answer:
+          "どちらも強力な AI 画像ツールですが、Nano Banana Pro AI にはいくつかの利点があります：より高速な処理（60 秒 vs 可変時間）、より高いキャラクター一貫性（95% vs 85%）、50 以上の言語のネイティブ多言語サポート、$9.99 からのより手頃な価格設定、Flux Kontext のより限定的な編集オプションと比較して完全なテキスト+画像編集機能。",
+      },
+      {
+        question: "Nano Banana Pro AI とは何で、どのように機能しますか？",
+        answer:
+          "Nano Banana Pro AI は、Google の Gemini 3.0 Flash Image 技術を搭載した高度な AI 画像生成・編集プラットフォームです。50 以上の対応言語のいずれかで自然言語で希望する内容を記述し、オプションで参考画像をアップロードするだけで、AI が約 60 秒で画像を生成または変換します。コンテキストを理解し、キャラクターの一貫性を維持し、プロ用途に適した 4K 品質の出力を生成します。",
+      },
     ],
   },
   imageToVideo: {
@@ -1005,13 +1030,57 @@ export const siteContentJa: SiteContent = {
     },
   },
   footer: {
-    logo: "ainanobanana.io",
-    copyright: "Copyright ainanobanana.io © 2025 - All rights reserved",
-    links: [
-      { label: "サポート", href: "/support" },
-      { label: "規約", href: "/tos" },
-      { label: "プライバシー", href: "/privacy-policy" },
-      { label: "返金ポリシー", href: "/refund-policy" },
+    logo: "Nano Banana Pro AI",
+    logoImage: "https://aiimage.pkgames.org/nano-banana/logo.webp",
+    tagline: "AI搭載の画像生成・編集プラットフォーム",
+    description: "Nano Banana Pro AIで素晴らしい画像を作成 - Google Gemini 3.0 Flash搭載。プロフェッショナルグレードのAI画像生成、編集、変換を数秒で。",
+    copyright: "© 2025 Nano Banana Pro AI. All rights reserved.",
+    sections: {
+      product: {
+        title: "製品",
+        links: [
+          { label: "画像エディター", href: "/dashboard", description: "AIで画像を編集・変換" },
+          { label: "バッチ生成", href: "/dashboard?tab=batch", description: "複数の画像を一度に生成" },
+          { label: "モデル比較", href: "/dashboard?tab=compare", description: "AIモデルを並べて比較" },
+          { label: "プロンプトギャラリー", href: "/prompt", description: "クリエイティブなプロンプトを探索" },
+        ],
+      },
+      resources: {
+        title: "リソース",
+        links: [
+          { label: "料金", href: "/pricing", description: "料金プランを見る" },
+          { label: "よくある質問", href: "/#faq", description: "よくある質問" },
+          { label: "生成履歴", href: "/history", description: "過去の作品を見る" },
+        ],
+      },
+      company: {
+        title: "会社",
+        links: [
+          { label: "サポート", href: "/support", description: "アカウントのヘルプ" },
+          { label: "利用規約", href: "/tos", description: "規約を読む" },
+          { label: "プライバシーポリシー", href: "/privacy-policy", description: "プライバシーは重要です" },
+          { label: "返金ポリシー", href: "/refund-policy", description: "返金に関する情報" },
+        ],
+      },
+    },
+    social: {
+      title: "フォローする",
+      links: [
+        { platform: "Twitter", href: "https://twitter.com/nanobananaai", icon: "twitter" },
+        { platform: "Discord", href: "https://discord.gg/nanobanana", icon: "discord" },
+        { platform: "YouTube", href: "https://youtube.com/@nanobananaai", icon: "youtube" },
+      ],
+    },
+    contact: {
+      title: "お問い合わせ",
+      email: "BlusDanny1230@gmail.com",
+      emailLabel: "メールを送る",
+    },
+    badges: [
+      { text: "SOC 2 認証", icon: "shield" },
+      { text: "GDPR 準拠", icon: "lock" },
+      { text: "ISO 27001", icon: "certificate" },
     ],
+    seoKeywords: "AI画像生成, テキストから画像, 画像編集, Gemini 3.0, AIアート, 画像変換",
   },
 };

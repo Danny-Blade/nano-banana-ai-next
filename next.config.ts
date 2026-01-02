@@ -6,6 +6,16 @@ const nextConfig: NextConfig = {
 
   // OpenNext 适配 Cloudflare 时需要 Next.js 输出 standalone 产物
   output: "standalone",
+
+  // 允许外部图片域名
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "aiimage.pkgames.org",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

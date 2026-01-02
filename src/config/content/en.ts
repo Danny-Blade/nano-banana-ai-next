@@ -1,7 +1,7 @@
 export const siteContentEn = {
   header: {
     logo: "Nano Banana Pro AI",
-    logoImage: "https://cdn.ainanobanana.io/icon.png",
+    logoImage: "https://aiimage.pkgames.org/nano-banana/logo.webp",
     navLinks: [
       { label: "Home", href: "/" },
       { label: "Dashboard", href: "/dashboard" },
@@ -669,6 +669,31 @@ export const siteContentEn = {
         answer:
           "Yes, subscriptions can be cancelled at any time. You'll continue to have access to your plan benefits until the end of your billing period.",
       },
+      {
+        question: "Is Nano Banana Pro AI suitable for professional creative work?",
+        answer:
+          "Absolutely! Nano Banana Pro AI is designed for professional use, offering 4K resolution output, commercial licensing, and enterprise-grade security (SOC 2, GDPR, ISO 27001 certified). Many marketing agencies, game studios, and content creators rely on it for production-quality assets.",
+      },
+      {
+        question: "Can Nano Banana Pro AI maintain character consistency across multiple edits?",
+        answer:
+          "Yes, one of our standout features is 95% character consistency across multiple generations. You can create a character once and generate them in different poses, scenes, and styles while maintaining their identity - perfect for AI influencers, brand mascots, or game characters.",
+      },
+      {
+        question: "What types of editing can I do with Nano Banana Pro AI?",
+        answer:
+          "Nano Banana Pro AI supports comprehensive image editing including: style transfer (anime, oil painting, watercolor, etc.), background replacement, object removal/addition, face restoration and colorization of old photos, text-to-image generation, image-to-image transformation, and UI mockup creation from wireframes.",
+      },
+      {
+        question: "How is Nano Banana Pro AI different from Flux Kontext?",
+        answer:
+          "While both are powerful AI image tools, Nano Banana Pro AI offers several advantages: faster processing (60 seconds vs variable times), higher character consistency (95% vs 85%), native multi-language support for 50+ languages, more affordable pricing starting at $9.99, and full text+image editing capabilities compared to Flux Kontext's more limited editing options.",
+      },
+      {
+        question: "What exactly is Nano Banana Pro AI and how does it work?",
+        answer:
+          "Nano Banana Pro AI is an advanced AI image generation and editing platform powered by Google's Gemini 3.0 Flash Image technology. Simply describe what you want in natural language (in any of 50+ supported languages), optionally upload reference images, and our AI generates or transforms images in about 60 seconds. It understands context, maintains character consistency, and produces 4K quality output suitable for professional use.",
+      },
     ],
   },
   imageToVideo: {
@@ -1007,13 +1032,57 @@ export const siteContentEn = {
     },
   },
   footer: {
-    logo: "ainanobanana.io",
-    copyright: "Copyright ainanobanana.io © 2025 - All rights reserved",
-    links: [
-      { label: "Support", href: "/support" },
-      { label: "Terms", href: "/tos" },
-      { label: "Privacy", href: "/privacy-policy" },
-      { label: "Refund Policy", href: "/refund-policy" },
+    logo: "Nano Banana Pro AI",
+    logoImage: "https://aiimage.pkgames.org/nano-banana/logo.webp",
+    tagline: "AI-Powered Image Generation & Editing Platform",
+    description: "Create stunning images with Nano Banana Pro AI - powered by Google Gemini 3.0 Flash. Professional-grade AI image generation, editing, and transformation in seconds.",
+    copyright: "© 2025 Nano Banana Pro AI. All rights reserved.",
+    sections: {
+      product: {
+        title: "Product",
+        links: [
+          { label: "Image Editor", href: "/dashboard", description: "Edit and transform images with AI" },
+          { label: "Batch Generation", href: "/dashboard?tab=batch", description: "Generate multiple images at once" },
+          { label: "Model Comparison", href: "/dashboard?tab=compare", description: "Compare AI models side by side" },
+          { label: "Prompt Gallery", href: "/prompt", description: "Explore creative prompts" },
+        ],
+      },
+      resources: {
+        title: "Resources",
+        links: [
+          { label: "Pricing", href: "/pricing", description: "View pricing plans" },
+          { label: "FAQ", href: "/#faq", description: "Frequently asked questions" },
+          { label: "Generation History", href: "/history", description: "View your past creations" },
+        ],
+      },
+      company: {
+        title: "Company",
+        links: [
+          { label: "Support", href: "/support", description: "Get help with your account" },
+          { label: "Terms of Service", href: "/tos", description: "Read our terms" },
+          { label: "Privacy Policy", href: "/privacy-policy", description: "Your privacy matters" },
+          { label: "Refund Policy", href: "/refund-policy", description: "Refund information" },
+        ],
+      },
+    },
+    social: {
+      title: "Follow Us",
+      links: [
+        { platform: "Twitter", href: "https://twitter.com/nanobananaai", icon: "twitter" },
+        { platform: "Discord", href: "https://discord.gg/nanobanana", icon: "discord" },
+        { platform: "YouTube", href: "https://youtube.com/@nanobananaai", icon: "youtube" },
+      ],
+    },
+    contact: {
+      title: "Contact",
+      email: "BlusDanny1230@gmail.com",
+      emailLabel: "Email Us",
+    },
+    badges: [
+      { text: "SOC 2 Certified", icon: "shield" },
+      { text: "GDPR Compliant", icon: "lock" },
+      { text: "ISO 27001", icon: "certificate" },
     ],
+    seoKeywords: "AI image generator, text to image, image editing, Gemini 3.0, AI art, image transformation",
   },
 };

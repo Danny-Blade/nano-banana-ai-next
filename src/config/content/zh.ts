@@ -3,7 +3,7 @@ import type { SiteContent } from "@/config/content/types";
 export const siteContentZh: SiteContent = {
   header: {
     logo: "Nano Banana Pro AI",
-    logoImage: "https://cdn.ainanobanana.io/icon.png",
+    logoImage: "https://aiimage.pkgames.org/nano-banana/logo.webp",
     navLinks: [
       { label: "首页", href: "/" },
       { label: "Dashboard", href: "/dashboard" },
@@ -656,6 +656,31 @@ export const siteContentZh: SiteContent = {
         answer:
           "可以。订阅可随时取消，你仍可使用至当前计费周期结束。",
       },
+      {
+        question: "Nano Banana Pro AI 适合专业创作工作吗？",
+        answer:
+          "当然适合！Nano Banana Pro AI 专为专业用途设计，提供 4K 分辨率输出、商业授权以及企业级安全保障（SOC 2、GDPR、ISO 27001 认证）。众多营销机构、游戏工作室和内容创作者都依赖它来制作高质量素材。",
+      },
+      {
+        question: "Nano Banana Pro AI 能在多次编辑中保持角色一致性吗？",
+        answer:
+          "可以，这是我们的核心优势之一——多次生成中角色一致性高达 95%。你可以创建一个角色后，在不同姿势、场景和风格中生成它，同时保持其身份特征——非常适合 AI 虚拟人、品牌吉祥物或游戏角色。",
+      },
+      {
+        question: "Nano Banana Pro AI 可以进行哪些类型的编辑？",
+        answer:
+          "Nano Banana Pro AI 支持全面的图像编辑功能，包括：风格转换（动漫、油画、水彩等）、背景替换、物体移除/添加、老照片修复与上色、文生图、图生图转换，以及从线框图创建 UI 设计稿。",
+      },
+      {
+        question: "Nano Banana Pro AI 与 Flux Kontext 有什么不同？",
+        answer:
+          "虽然两者都是强大的 AI 图像工具，但 Nano Banana Pro AI 具有多项优势：更快的处理速度（60 秒 vs 不固定时间）、更高的角色一致性（95% vs 85%）、原生支持 50+ 种语言、更实惠的价格（起步价 $9.99），以及完整的文本+图像编辑能力，而 Flux Kontext 的编辑选项相对有限。",
+      },
+      {
+        question: "Nano Banana Pro AI 到底是什么，它是如何工作的？",
+        answer:
+          "Nano Banana Pro AI 是一个由 Google Gemini 3.0 Flash Image 技术驱动的高级 AI 图像生成与编辑平台。你只需用自然语言描述想要的内容（支持 50+ 种语言），可选择性地上传参考图片，我们的 AI 就会在约 60 秒内生成或转换图像。它能理解上下文、保持角色一致性，并生成适合专业用途的 4K 品质输出。",
+      },
     ],
   },
   imageToVideo: {
@@ -992,13 +1017,57 @@ export const siteContentZh: SiteContent = {
     },
   },
   footer: {
-    logo: "ainanobanana.io",
-    copyright: "Copyright ainanobanana.io © 2025 - All rights reserved",
-    links: [
-      { label: "支持", href: "/support" },
-      { label: "条款", href: "/tos" },
-      { label: "隐私", href: "/privacy-policy" },
-      { label: "退款政策", href: "/refund-policy" },
+    logo: "Nano Banana Pro AI",
+    logoImage: "https://aiimage.pkgames.org/nano-banana/logo.webp",
+    tagline: "AI驱动的图像生成与编辑平台",
+    description: "使用 Nano Banana Pro AI 创作精美图像 - 由 Google Gemini 3.0 Flash 驱动。专业级 AI 图像生成、编辑和转换，秒速完成。",
+    copyright: "© 2025 Nano Banana Pro AI. 保留所有权利。",
+    sections: {
+      product: {
+        title: "产品",
+        links: [
+          { label: "图像编辑器", href: "/dashboard", description: "用AI编辑和转换图像" },
+          { label: "批量生成", href: "/dashboard?tab=batch", description: "一次生成多张图像" },
+          { label: "模型对比", href: "/dashboard?tab=compare", description: "并排比较AI模型" },
+          { label: "提示词画廊", href: "/prompt", description: "探索创意提示词" },
+        ],
+      },
+      resources: {
+        title: "资源",
+        links: [
+          { label: "定价", href: "/pricing", description: "查看定价方案" },
+          { label: "常见问题", href: "/#faq", description: "常见问题解答" },
+          { label: "生成历史", href: "/history", description: "查看您的创作记录" },
+        ],
+      },
+      company: {
+        title: "公司",
+        links: [
+          { label: "支持", href: "/support", description: "获取账户帮助" },
+          { label: "服务条款", href: "/tos", description: "阅读服务条款" },
+          { label: "隐私政策", href: "/privacy-policy", description: "您的隐私至关重要" },
+          { label: "退款政策", href: "/refund-policy", description: "退款相关信息" },
+        ],
+      },
+    },
+    social: {
+      title: "关注我们",
+      links: [
+        { platform: "Twitter", href: "https://twitter.com/nanobananaai", icon: "twitter" },
+        { platform: "Discord", href: "https://discord.gg/nanobanana", icon: "discord" },
+        { platform: "YouTube", href: "https://youtube.com/@nanobananaai", icon: "youtube" },
+      ],
+    },
+    contact: {
+      title: "联系我们",
+      email: "BlusDanny1230@gmail.com",
+      emailLabel: "发送邮件",
+    },
+    badges: [
+      { text: "SOC 2 认证", icon: "shield" },
+      { text: "GDPR 合规", icon: "lock" },
+      { text: "ISO 27001", icon: "certificate" },
     ],
+    seoKeywords: "AI图像生成器, 文生图, 图像编辑, Gemini 3.0, AI艺术, 图像转换",
   },
 };
