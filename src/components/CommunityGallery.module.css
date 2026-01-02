@@ -68,6 +68,12 @@
     gap: 28px;
 }
 
+.moreButtonWrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 48px;
+}
+
 .card {
     background: #ffffff;
     border-radius: 1.5rem;
@@ -284,6 +290,10 @@
         gap: 24px;
     }
 
+    .moreButtonWrapper {
+        margin-top: 32px;
+    }
+
     .sliderKnob {
         width: 36px;
         height: 36px;
@@ -357,6 +367,10 @@
     .subtitle {
         font-size: 0.9rem;
         margin: 0 auto 1.5rem;
+    }
+
+    .moreButtonWrapper {
+        margin-top: 24px;
     }
 
     .moreButton {

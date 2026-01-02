@@ -73,12 +73,12 @@ export const messagesZh: Messages = {
           weaknesses: ["积分成本更高", "生成速度更慢"],
         },
         {
-          key: "seedream-4-0",
-          title: "Seedream 4.0",
-          subtitle: "插画质感",
-          description: "适合插画、海报风、线条干净的视觉输出。",
-          strengths: ["线条干净、画面清爽", "插画风格稳定", "低分辨率也清晰"],
-          weaknesses: ["写实质感偏弱", "复杂透视易软化"],
+          key: "seedream-4-5",
+          title: "Seedream 4.5",
+          subtitle: "更强4K画质",
+          description: "BytePlus火山方舟最新版本，4K高清能力更强，画质细节全面提升。",
+          strengths: ["4K高清输出更强", "画质细节显著提升", "视觉一致性优秀"],
+          weaknesses: ["积分消耗略高", "复杂透视偶有软化"],
         },
         {
           key: "sora-image",
@@ -298,9 +298,10 @@ export const messagesZh: Messages = {
         description: "高质量商业级，细节更强",
         badge: "Pro",
       },
-      "seedream-4-0": {
-        label: "SeeDream 4.0",
-        description: "写实光影，产品与人物一致性好",
+      "seedream-4-5": {
+        label: "SeeDream 4.5",
+        description: "更强4K画质，细节表现全面提升",
+        badge: "新",
       },
       "sora-image": {
         label: "Sora_image",

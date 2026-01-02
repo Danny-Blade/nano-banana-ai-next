@@ -1,7 +1,7 @@
 export const modelOptions = [
   { value: "nano-banana", creditsPerImage: 2 },
   { value: "nano-banana-pro", creditsPerImage: 4 },
-  { value: "seedream-4-0", creditsPerImage: 5 },
+  { value: "seedream-4-5", creditsPerImage: 5 },
   { value: "sora-image", creditsPerImage: 6 },
   { value: "flux-kontext-pro", creditsPerImage: 3 },
   { value: "flux-kontext-max", creditsPerImage: 8 },
@@ -23,7 +23,7 @@ export const ratioOptions = [
 export const resolutionOptions: Record<string, string[]> = {
   "nano-banana": ["2K", "1K"],
   "nano-banana-pro": ["4K", "2K", "1K"],
-  "seedream-4-0": ["2K", "1K"],
+  "seedream-4-5": ["4K", "2K", "1K"],
   "sora-image": ["2K", "1K"],
   "flux-kontext-pro": ["2K", "1K"],
   "flux-kontext-max": ["4K", "2K", "1K"],

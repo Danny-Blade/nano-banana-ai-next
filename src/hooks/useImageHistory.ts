@@ -5,7 +5,7 @@ import React from "react";
 export const modelOptions = [
   { value: "nano-banana", creditsPerImage: 2 },
   { value: "nano-banana-pro", creditsPerImage: 4 },
-  { value: "seedream-4-0", creditsPerImage: 5 },
+  { value: "seedream-4-5", creditsPerImage: 5 },
   { value: "sora-image", creditsPerImage: 6 },
   { value: "flux-kontext-pro", creditsPerImage: 3 },
   { value: "flux-kontext-max", creditsPerImage: 8 },

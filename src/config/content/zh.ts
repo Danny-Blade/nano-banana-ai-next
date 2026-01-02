@@ -18,7 +18,7 @@ export const siteContentZh: SiteContent = {
   hero: {
     title: "Nano Banana Pro AI —— 由 Gemini 3.0 Flash Image 驱动的生图与编辑工作室",
     subtitle:
-      "体验 Google 革命性的 Nano Banana Pro AI（Gemini 3.0 Flash Image），用于高级图像生成与编辑。通过先进的 AI 技术在 Nano Banana Pro AI 中创建、融合与增强图片（可替代 Google AI Studio）。",
+      "体验 Google 革命性的 Nano Banana Pro AI（Gemini 3.0 Flash Image），用于高级图像生成与编辑。通过先进的 AI 技术在 Nano Banana Pro AI 中创建、融合与增强图片。",
     ctaPrimary: "开始体验",
     ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",

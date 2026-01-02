@@ -18,7 +18,7 @@ export const siteContentJa: SiteContent = {
   hero: {
     title: "Nano Banana Pro AI — Gemini 3.0 Flash Image 搭載の生成・編集スタジオ",
     subtitle:
-      "Google の革新的な Nano Banana Pro AI（Gemini 3.0 Flash Image）で高度な画像生成と編集を体験。Nano Banana Pro AI で画像の作成・合成・強化を行えます（Google AI Studio の代替として）。",
+      "Google の革新的な Nano Banana Pro AI（Gemini 3.0 Flash Image）で高度な画像生成と編集を体験。Nano Banana Pro AI で画像の作成・合成・強化を行えます。",
     ctaPrimary: "今すぐ試す",
     ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",

@@ -61,12 +61,6 @@ const Examples = () => {
                     <div className={styles.badge}>Text to Image</div>
                     <h2 className={styles.title}>{title}</h2>
                     <p className={styles.subtitle}>{subtitle}</p>
-                    <a href="/prompt" className={styles.moreButton}>
-                        {moreLabel}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
                 </div>
 
                 <div className={styles.grid}>
@@ -113,6 +107,15 @@ const Examples = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+
+                <div className={styles.moreButtonWrapper}>
+                    <a href="/prompt" className={styles.moreButton}>
+                        {moreLabel}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
 

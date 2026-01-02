@@ -26,6 +26,7 @@ type RequestBody = {
   aspectRatio?: string;
   imageSize?: "1K" | "2K" | "4K";
   referenceImages?: string[];
+  quality?: "standard" | "hd";
 };
 
 const GEMINI_MODEL_MAP: Record<string, string> = {
@@ -36,6 +37,58 @@ const GEMINI_MODEL_MAP: Record<string, string> = {
 const SEEDREAM_MODEL_MAP: Record<string, string> = {
   "seedream-4-0": "seedream-4-0-250828",
   "seedream-4-5": "seedream-4-5-251128",
+};
+
+/**
+ * 根据 imageSize 和 aspectRatio 计算 SeeDream 使用的像素尺寸。
+ * SeeDream API 需要标准 OpenAI 格式的 size 参数（如 "1024x1024"）。
+ * 注意：SeeDream 4.5 要求最小像素数为 3,686,400（约 1920x1920）。
+ */
+const getSeedreamSize = (
+  imageSize: "1K" | "2K" | "4K",
+  aspectRatio: string
+): string => {
+  // SeeDream 4.5 要求最小 3,686,400 像素，所以基础分辨率需要足够大
+  // 使用 3072 作为基础，确保极端宽高比（如 21:9）也满足最小像素要求
+  // 3072x1344 (21:9 对齐后) = 4,128,768 像素 > 3,686,400 ✓
+  const baseResolution: Record<string, number> = {
+    "1K": 3072,
+    "2K": 3072,
+    "4K": 4096,
+  };
+
+  const base = baseResolution[imageSize] || 3072;
+
+  // 解析宽高比
+  const [wStr, hStr] = aspectRatio.split(":");
+  const w = parseInt(wStr, 10) || 1;
+  const h = parseInt(hStr, 10) || 1;
+
+  if (w === h) {
+    return `${base}x${base}`;
+  }
+
+  // 计算实际像素尺寸，保持宽高比
+  // 以较长边为基准
+  const ratio = w / h;
+  let width: number;
+  let height: number;
+
+  if (ratio > 1) {
+    // 宽 > 高
+    width = base;
+    height = Math.round(base / ratio);
+  } else {
+    // 高 > 宽
+    height = base;
+    width = Math.round(base * ratio);
+  }
+
+  // 对齐到 64 像素（部分 API 要求）
+  width = Math.round(width / 64) * 64;
+  height = Math.round(height / 64) * 64;
+
+  return `${width}x${height}`;
 };
 
 const base64ToBlob = (base64: string, mimeType: string) => {
@@ -137,9 +190,63 @@ const fetchImageAsBase64 = async (
   }
 };
 
+const formatUpstreamError = (record: Record<string, unknown>): string | null => {
+  const err = record.error;
+  if (err && typeof err === "object") {
+    const errRecord = err as Record<string, unknown>;
+    const message =
+      typeof errRecord.message === "string" && errRecord.message.trim()
+        ? errRecord.message
+        : null;
+    const localized =
+      typeof errRecord.localized_message === "string" &&
+      errRecord.localized_message.trim()
+        ? errRecord.localized_message
+        : null;
+    const code =
+      typeof errRecord.code === "string" && errRecord.code.trim()
+        ? errRecord.code
+        : null;
+    const type =
+      typeof errRecord.type === "string" && errRecord.type.trim()
+        ? errRecord.type
+        : null;
+    const param =
+      typeof errRecord.param === "string" && errRecord.param.trim()
+        ? errRecord.param
+        : null;
+
+    const primary = localized ?? message ?? code ?? null;
+    if (primary) {
+      const suffix = param ? ` (param: ${param})` : "";
+      return type && primary !== type ? `${type}: ${primary}${suffix}` : `${primary}${suffix}`;
+    }
+    if (type) return type;
+  }
+
+  const topMessage =
+    typeof record.message === "string" && record.message.trim()
+      ? record.message
+      : null;
+  return topMessage;
+};
+
 const readUpstreamError = async (response: Response) => {
   try {
     const data: unknown = await response.json();
+    if (typeof data === "string") {
+      try {
+        const parsed = JSON.parse(data) as unknown;
+        if (parsed && typeof parsed === "object") {
+          const formatted = formatUpstreamError(parsed as Record<string, unknown>);
+          if (formatted) return formatted;
+          return JSON.stringify(parsed);
+        }
+      } catch {
+        return data;
+      }
+      return data;
+    }
     if (data && typeof data === "object") {
       const record = data as Record<string, unknown>;
       const err = record.error;
@@ -151,9 +258,8 @@ const readUpstreamError = async (response: Response) => {
         const type = typeof errRecord.type === "string" ? errRecord.type : null;
         if (message) return type ? `${type}: ${message}` : message;
       }
-      const topMessage =
-        typeof record.message === "string" ? record.message : null;
-      if (topMessage) return topMessage;
+      const formatted = formatUpstreamError(record);
+      if (formatted) return formatted;
     }
     return JSON.stringify(data);
   } catch {
@@ -634,25 +740,74 @@ export async function POST(req: NextRequest) {
 
     if (model.startsWith("seedream")) {
       const upstreamModel = SEEDREAM_MODEL_MAP[model] || model;
-      const payload: Record<string, unknown> = {
-        model: upstreamModel,
-        prompt,
-        size: imageSize,
-        response_format: "b64_json",
-      };
+      const resolvedQuality =
+        body.quality ||
+        (imageSize === "4K" ? "hd" : "standard");
 
-      const response = await fetchWithTimeout(
-        OPENAI_IMAGES_GENERATIONS_URL,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
+      const hasRefs = referenceImages.length > 0;
+      let response: Response;
+
+      if (hasRefs) {
+        const parsed = parseDataUrl(referenceImages[0]);
+        if (!parsed?.data) {
+          await markFailed("Invalid reference image", 400);
+          await refundCredits({
+            userId,
+            amount: cost,
+            reason: "generation_refund",
+            refProvider: null,
+            refId: jobId,
+          });
+          return NextResponse.json(
+            { error: "Invalid reference image" },
+            { status: 400 }
+          );
+        }
+
+        const blob = base64ToBlob(parsed.data, parsed.mimeType);
+        const seedreamSize = getSeedreamSize(imageSize, aspectRatio);
+        const form = new FormData();
+        form.append("model", upstreamModel);
+        form.append("prompt", prompt);
+        form.append("image", blob, "input.png");
+        form.append("size", seedreamSize);
+        form.append("quality", resolvedQuality);
+        form.append("response_format", "b64_json");
+
+        response = await fetchWithTimeout(
+          OPENAI_IMAGES_EDITS_URL,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+            },
+            body: form,
           },
-          body: JSON.stringify(payload),
-        },
-        240_000
-      );
+          240_000
+        );
+      } else {
+        const seedreamSize = getSeedreamSize(imageSize, aspectRatio);
+        const payload: Record<string, unknown> = {
+          model: upstreamModel,
+          prompt,
+          size: seedreamSize,
+          quality: resolvedQuality,
+          response_format: "b64_json",
+        };
+
+        response = await fetchWithTimeout(
+          OPENAI_IMAGES_GENERATIONS_URL,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify(payload),
+          },
+          240_000
+        );
+      }
 
       if (!response.ok) {
         const errorText = await readUpstreamError(response);

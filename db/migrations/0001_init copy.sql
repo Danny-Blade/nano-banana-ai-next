@@ -56,7 +56,7 @@ INSERT OR IGNORE INTO model_pricing(model_key, credits_per_image, enabled, updat
 VALUES
   ('nano-banana', 2, 1, strftime('%s','now')),        -- 总结：nano-banana 默认 2 积分/张
   ('nano-banana-pro', 4, 1, strftime('%s','now')),    -- 总结：nano-banana-pro 默认 4 积分/张
-  ('seedream-4-0', 5, 1, strftime('%s','now')),       -- 总结：seedream-4-0 默认 5 积分/张
+  ('seedream-4-5', 5, 1, strftime('%s','now')),       -- 总结：seedream-4-5 默认 5 积分/张
   ('sora-image', 6, 1, strftime('%s','now')),         -- 总结：sora-image 默认 6 积分/张
   ('flux-kontext-pro', 3, 1, strftime('%s','now')),   -- 总结：flux-kontext-pro 默认 3 积分/张
   ('flux-kontext-max', 8, 1, strftime('%s','now'));   -- 总结：flux-kontext-max 默认 8 积分/张

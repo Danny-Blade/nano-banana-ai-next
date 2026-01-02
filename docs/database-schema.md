@@ -190,7 +190,7 @@ INSERT OR IGNORE INTO model_pricing(model_key, credits_per_image, enabled, updat
 VALUES
     ('nano-banana', 2, 1, strftime('%s','now')),
     ('nano-banana-pro', 4, 1, strftime('%s','now')),
-    ('seedream-4-0', 5, 1, strftime('%s','now')),
+    ('seedream-4-5', 5, 1, strftime('%s','now')),
     ('sora-image', 6, 1, strftime('%s','now')),
     ('flux-kontext-pro', 3, 1, strftime('%s','now')),
     ('flux-kontext-max', 8, 1, strftime('%s','now'));

@@ -77,12 +77,12 @@ export const messagesJa: Messages = {
           weaknesses: ["クレジット消費が高い", "生成が遅め"],
         },
         {
-          key: "seedream-4-0",
-          title: "Seedream 4.0",
-          subtitle: "イラスト向き",
-          description: "イラスト、ポスター風、線のきれいな表現に強い。",
-          strengths: ["線がきれいで見やすい", "イラスト表現が安定", "低解像度でも明瞭"],
-          weaknesses: ["写実的な質感は弱め", "遠近表現が柔らかくなりがち"],
+          key: "seedream-4-5",
+          title: "Seedream 4.5",
+          subtitle: "4K品質がさらに向上",
+          description: "BytePlus最新モデルで4K能力が強化、ディテールと画質が大幅に向上。",
+          strengths: ["4K出力がより強力", "ディテールが大幅に改善", "視覚的一貫性に優れる"],
+          weaknesses: ["コストがやや高め", "遠近表現が柔らかくなる場合あり"],
         },
         {
           key: "sora-image",
@@ -303,9 +303,10 @@ export const messagesJa: Messages = {
         description: "高品質でディテール重視",
         badge: "Pro",
       },
-      "seedream-4-0": {
-        label: "SeeDream 4.0",
-        description: "写実的な光と高い一貫性",
+      "seedream-4-5": {
+        label: "SeeDream 4.5",
+        description: "4K品質向上、ディテール大幅改善",
+        badge: "新",
       },
       "sora-image": {
         label: "Sora_image",

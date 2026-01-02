@@ -17,7 +17,7 @@ export const siteContentEn = {
     title:
       "Nano Banana Pro AI -- Powered By Gemini 3.0 Flash Image Generation & Editing Studio",
     subtitle:
-      "Experience Google's revolutionary Nano Banana Pro AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana Pro AI （alternative Google AI Studio).",
+      "Experience Google's revolutionary Nano Banana Pro AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana Pro AI.",
     ctaPrimary: "Try Nano Banana",
     ctaSecondary: "",
     ctaPrimaryHref: "/dashboard",
