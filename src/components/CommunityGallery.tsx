@@ -96,7 +96,7 @@ const CommunityGallery = () => {
                                 key={index}
                                 data-index={index}
                                 className={`${styles.card} ${visibleCards.has(index) ? styles.visible : ''}`}
-                                style={{ transitionDelay: `${index * 100}ms` }}
+                                style={{ animationDelay: `${index * 100}ms` }}
                             >
                                 <div
                                     className={styles.comparisonWrapper}

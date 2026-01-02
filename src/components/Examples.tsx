@@ -75,7 +75,7 @@ const Examples = () => {
                             key={index}
                             data-index={index}
                             className={`${styles.card} ${visibleCards.has(index) ? styles.visible : ''}`}
-                            style={{ transitionDelay: `${index * 80}ms` }}
+                            style={{ animationDelay: `${index * 80}ms` }}
                             onMouseEnter={() => setHoveredCard(index)}
                             onMouseLeave={() => setHoveredCard(null)}
                         >

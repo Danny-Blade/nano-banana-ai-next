@@ -74,8 +74,12 @@
     overflow: hidden;
     border: 1px solid #e5e7eb;
     transition: all 250ms ease-out;
-    animation: cardFadeIn 400ms ease-out forwards;
     opacity: 0;
+    transform: translateY(20px);
+}
+
+.card.visible {
+    animation: cardFadeIn 400ms ease-out forwards;
 }
 
 @keyframes cardFadeIn {
@@ -93,6 +97,7 @@
     transform: translateY(-8px);
     box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
     border-color: #8b5cf6;
+    z-index: 1;
 }
 
 .imageWrapper {
