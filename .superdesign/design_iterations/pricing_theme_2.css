@@ -1,0 +1,101 @@
+/* Pricing Page Theme - Based on Nano Banana Pro AI Color Scheme */
+:root {
+  /* Primary Colors - Purple */
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --primary-light: #a78bfa;
+  --primary-dark: #6d28d9;
+
+  /* Secondary Colors */
+  --secondary: #f3f4f6;
+  --secondary-hover: #e5e7eb;
+
+  /* Success/Discount - Green */
+  --success: #10b981;
+  --success-light: #34d399;
+
+  /* Background Gradients */
+  --bg-gradient-start: #faf5ff;
+  --bg-gradient-mid: #ffffff;
+  --bg-gradient-end: #f5f3ff;
+  --card-highlight-bg: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --text-light: #9ca3af;
+
+  /* Border Colors */
+  --border: #e5e7eb;
+  --border-highlight: #8b5cf6;
+  --border-accent: #e9d5ff;
+
+  /* Card Backgrounds */
+  --card-bg: #ffffff;
+  --card-credits-bg: #f9fafb;
+
+  /* Button Gradients */
+  --btn-primary-gradient: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  --btn-primary-hover-gradient: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  --badge-gradient: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  --discount-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+
+  /* Shadows */
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-card-hover: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
+  --shadow-highlight: 0 0 40px rgba(139, 92, 246, 0.2);
+  --shadow-btn-hover: 0 10px 20px -5px rgba(139, 92, 246, 0.4);
+
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 2.5rem;
+  --spacing-3xl: 4rem;
+
+  /* Border Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease-out;
+  --transition-normal: 200ms ease-out;
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Base Styles */
+body {
+  font-family: var(--font-sans) !important;
+  background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%) !important;
+  color: var(--text-primary) !important;
+  line-height: 1.5 !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans) !important;
+  font-weight: var(--font-weight-extrabold) !important;
+  color: var(--text-primary) !important;
+  line-height: 1.2 !important;
+}
+
+/* Utility Classes */
+.text-primary { color: var(--primary) !important; }
+.text-success { color: var(--success) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.bg-primary { background: var(--btn-primary-gradient) !important; }
+.bg-success { background: var(--discount-gradient) !important; }
