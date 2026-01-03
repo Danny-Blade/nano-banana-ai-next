@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './PricingCards.module.css';
 import { useSiteContent } from "@/components/useSiteContent";
 
@@ -20,13 +20,26 @@ interface PricingPlan {
     highlighted: boolean;
 }
 
+// Generate particles with stable random values
+const generateParticles = (count: number) => {
+    return Array.from({ length: count }, (_, i) => ({
+        id: i,
+        left: `${(i * 37 + 13) % 100}%`,
+        delay: `${(i * 1.7) % 15}s`,
+        duration: `${10 + (i * 0.5) % 10}s`,
+    }));
+};
+
 const PricingCards = () => {
     const siteContent = useSiteContent();
-    const { title, subtitle, monthlyPlans, yearlyPlans, onetimePlans, toggleLabels, trustBadges } = siteContent.pricing;
+    const { subtitle, monthlyPlans, yearlyPlans, onetimePlans, toggleLabels, trustBadges } = siteContent.pricing;
     const [billingMode, setBillingMode] = useState<BillingMode>('monthly');
     // 初始值必须与服务端一致，避免hydration mismatch
     const [isMobile, setIsMobile] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
+
+    // Generate stable particles
+    const particles = useMemo(() => generateParticles(20), []);
 
     useEffect(() => {
         // 标记已hydrated
@@ -81,10 +94,32 @@ const PricingCards = () => {
 
     return (
         <section className={styles.pricingSection}>
+            {/* Background Effects */}
+            <div className={styles.bgContainer}>
+                <div className={`${styles.orb} ${styles.orb1}`} />
+                <div className={`${styles.orb} ${styles.orb2}`} />
+                <div className={`${styles.orb} ${styles.orb3}`} />
+                <div className={styles.particles}>
+                    {particles.map((particle) => (
+                        <div
+                            key={particle.id}
+                            className={styles.particle}
+                            style={{
+                                left: particle.left,
+                                animationDelay: particle.delay,
+                                animationDuration: particle.duration,
+                            }}
+                        />
+                    ))}
+                </div>
+            </div>
+
             <div className={styles.container}>
                 {/* Header */}
                 <div className={styles.header}>
-                    <h2 className={styles.title}>{title}</h2>
+                    <h2 className={styles.title}>
+                        <span className={styles.titleHighlight}>Nano Banana Pro AI</span> for Every Creator
+                    </h2>
                     <p className={styles.subtitle}>{subtitle}</p>
 
                     {/* Toggle Buttons */}
