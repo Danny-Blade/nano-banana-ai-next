@@ -477,7 +477,7 @@ export const siteContentKo: SiteContent = {
         price: "$24.99",
         period: "/월",
         features: [
-          "월 500 크레딧",
+          "월 500 크레딧 + 🎁 100 보너스",
           "기본 AI 모델",
           "HD 출력",
           "우선 지원",
@@ -493,7 +493,7 @@ export const siteContentKo: SiteContent = {
         period: "/월",
         badge: "⭐ 추천",
         features: [
-          "월 1,000 크레딧",
+          "월 1,000 크레딧 + 🎁 300 보너스",
           "모든 AI 모델",
           "HD 출력",
           "배치 생성",
@@ -508,7 +508,7 @@ export const siteContentKo: SiteContent = {
         price: "$99.99",
         period: "/월",
         features: [
-          "월 2,000 크레딧",
+          "월 2,000 크레딧 + 🎁 500 보너스",
           "모든 AI 모델",
           "HD 출력",
           "배치 생성",
@@ -546,7 +546,7 @@ export const siteContentKo: SiteContent = {
         monthlyEquiv: "$19.99/월 상당",
         saveBadge: "$60 절약",
         features: [
-          "연 6,000 크레딧",
+          "연 6,000 크레딧 + 🎁 1,200 보너스",
           "기본 AI 모델",
           "HD 출력",
           "우선 지원",
@@ -565,7 +565,7 @@ export const siteContentKo: SiteContent = {
         saveBadge: "$120 절약",
         badge: "⭐ 최고 가성비",
         features: [
-          "연 12,000 크레딧",
+          "연 12,000 크레딧 + 🎁 3,600 보너스",
           "모든 AI 모델",
           "HD 출력",
           "배치 생성",
@@ -583,7 +583,7 @@ export const siteContentKo: SiteContent = {
         monthlyEquiv: "$79.99/월 상당",
         saveBadge: "$240 절약",
         features: [
-          "연 24,000 크레딧",
+          "연 24,000 크레딧 + 🎁 6,000 보너스",
           "모든 AI 모델",
           "HD 출력",
           "배치 생성",

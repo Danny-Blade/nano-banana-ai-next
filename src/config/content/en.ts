@@ -490,7 +490,7 @@ export const siteContentEn = {
         price: "$24.99",
         period: "/month",
         features: [
-          "500 credits per month",
+          "500 credits/mo + 🎁 100 bonus",
           "Basic AI models",
           "HD output quality",
           "Priority support",
@@ -506,7 +506,7 @@ export const siteContentEn = {
         period: "/month",
         badge: "⭐ RECOMMENDED",
         features: [
-          "1,000 credits per month",
+          "1,000 credits/mo + 🎁 300 bonus",
           "All AI models",
           "HD output quality",
           "Batch generation",
@@ -521,7 +521,7 @@ export const siteContentEn = {
         price: "$99.99",
         period: "/month",
         features: [
-          "2,000 credits per month",
+          "2,000 credits/mo + 🎁 500 bonus",
           "All AI models",
           "HD output quality",
           "Batch generation",
@@ -559,7 +559,7 @@ export const siteContentEn = {
         monthlyEquiv: "$19.99/month",
         saveBadge: "Save $60",
         features: [
-          "6,000 credits per year",
+          "6,000 credits/yr + 🎁 1,200 bonus",
           "Basic AI models",
           "HD output quality",
           "Priority support",
@@ -578,7 +578,7 @@ export const siteContentEn = {
         saveBadge: "Save $120",
         badge: "⭐ BEST VALUE",
         features: [
-          "12,000 credits per year",
+          "12,000 credits/yr + 🎁 3,600 bonus",
           "All AI models",
           "HD output quality",
           "Batch generation",
@@ -596,7 +596,7 @@ export const siteContentEn = {
         monthlyEquiv: "$79.99/month",
         saveBadge: "Save $240",
         features: [
-          "24,000 credits per year",
+          "24,000 credits/yr + 🎁 6,000 bonus",
           "All AI models",
           "HD output quality",
           "Batch generation",
