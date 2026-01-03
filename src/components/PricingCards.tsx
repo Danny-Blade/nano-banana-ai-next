@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './PricingCards.module.css';
 import { useSiteContent } from "@/components/useSiteContent";
 
@@ -24,6 +24,21 @@ const PricingCards = () => {
     const siteContent = useSiteContent();
     const { title, subtitle, monthlyPlans, yearlyPlans, onetimePlans, toggleLabels, trustBadges } = siteContent.pricing;
     const [billingMode, setBillingMode] = useState<BillingMode>('monthly');
+    // 初始值必须与服务端一致，避免hydration mismatch
+    const [isMobile, setIsMobile] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    useEffect(() => {
+        // 标记已hydrated
+        setIsHydrated(true);
+
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 480);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const handleModeChange = (mode: BillingMode) => {
         setBillingMode(mode);
@@ -44,6 +59,26 @@ const PricingCards = () => {
 
     const currentPlans = getCurrentPlans();
 
+    // Calculate indicator position
+    const getIndicatorStyle = (): React.CSSProperties => {
+        const baseStyle: React.CSSProperties = {};
+
+        // 在hydration完成前禁用transition，避免闪烁
+        if (!isHydrated) {
+            baseStyle.transition = 'none';
+        }
+
+        if (isMobile) {
+            // Vertical layout for mobile
+            const index = billingMode === 'monthly' ? 0 : billingMode === 'yearly' ? 1 : 2;
+            return { ...baseStyle, transform: `translateY(${index * 100}%)` };
+        } else {
+            // Horizontal layout for desktop
+            const percentage = billingMode === 'monthly' ? 0 : billingMode === 'yearly' ? 100 : 200;
+            return { ...baseStyle, transform: `translateX(${percentage}%)` };
+        }
+    };
+
     return (
         <section className={styles.pricingSection}>
             <div className={styles.container}>
@@ -55,13 +90,8 @@ const PricingCards = () => {
                     {/* Toggle Buttons */}
                     <div className={styles.toggleContainer}>
                         <div
-                            className={styles.toggleIndicator}
-                            style={{
-                                transform: `translateX(${
-                                    billingMode === 'monthly' ? '0%' :
-                                    billingMode === 'yearly' ? '100%' : '200%'
-                                })`
-                            }}
+                            className={`${styles.toggleIndicator} ${isMobile ? styles.mobile : ''}`}
+                            style={getIndicatorStyle()}
                         />
                         <button
                             className={`${styles.toggleBtn} ${billingMode === 'monthly' ? styles.active : ''}`}

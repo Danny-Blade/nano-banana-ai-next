@@ -1,5 +1,5 @@
 .pricingSection {
-    padding: 6rem 1rem 4rem;
+    padding: 5rem 1rem 4rem;
     background: linear-gradient(180deg, #faf5ff 0%, #ffffff 50%, #f5f3ff 100%);
     min-height: 100vh;
 }
@@ -51,7 +51,7 @@
 }
 
 .toggleBtn {
-    padding: 10px 20px;
+    padding: 12px 40px;
     border-radius: 9999px;
     font-weight: 600;
     font-size: 0.875rem;
@@ -64,7 +64,11 @@
     z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 140px;
+    white-space: nowrap;
 }
 
 .toggleBtn:hover:not(.active) {
@@ -78,11 +82,11 @@
 .discountBadge {
     display: inline-flex;
     align-items: center;
-    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
     color: white;
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    padding: 2px 6px;
+    padding: 3px 8px;
     border-radius: 9999px;
 }
 
@@ -421,7 +425,7 @@
 
 @media (max-width: 480px) {
     .pricingSection {
-        padding: 2rem 1rem;
+        padding: 5rem 1rem 2rem;
     }
 
     .toggleContainer {
@@ -429,16 +433,31 @@
         border-radius: 1rem;
         width: 100%;
         max-width: 280px;
+        gap: 0;
     }
 
     .toggleIndicator {
         width: calc(100% - 8px);
         height: calc(33.333% - 2.67px);
-        transform: translateY(0%) !important;
+        left: 4px;
+        top: 4px;
     }
 
-    .toggleBtn.active ~ .toggleIndicator {
-        transform: translateY(100%);
+    .toggleIndicator.mobile {
+        width: calc(100% - 8px);
+        height: calc(33.333% - 2.67px);
+        left: 4px;
+        top: 4px;
+    }
+
+    .toggleBtn {
+        flex: 1;
+        padding: 12px 16px;
+        text-align: center;
+    }
+
+    .toggleBtn .discountBadge {
+        margin-left: 4px;
     }
 
     .planCard {
