@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 export { default } from "next-auth/middleware";
 
 export const config = {
