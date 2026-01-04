@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "dev:worker": "npx wrangler dev --local --config wrangler.dev.toml",
-    "build": "next build --webpack && opennextjs-cloudflare build --skipNextBuild --skipWranglerConfigCheck && node scripts/generate-wrangler-config.mjs && node scripts/sync-production-secrets.mjs",
-    "build:local": "next build --webpack && opennextjs-cloudflare build --skipNextBuild --skipWranglerConfigCheck && node scripts/generate-wrangler-config.mjs",
+    "build": "next build && opennextjs-cloudflare build --skipNextBuild --skipWranglerConfigCheck && node scripts/generate-wrangler-config.mjs && node scripts/sync-production-secrets.mjs",
+    "build:local": "next build && opennextjs-cloudflare build --skipNextBuild --skipWranglerConfigCheck && node scripts/generate-wrangler-config.mjs",
     "start": "next start",
     "lint": "eslint",
     "d1:migrate:local": "npx wrangler d1 execute nano_banana_Dev --local --file=./db/migrations/0001_init.sql --config wrangler.dev.toml",
