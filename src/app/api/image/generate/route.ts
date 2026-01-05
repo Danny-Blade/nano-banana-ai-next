@@ -5,6 +5,7 @@ import { chargeCredits, getModelCost, refundCredits } from "@/lib/credits";
 import { requireD1, nowSeconds } from "@/lib/d1";
 import { getUserById } from "@/lib/users";
 import { newId } from "@/lib/id";
+import { getR2, uploadImageToR2, getImagePublicUrl } from "@/lib/r2";
 
 const API_BASE =
   process.env.APIYI_API_BASE_URL?.replace(/\/+$/, "") || "https://api.apiyi.com";
@@ -395,13 +396,36 @@ export async function POST(req: NextRequest) {
         .run();
     };
 
-    const markSucceeded = async () => {
+    const markSucceeded = async (r2Key?: string) => {
       await db
         .prepare(
-          `UPDATE generation_jobs SET status = ?, updated_at = ? WHERE id = ?`
+          `UPDATE generation_jobs SET status = ?, output_r2_key = ?, updated_at = ? WHERE id = ?`
         )
-        .bind("succeeded", nowSeconds(), jobId)
+        .bind("succeeded", r2Key || null, nowSeconds(), jobId)
         .run();
+    };
+
+    // 尝试上传图片到 R2（如果 R2 可用）
+    const tryUploadToR2 = async (
+      imageData: string,
+      mimeType: string
+    ): Promise<{ r2Key: string; r2Url: string } | null> => {
+      try {
+        const r2 = getR2();
+        if (!r2) return null;
+
+        const result = await uploadImageToR2({
+          userId,
+          jobId,
+          imageData,
+          mimeType,
+        });
+
+        return { r2Key: result.r2Key, r2Url: result.publicUrl };
+      } catch (err) {
+        console.error("[generate] R2 upload failed:", err);
+        return null;
+      }
     };
 
     try {
@@ -475,10 +499,14 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      await markSucceeded();
+      const geminiMimeType = (inlineData.mimeType || "image/png") as string;
+      const r2Result = await tryUploadToR2(inlineData.data as string, geminiMimeType);
+      await markSucceeded(r2Result?.r2Key);
+
       return success({
         imageData: inlineData.data as string,
-        mimeType: inlineData.mimeType || "image/png",
+        mimeType: geminiMimeType,
+        r2Url: r2Result?.r2Url,
       });
     }
 
@@ -536,6 +564,18 @@ export async function POST(req: NextRequest) {
 
       const markdownUrls = extractMarkdownImageUrls(contentText);
       if (markdownUrls.length) {
+        // 尝试下载并上传到 R2
+        const imageBase64 = await fetchImageAsBase64(markdownUrls[0]);
+        if (imageBase64) {
+          const r2Result = await tryUploadToR2(imageBase64.data, imageBase64.mimeType);
+          await markSucceeded(r2Result?.r2Key);
+          return success({
+            imageData: imageBase64.data,
+            mimeType: imageBase64.mimeType,
+            r2Url: r2Result?.r2Url,
+          });
+        }
+        // 如果下载失败，返回原始 URL
         await markSucceeded();
         return success({ imageUrl: markdownUrls[0] });
       }
@@ -544,10 +584,12 @@ export async function POST(req: NextRequest) {
       if (dataUrls.length) {
         const parsed = parseDataUrl(dataUrls[0]);
         if (parsed?.data) {
-          await markSucceeded();
+          const r2Result = await tryUploadToR2(parsed.data, parsed.mimeType || "image/png");
+          await markSucceeded(r2Result?.r2Key);
           return success({
             imageData: parsed.data,
             mimeType: parsed.mimeType || "image/png",
+            r2Url: r2Result?.r2Url,
           });
         }
       }
@@ -630,20 +672,24 @@ export async function POST(req: NextRequest) {
         const data = await response.json();
         const item = data?.data?.[0];
         if (item?.b64_json) {
-          await markSucceeded();
+          const r2Result = await tryUploadToR2(item.b64_json as string, "image/png");
+          await markSucceeded(r2Result?.r2Key);
           return success({
             imageData: item.b64_json as string,
             mimeType: "image/png",
+            r2Url: r2Result?.r2Url,
           });
         }
         if (item?.url) {
           // 将外部 URL 转换为 base64，确保客户端可以直接下载
           const imageBase64 = await fetchImageAsBase64(item.url);
           if (imageBase64) {
-            await markSucceeded();
+            const r2Result = await tryUploadToR2(imageBase64.data, imageBase64.mimeType);
+            await markSucceeded(r2Result?.r2Key);
             return success({
               imageData: imageBase64.data,
               mimeType: imageBase64.mimeType,
+              r2Url: r2Result?.r2Url,
             });
           }
           // 如果转换失败，返回原始 URL（客户端需要通过代理下载）
@@ -704,20 +750,24 @@ export async function POST(req: NextRequest) {
       const data = await response.json();
       const item = data?.data?.[0];
       if (item?.b64_json) {
-        await markSucceeded();
+        const r2Result = await tryUploadToR2(item.b64_json as string, "image/png");
+        await markSucceeded(r2Result?.r2Key);
         return success({
           imageData: item.b64_json as string,
           mimeType: "image/png",
+          r2Url: r2Result?.r2Url,
         });
       }
       if (item?.url) {
         // 将外部 URL 转换为 base64，确保客户端可以直接下载
         const imageBase64 = await fetchImageAsBase64(item.url);
         if (imageBase64) {
-          await markSucceeded();
+          const r2Result = await tryUploadToR2(imageBase64.data, imageBase64.mimeType);
+          await markSucceeded(r2Result?.r2Key);
           return success({
             imageData: imageBase64.data,
             mimeType: imageBase64.mimeType,
+            r2Url: r2Result?.r2Url,
           });
         }
         // 如果转换失败，返回原始 URL（客户端需要通过代理下载）
@@ -828,13 +878,26 @@ export async function POST(req: NextRequest) {
       const data = await response.json();
       const item = data?.data?.[0];
       if (item?.b64_json) {
-        await markSucceeded();
+        const r2Result = await tryUploadToR2(item.b64_json as string, "image/png");
+        await markSucceeded(r2Result?.r2Key);
         return success({
           imageData: item.b64_json as string,
           mimeType: "image/png",
+          r2Url: r2Result?.r2Url,
         });
       }
       if (item?.url) {
+        // 尝试下载并上传到 R2
+        const imageBase64 = await fetchImageAsBase64(item.url);
+        if (imageBase64) {
+          const r2Result = await tryUploadToR2(imageBase64.data, imageBase64.mimeType);
+          await markSucceeded(r2Result?.r2Key);
+          return success({
+            imageData: imageBase64.data,
+            mimeType: imageBase64.mimeType,
+            r2Url: r2Result?.r2Url,
+          });
+        }
         await markSucceeded();
         return success({ imageUrl: item.url as string });
       }

@@ -23,6 +23,10 @@ export type ImageHistoryItem = {
   costCredits: number;
   thumbnailDataUrl: string;
   imageUrl?: string;
+  /** R2 存储的图片 URL */
+  r2Url?: string;
+  /** 是否已缓存到本地 */
+  localCached?: boolean;
   fileName?: string;
   savedDirName?: string;
   savedVia?: "download" | "fs";
@@ -180,6 +184,8 @@ export const useImageHistory = () => {
           costCredits: typeof v.costCredits === "number" ? v.costCredits : 0,
           thumbnailDataUrl,
           imageUrl: typeof v.imageUrl === "string" ? v.imageUrl : undefined,
+          r2Url: typeof v.r2Url === "string" ? v.r2Url : undefined,
+          localCached: typeof v.localCached === "boolean" ? v.localCached : undefined,
           fileName: typeof v.fileName === "string" ? v.fileName : undefined,
           savedDirName: typeof v.savedDirName === "string" ? v.savedDirName : undefined,
           savedVia:
@@ -487,7 +493,8 @@ export const useImageHistory = () => {
 
   const getSourceUrl = React.useCallback(
     (item: ImageHistoryItem) => {
-      return item.imageUrl || historySourceMap.current.get(item.id) || "";
+      // 优先返回 R2 URL，然后是 imageUrl，最后是历史源映射
+      return item.r2Url || item.imageUrl || historySourceMap.current.get(item.id) || "";
     },
     []
   );

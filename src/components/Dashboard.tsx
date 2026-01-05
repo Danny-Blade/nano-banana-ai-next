@@ -19,6 +19,8 @@ import {
   type LocalizedModelOption,
 } from "./dashboard/types";
 import { useImageHistory, type ImageHistoryItem } from "@/hooks/useImageHistory";
+import { useImageSync } from "@/hooks/useImageSync";
+import { SyncIndicator, SyncPrompt } from "@/components/SyncIndicator";
 
 type Tab = "generate" | "batch" | "compare" | "history";
 type TemplateTarget = "generate" | "batch" | "batch-multi" | "compare";
@@ -83,6 +85,69 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
     addHistoryItem,
     getSourceUrl,
   } = useImageHistory();
+
+  // Image sync hook for cloud synchronization
+  const {
+    syncStatus,
+    syncProgress,
+    syncError,
+    autoCheckSync,
+    sync: startSync,
+  } = useImageSync({
+    localHistory: imageHistory,
+    onHistorySync: setImageHistory,
+    isLoggedIn: !!session?.user?.id,
+  });
+
+  const [showSyncPrompt, setShowSyncPrompt] = React.useState(false);
+  const [showSyncIndicator, setShowSyncIndicator] = React.useState(false);
+
+  // Check for sync when logged in
+  React.useEffect(() => {
+    if (!session?.user?.id) return;
+
+    const checkSync = async () => {
+      const needSync = await autoCheckSync();
+      if (needSync) {
+        setShowSyncPrompt(true);
+      }
+    };
+
+    // Delay check to avoid blocking initial render
+    const timer = setTimeout(checkSync, 2000);
+    return () => clearTimeout(timer);
+  }, [session?.user?.id, autoCheckSync]);
+
+  // Show sync indicator when syncing
+  React.useEffect(() => {
+    if (syncStatus === "syncing" || syncStatus === "checking") {
+      setShowSyncIndicator(true);
+    } else if (syncStatus === "done" || syncStatus === "error") {
+      // Keep indicator visible briefly after completion
+      const timer = setTimeout(() => {
+        if (syncStatus === "done") {
+          setShowSyncIndicator(false);
+        }
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [syncStatus]);
+
+  const handleStartSync = React.useCallback(() => {
+    setShowSyncPrompt(false);
+    setShowSyncIndicator(true);
+    startSync();
+  }, [startSync]);
+
+  const handleSkipSync = React.useCallback(() => {
+    setShowSyncPrompt(false);
+    // Mark as synced to avoid prompting again
+    localStorage.setItem("nano_banana_device_synced", "true");
+  }, []);
+
+  const handleDismissSync = React.useCallback(() => {
+    setShowSyncIndicator(false);
+  }, []);
 
   const [showTemplates, setShowTemplates] = React.useState(false);
   const [templateCategory, setTemplateCategory] = React.useState(templateCategories[0].key);
@@ -603,6 +668,41 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
         callbackUrl={selfCallbackUrl}
         onClose={() => setIsLoginModalOpen(false)}
       />
+
+      {/* Sync Prompt Modal */}
+      {showSyncPrompt && (
+        <SyncPrompt
+          onSync={handleStartSync}
+          onSkip={handleSkipSync}
+          labels={{
+            title: t("dashboard.sync.promptTitle"),
+            description: t("dashboard.sync.promptDescription"),
+            syncButton: t("dashboard.sync.syncButton"),
+            skipButton: t("dashboard.sync.skipButton"),
+          }}
+        />
+      )}
+
+      {/* Sync Progress Indicator */}
+      {showSyncIndicator && (
+        <SyncIndicator
+          status={syncStatus}
+          progress={syncProgress}
+          error={syncError}
+          onSync={handleStartSync}
+          onDismiss={handleDismissSync}
+          labels={{
+            title: t("dashboard.sync.title"),
+            description: t("dashboard.sync.description"),
+            syncButton: t("dashboard.sync.syncButton"),
+            syncing: t("dashboard.sync.syncing"),
+            done: t("dashboard.sync.done"),
+            error: t("dashboard.sync.error"),
+            dismiss: t("dashboard.sync.dismiss"),
+            downloading: t("dashboard.sync.downloading"),
+          }}
+        />
+      )}
 
       {previewImages.length > 0 && (
         <div
