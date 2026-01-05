@@ -16,6 +16,8 @@
 # next.js
 /.next/
 /out/
+/.open-next/
+/.wrangler/
 
 # production
 /build
@@ -31,17 +33,25 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
+# .env*
+
+# wrangler local dev vars (often contains secrets)
+# .dev.vars
+# wrangler.dev.toml
 
 # vercel
 .vercel
 
+# claude code
+.claude/settings.local.json
+
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+# next-env.d.ts
 
 # cloudflare
 .wrangler/
 
 # opennext
 .open-next/
+package-lock.json

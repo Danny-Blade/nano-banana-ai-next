@@ -2,9 +2,10 @@
 
 import React from 'react';
 import styles from './FAQ.module.css';
-import { siteContent } from '@/config/content';
+import { useSiteContent } from "@/components/useSiteContent";
 
 const FAQ = () => {
+    const siteContent = useSiteContent();
     const { title, items } = siteContent.faq;
     const [openIndex, setOpenIndex] = React.useState<number | null>(null);
 

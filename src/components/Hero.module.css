@@ -1,110 +1,225 @@
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .hero {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 120px 24px 80px;
-    background: #000000;
+    padding: 140px 24px 100px;
+    background: linear-gradient(180deg, #ffffff 0%, #faf5ff 50%, #f3e8ff 100%);
     min-height: auto;
     justify-content: center;
+    overflow: hidden;
 }
 
-.announcement {
-    background: rgba(96, 165, 250, 0.1);
-    color: var(--primary);
-    padding: 8px 16px;
-    border-radius: 9999px;
-    font-size: 14px;
-    margin-bottom: 32px;
-    display: inline-block;
-    border: 1px solid rgba(96, 165, 250, 0.2);
+/* 背景装饰 */
+.bgDecor {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.bgCircle1 {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+    top: -200px;
+    left: -100px;
+    animation: float1 20s ease-in-out infinite;
+}
+
+.bgCircle2 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+    top: -100px;
+    right: -150px;
+    animation: float2 25s ease-in-out infinite;
+}
+
+.bgCircle3 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: float3 18s ease-in-out infinite;
+}
+
+@keyframes float1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, 20px); }
+}
+
+@keyframes float2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-20px, 30px); }
+}
+
+@keyframes float3 {
+    0%, 100% { transform: translateX(-50%) translate(0, 0); }
+    50% { transform: translateX(-50%) translate(20px, -20px); }
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.container.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .title {
-    font-size: 60px;
+    font-size: 64px;
     font-weight: 700;
     margin-bottom: 24px;
     line-height: 1.1;
     max-width: 900px;
-    letter-spacing: -0.02em;
-    color: #ffffff;
+    letter-spacing: -0.03em;
+    color: #0f172a;
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .subtitle {
-    font-size: 18px;
-    color: #a1a1aa;
-    margin-bottom: 40px;
-    max-width: 700px;
-    line-height: 1.6;
+    font-size: 20px;
+    color: #64748b;
+    margin-bottom: 48px;
+    max-width: 600px;
+    line-height: 1.7;
     font-weight: 400;
 }
 
 .ctaGroup {
     display: flex;
-    gap: 1rem;
+    gap: 16px;
     margin-bottom: 3rem;
 }
 
 .primaryBtn {
-    padding: 12px 32px;
-    background: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
-    border-radius: 9999px;
-    font-weight: 500;
-    font-size: 14px;
-    transition: transform 0.2s;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
 }
 
 .primaryBtn:hover {
-    transform: translateY(-1px);
-    background-color: #3b82f6;
-    /* slightly darker on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+.btnArrow {
+    transition: transform 0.3s ease;
+}
+
+.primaryBtn:hover .btnArrow {
+    transform: translateX(4px);
 }
 
 .secondaryBtn {
-    padding: 12px 32px;
-    background: transparent;
-    color: #e4e4e7;
-    border: 1px solid #3f3f46;
-    border-radius: 9999px;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.2s;
+    padding: 16px 32px;
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
 .secondaryBtn:hover {
-    background: var(--secondary);
-}
-
-.imageWrapper {
-    width: 100%;
-    max-width: 1000px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    margin-top: 2rem;
-}
-
-.heroImage {
-    width: 100%;
-    height: auto;
-    display: block;
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
+    .hero {
+        padding: 100px 20px 60px;
+    }
+
     .title {
-        font-size: 2.5rem;
+        font-size: 36px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        margin-bottom: 32px;
+    }
+
+    .ctaGroup {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .primaryBtn,
+    .secondaryBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .bgCircle1,
+    .bgCircle2,
+    .bgCircle3 {
+        display: none;
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .hero {
+        padding: 80px 16px 48px;
+    }
+
+    .title {
+        font-size: 28px;
+        margin-bottom: 16px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+
+    .ctaGroup {
+        gap: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .primaryBtn,
+    .secondaryBtn {
+        padding: 14px 24px;
+        font-size: 15px;
     }
 }

@@ -1,0 +1,154 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(2, 6, 23, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: modalFadeIn 160ms ease-out;
+    padding: 1rem;
+}
+
+.modalContent {
+    background: #ffffff;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    position: relative;
+    text-align: center;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    animation: modalPopIn 180ms ease-out;
+}
+
+.closeButton {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    font-size: 1.25rem;
+    color: #6b7280;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.closeButton:hover {
+    color: #0f172a;
+    background: rgba(15, 23, 42, 0.06);
+}
+
+.closeButton:focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.8);
+    outline-offset: 2px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+}
+
+.title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #111;
+}
+
+.subtitle {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.socialButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.socialBtn {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    background: white;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.socialBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.socialBtn:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.socialBtn:active {
+    background-color: #f3f4f6;
+}
+
+.socialBtn:disabled:active {
+    background-color: white;
+}
+
+.socialBtn:focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.8);
+    outline-offset: 2px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.error {
+    margin-top: 0.75rem;
+    color: #ef4444;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalPopIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

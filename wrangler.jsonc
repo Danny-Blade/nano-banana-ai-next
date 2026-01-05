@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nano-banana-ai-next",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-12-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nano_banana",
+      "database_id": "5212d261-a569-41f3-9b44-c6d6620a3deb"
+    }
+  ],
+  "vars": {
+    "NEXTAUTH_URL": "https://nano-banana-ai-next.blusdanny1230.workers.dev",
+    "GOOGLE_CLIENT_ID": "5783249126-pofhal0pprh4dfguso8u5luhov883jdm.apps.googleusercontent.com"
+  }
+}

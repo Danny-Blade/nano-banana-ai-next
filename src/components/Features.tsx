@@ -1,8 +1,11 @@
+"use client";
+
 import React from 'react';
 import styles from './Features.module.css';
-import { siteContent } from '@/config/content';
+import { useSiteContent } from "@/components/useSiteContent";
 
 const Features = () => {
+    const siteContent = useSiteContent();
     const { title, features } = siteContent.whyChoose;
 
     return (

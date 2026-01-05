@@ -1,23 +1,17 @@
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  --background: #ffffff;
+  --foreground: #000000;
   --primary: #60a5fa;
+  /* Blue 400 */
   --primary-hover: #3b82f6;
-  --secondary: #111111;
-  --accent: #7928ca;
-  --border: #333333;
+  /* Blue 500 */
+  --secondary: #f3f4f6;
+  /* Gray 100 */
+  --border: #e5e7eb;
+  /* Gray 200 */
+  --text-secondary: #4b5563;
+  /* Gray 600 */
   --font-sans: Arial, Helvetica, sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #3291ff;
-    --primary-hover: #0070f3;
-    --secondary: #1a1a1a;
-    --border: #333;
-  }
 }
 
 * {
@@ -36,25 +30,7 @@ body {
   font-family: var(--font-sans);
   background-color: var(--background);
   color: var(--foreground);
-  line-height: 1.6;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  line-height: 1.5;
 }
 
 a {

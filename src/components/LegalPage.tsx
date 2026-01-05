@@ -1,35 +1,49 @@
+"use client";
+
 import React from 'react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useSiteContent } from "@/components/useSiteContent";
+import styles from "./LegalPage.module.css";
+
+type LegalPageKind = "support" | "tos" | "privacy" | "refund";
 
 interface LegalPageProps {
-    title: string;
+    kind: LegalPageKind;
 }
 
-const LegalPage: React.FC<LegalPageProps> = ({ title }) => {
+const LegalPage: React.FC<LegalPageProps> = ({ kind }) => {
+    const siteContent = useSiteContent();
+    const title = siteContent.legal.titles[kind];
+    const content = siteContent.legal.content[kind];
+
     return (
-        <main style={{ backgroundColor: '#000', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <main className={styles.main}>
             <Header />
-            <div style={{
-                padding: '120px 20px 60px',
-                maxWidth: '800px',
-                margin: '0 auto',
-                color: '#fff',
-                flex: 1,
-                width: '100%'
-            }}>
-                <h1 style={{
-                    fontSize: '2.5rem',
-                    marginBottom: '30px',
-                    fontWeight: 'bold',
-                    borderBottom: '1px solid #333',
-                    paddingBottom: '20px'
-                }}>
-                    {title}
-                </h1>
-                <div style={{ lineHeight: '1.8', color: '#ccc' }}>
-                    <p>Content coming soon...</p>
-                </div>
+            <div className={styles.container}>
+                <h1 className={styles.title}>{title}</h1>
+                <p className={styles.lastUpdated}>{content.lastUpdated}</p>
+
+                {content.sections.map((section: { heading: string; paragraphs: string[] }, index: number) => (
+                    <section key={index} className={styles.section}>
+                        <h2 className={styles.sectionTitle}>{section.heading}</h2>
+                        {section.paragraphs.map((paragraph: string, pIndex: number) => (
+                            <p key={pIndex} className={styles.paragraph}>{paragraph}</p>
+                        ))}
+                    </section>
+                ))}
+
+                {content.contactEmail && (
+                    <section className={styles.section}>
+                        <h2 className={styles.sectionTitle}>{content.contactTitle}</h2>
+                        <p className={styles.paragraph}>
+                            {content.contactText}{' '}
+                            <a href={`mailto:${content.contactEmail}`} className={styles.link}>
+                                {content.contactEmail}
+                            </a>
+                        </p>
+                    </section>
+                )}
             </div>
             <Footer />
         </main>

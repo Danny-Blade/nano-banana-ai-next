@@ -1,0 +1,46 @@
+# Local dev config for Cloudflare Wrangler (D1 is bound as `DB`).
+# Copy to `wrangler.dev.toml` and fill in the dev D1 `database_id`.
+#
+# === 本地开发测试步骤 ===
+#
+# 1. 首次设置:
+#    cp wrangler.dev.toml.example wrangler.dev.toml
+#    cp .dev.vars.example .dev.vars
+#    # 填写 wrangler.dev.toml 中的 database_id (从 Cloudflare Dashboard 获取)
+#    # 填写 .dev.vars 中的环境变量
+#
+# 2. 初始化本地 D1 数据库:
+#    yarn d1:migrate:local
+#
+# 3. 启动本地开发服务器 (推荐方式，包含 D1 + Google 登录):
+#    yarn dev
+#
+# 4. 访问 http://localhost:3000 进行测试
+#
+# === 命令说明 ===
+# yarn dev         - 启动 Next.js 开发服务器 (自动加载本地 D1 绑定)
+# yarn dev:worker  - 启动完整 Cloudflare Workers 环境 (需先 yarn build:local)
+#
+# 注意：yarn dev 现在通过 initOpenNextCloudflareForDev 自动集成本地 D1，
+# 无需每次都运行 build:local。数据持久化在 .wrangler/state 目录中。
+
+name = "nano-banana-ai-next"
+main = ".open-next/worker.js"
+compatibility_date = "2025-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nano_banana_dev"
+database_id = "71ba9245-2592-4976-9c04-69860d269fda"
+
+[vars]
+# For local auth callbacks
+NEXTAUTH_URL = "http://localhost:3000"
+
+[dev]
+port = 3000

@@ -1,0 +1,23 @@
+# 本仓库使用 D1（Cloudflare）时的 Wrangler 配置示例。
+# 如需通过 Wrangler 部署，可复制为 `wrangler.toml` 并填入对应的 id。
+#
+# 注意：本项目是 Next.js；你实际的 Cloudflare 部署形态可能不同（Pages/Workers）。
+# 该文件仅用于说明如何绑定 D1，使服务端路由能访问到 `DB`。
+
+name = "nano-banana-ai-next"
+compatibility_date = "2025-01-01"
+
+# 如果你在 Workers/Pages 环境运行 Next.js API，可能需要开启 Node 兼容。
+node_compat = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nano_banana"
+database_id = "5212d261-a569-41f3-9b44-c6d6620a3deb"
+
+# NextAuth / Google OAuth 回调地址基于 NEXTAUTH_URL（例如 /api/auth/callback/google）
+[vars]
+NEXTAUTH_URL = "http://localhost:3000"
+
+[env.production.vars]
+NEXTAUTH_URL = "https://nano-banana-ai-next.blusdanny1230.workers.dev"

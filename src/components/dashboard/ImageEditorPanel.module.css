@@ -1,0 +1,263 @@
+/* 图片编辑面板结果区域样式 */
+
+.resultsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  min-height: 480px;
+  height: 100%;
+}
+
+.resultMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resultBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+/* 单张大图容器 */
+.singleResultContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+}
+
+.singleResultCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.25s ease;
+  animation: slideUp 0.4s ease-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-height: 0;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.singleResultCard:hover {
+  border-color: #c4b5fd;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.12);
+}
+
+/* 单张大图容器 */
+.singleImageFrame {
+  flex: 1;
+  width: 100%;
+  min-height: 300px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.singleImageFrame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  cursor: zoom-in;
+  transition: transform 0.25s ease;
+  animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.singleImageFrame img:hover {
+  transform: scale(1.02);
+}
+
+/* 导航控制 */
+.resultNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.navBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  font-size: 1.4rem;
+  font-weight: 300;
+  line-height: 1;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-color: #c4b5fd;
+  color: #7c3aed;
+  transform: scale(1.05);
+}
+
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.navText {
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.9rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* 结果信息 */
+.resultInfo {
+  padding: 0.5rem 0.75rem;
+  background: #fafafa;
+  border-top: 1px solid #f1f5f9;
+}
+
+.resultInfoText {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 操作按钮区域 */
+.resultActions {
+  padding: 0.75rem;
+  display: flex;
+  justify-content: center;
+  background: #fafafa;
+  border-top: 1px solid #f1f5f9;
+}
+
+.downloadBtn {
+  font-size: 0.8rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.downloadBtn:hover {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-color: #c4b5fd;
+  color: #7c3aed;
+}
+
+/* 进度条区域 - 底部固定高度，避免内容跳动 */
+.progressSection {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  min-height: 50px;
+}
+
+/* 进度条占位区域 - 始终保留空间 */
+.progressPlaceholder {
+  margin-top: auto;
+  min-height: 50px;
+}
+
+/* 空状态 */
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  border-radius: 12px;
+  border: 1.5px dashed #e2e8f0;
+  background: linear-gradient(135deg, #fafafa 0%, #f8fafc 100%);
+  min-height: 320px;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.8;
+}
+
+.emptyText {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .resultsSection {
+    padding: 1rem;
+    min-height: 360px;
+  }
+
+  .singleImageFrame {
+    min-height: 200px;
+  }
+
+  .navBtn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+
+  .emptyState {
+    min-height: 240px;
+    padding: 2rem 1rem;
+  }
+
+  .emptyIcon {
+    font-size: 2.5rem;
+  }
+}

@@ -1,0 +1,1133 @@
+export const siteContentEn = {
+  header: {
+    logo: "Nano Banana Pro AI",
+    logoImage: "https://aiimage.pkgames.org/nano-banana/logo.webp",
+    navLinks: [
+      { label: "Home", href: "/" },
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Pricing", href: "/pricing" },
+      { label: "Prompt", href: "/prompt" },
+      { label: "History", href: "/history" },
+    ],
+    loginButton: "Login",
+    logoutButton: "Logout",
+    toggleMenuAriaLabel: "Toggle menu",
+  },
+  hero: {
+    title:
+      "Nano Banana Pro AI -- Powered By Gemini 3.0 Flash Image Generation & Editing Studio",
+    subtitle:
+      "Experience Google's revolutionary Nano Banana Pro AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana Pro AI.",
+    ctaPrimary: "Try Nano Banana",
+    ctaSecondary: "",
+    ctaPrimaryHref: "/dashboard",
+    ctaSecondaryHref: "",
+  },
+  editor: {
+    title: "Nano Banana Pro AI - Advanced Image Editor",
+    subtitle:
+      "Transform and edit your images with the powerful Nano Banana Pro AI model - achieve professional-grade image editing with simple text prompts",
+  },
+  textToImage: {
+    title: "Create Stunning Images from Text",
+    subtitle:
+      "Simply describe what you want, and watch Nano Banana Pro AI bring your imagination to life with photorealistic quality",
+    promptLabel: "Prompt",
+    tryItLabel: "Try it",
+    moreLabel: "View More",
+    items: [
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628634462-0.png",
+        prompt: "Generate a portrait image of a detailed, transparent glass sphere/capsule held between two fingers against a neutral background. Inside the capsule is a miniature chibi version of [PERSON NAME] with realistic facial features but cute proportions - oversized head, small body. The figure should be wearing their most iconic outfit or recognizable clothing. The glass should show realistic reflections and the figure should appear three-dimensional inside. Photorealistic style with perfect lighting.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766628927500-0.png",
+        prompt: "Create a hyper-realistic 1080x1080 square render of a human hand gently holding a rounded, beveled miniature display platform showcasing a 3D collectible diorama of [CITY]. Feature its most iconic landmarks, small-scale modern and historical architecture, and lush miniature greenery and trees. A bold 3D “[New York]” sign is cleanly built into the front edge of the platform. Use a refined, desaturated color scheme with matte textures to enhance the realistic scale-model look. Light the scene with soft studio illumination, warm highlights, and subtle depth shadows. Place the composition against a neutral gray gradient backdrop, keeping the same viewing angle and perspective for consistency. Add atmospheric depth, photorealistic textures, and ultra-precise detailing for an 8K quality high-end collectible aesthetic",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629197849-1.png",
+        prompt: "I took selfies with Judy Hopps and Nick Wilde on the set of Zootopia.The subjects are kept exactly the same as the reference images; facial features, bone structure, skin tone, expression, pose, and appearance are 100% identical.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766629711103-0.png",
+        prompt: "Create an infographic image of [EIFFEL TOWER], combining a real photograph of the landmark with blueprint-style technical annotations and diagrams overlaid on the image. Include the title “[EIFFEL TOWER]” in a hand-drawn box in the corner. Add white chalk-style sketches showing key structural data, important measurements, material quantities, internal diagrams, load-flow arrows, cross-sections, floor plans, and notable architectural or engineering features. Style: blueprint aesthetic with white line drawings on the photograph, technical/architectural annotation style, educational infographic feel, with the real environment visible behind the annotations",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630256509-0.png",
+        prompt: "Create a professional promotional card for a Christmas skincare gift set, designed in a vertical layout with a minimalist and premium aesthetic. Use a soft gradient background that transitions from icy snow-white at the top to a light pink at the bottom, creating a fresh and elegant atmosphere.In the upper central area of the composition, carefully place a high-end skincare gift box. The box features a matte white package with an embossed delicate snowflake pattern and the brand logo (Dior). The box is shown in an open state, revealing three skincare bottles of different sizes inside. The bottles have a clean, modern design with gold caps.Arrange Christmas decorative elements subtly around the products: a few fresh pine sprigs, small gold bells, several red berries, and scattered tiny gift boxes. All props should be meticulously lit to achieve a refined, high-end product photography look.At the top of the card, use a thin, elegant font to write the headline: “Christmas Special · Renew & Glow”. Below the products in the middle section, highlight the promotion in bold red text: “Limited Gift Set — 20% OFF · Buy & Get 5 Sheet Masks Free”. At the bottom, include a call-to-action styled like a button: “Shop Now · Limited Stock”, along with the promotion validity period: “Dec 15–26”.The overall design should emphasize the luxurious product texture and a perfectly balanced festive vibe.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766630986146-0.png",
+        prompt: "You are a Japanese manga artist with a strong personal hand-drawn style. You are one of the creators of the original hand-drawn draft sketches of Demon Slayer: Kimetsu no Yaiba.Please use your distinctive manga line-art draft style and call Nano Banana Pro to generate a panel-based manga draft storyboard based on your understanding of the following content.Do not output any analysis. Directly output the panel-based manga draft image.",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766614875845-0.jpeg",
+        prompt: "A beautiful anime girl with flowing silver hair, cherry blossoms falling around her, soft pink lighting",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615174387-0.png",
+        prompt: "Futuristic cyberpunk cityscape at night, neon signs reflecting on wet streets, flying cars in the distance",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615566054-1.png",
+        prompt: "Majestic dragon perched on a mountain peak, golden scales glowing in sunset light, fantasy art style",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766615696417-1.png",
+        prompt: "Cozy coffee shop interior, warm autumn afternoon light streaming through windows, vintage aesthetic",
+      },
+      // {
+      //   image: "https://aiimage.pkgames.org/nano-banana/gen-1766615916104-0.png",
+      //   prompt: "Underwater palace with bioluminescent creatures, ancient ruins covered in coral, mystical atmosphere",
+      // },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616048580-1.png",
+        prompt: "Steampunk airship floating above Victorian London, gears and brass details, dramatic cloudy sky",
+      },
+      {
+        image: "https://aiimage.pkgames.org/nano-banana/gen-1766616112421-0.png",
+        prompt: "Enchanted forest with giant glowing mushrooms, fairy lights, whimsical fantasy world",
+      },
+      // {
+      //   image: "https://aiimage.pkgames.org/nano-banana/gen-1766616188285-0.png",
+      //   prompt: "Samurai warrior in traditional armor standing in bamboo forest, morning mist, cinematic lighting",
+      // },
+    ],
+  },
+  imageToImageExamples: {
+    title: "Transform Any Image with AI",
+    subtitle:
+      "Edit, enhance, and reimagine your photos with powerful AI - drag the slider to see the magic",
+    beforeLabel: "Before",
+    afterLabel: "After",
+    promptLabel: "Edit Prompt",
+    tryItLabel: "Try it yourself",
+    moreLabel: "View More",
+    items: [
+      {
+        before: "https://aiimage.pkgames.org/nano-banana/add-color-0.webp",
+        after: "https://aiimage.pkgames.org/nano-banana/add-color-1.webp",
+        prompt: "Color this image",
+      },
+      {
+        before: "https://aiimage.pkgames.org/nano-banana/beach-scenery-0.webp",
+        after: "https://aiimage.pkgames.org/nano-banana/beach-scenery-1.webp",
+        prompt: "Switch to a night scene with point light sources",
+      },
+      {
+        before: "https://aiimage.pkgames.org/nano-banana/car-0.webp",
+        after: "https://aiimage.pkgames.org/nano-banana/car-1.webp",
+        prompt: "Change the background to a snowy winter landscape",
+      },
+      {
+        before: "https://aiimage.pkgames.org/nano-banana/ui-design-0.webp",
+        after: "https://aiimage.pkgames.org/nano-banana/ui-design-1.webp",
+        prompt: "Create a UI mockup based on the wireframe",
+      },
+      {
+        before: "https://aiimage.pkgames.org/nano-banana/line-art-pose-0.webp",
+        after: "https://aiimage.pkgames.org/nano-banana/line-art-pose-1.webp",
+        prompt: "Replace the person in the top-right corner with the line-art pose, shot in a professional studio setting",
+      },
+      {
+        before: "https://aiimage.pkgames.org/nano-banana/line-drawing-0.webp",
+        after: "https://aiimage.pkgames.org/nano-banana/line-drawing-1.webp",
+        prompt: "Color the line art",
+      },
+    ],
+  },
+  examples: {
+    title: "Examples: See what Nano Banana can do",
+    resultAlt: "Result",
+    afterLabel: "After",
+    promptUsedLabel: "Prompt used:",
+    items: [
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-after-2.jpg",
+        prompt: "change the bikini to red",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after: "https://cdn.ainanobanana.io/nanobanana-example-2-after.png",
+        prompt:
+          "Transform this anime character into a collectible figure product showcase: Create a physical PVC figure standing on a clear round base, place a product box with the character artwork behind it, and add a computer monitor showing the 3D modeling process in Blender.",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after:
+          "https://cdn.ainanobanana.io/nano-banana/cad910b5-b130-4ae6-bf2c-e813d5572835.png",
+        prompt: "Repair and color this photo",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after:
+          "https://cdn.ainanobanana.io/nano-banana/22a808a5-32d2-4760-812c-07eee8875426.png",
+        prompt:
+          "Transform the subject into a handmade crocheted yarn doll with a cute, chibi-style appearance.",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after:
+          "https://cdn.ainanobanana.io/nano-banana/c06bcfe8-b5f1-4a11-9181-21138d1b46d3.png",
+        prompt: "Reimagine the photo in the style of Van Gogh's 'Starry Night'.",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after:
+          "https://cdn.ainanobanana.io/nano-banana/47b04301-79bb-431a-a54f-8fc88674bc3c.png",
+        prompt: "Change the hair to blue.",
+      },
+      {
+        before: "https://cdn.ainanobanana.io/nanobanana-example-before.png",
+        after:
+          "https://cdn.ainanobanana.io/nano-banana/7c7f75bd-84e5-47e6-9b93-f1f2164d2b26.png",
+        prompt: "Transform the person into a LEGO minifigure, inside its packaging box.",
+      },
+    ],
+  },
+  communityGallery: {
+    title: "Stunning Creations from Nano Banana Pro AI Community",
+    subtitle:
+      "Watch as Nano Banana Pro AI transforms your ideas into stunning reality - from concept to product in seconds",
+    promptLabel: "Prompt",
+    videoPromptLabel: "Video Prompt",
+    showcases: [
+      {
+        title: "Complete Nano Banana Pro AI Transformation Pipeline",
+        prompt:
+          "Transform this anime character into a collectible figure product showcase: Create a physical PVC figure standing on a clear round base, place a product box with the character artwork behind it, and add a computer monitor showing the 3D modeling process in Blender.",
+        videoPrompt:
+          "Let the anime character come to life: make her smile gently, blink naturally, and have her hair sway softly in the breeze",
+        image: "https://cdn.ainanobanana.io/ai-poster.png",
+        video: "https://image.ainanobanana.io/ai-nanobanana.mp4",
+      },
+      {
+        title: "Nano Banana Pro AI Cyberpunk Portrait",
+        prompt:
+          "Transform into a cyberpunk style portrait with neon lights and futuristic elements",
+        image:
+          "https://cdn.ainanobanana.io/flux-kontext-dev/1e9de2c2-1fea-473c-a2c0-73191a02940c.png",
+      },
+      {
+        title: "Nano Banana Pro AI Restore Image",
+        prompt: "fix scratches and damage, and colorize old photos",
+        image: "https://cdn.ainanobanana.io/restore-image.png",
+      },
+    ],
+  },
+  whyChoose: {
+    title: "Why Creators Choose Nano Banana Pro AI",
+    subtitle:
+      "Revolutionary technology that outperforms Flux Kontext with unmatched speed and accuracy",
+    features: [
+      {
+        icon: "⚡",
+        title: "One-Shot Perfect Generation",
+        description:
+          "Nano Banana Pro AI Achieve 95% first-try success with natural language editing - no complex prompts needed.",
+      },
+      {
+        icon: "🚀",
+        title: "Lightning-Fast Processing",
+        description:
+          "Nano Banana Pro AI Generate professional images in 60 seconds - 10x faster than traditional AI models.",
+      },
+      {
+        icon: "👤",
+        title: "Face Completion Technology",
+        description:
+          "Nano Banana Pro AI Advanced facial reconstruction that preserves identity with photorealistic accuracy.",
+      },
+      {
+        icon: "🎭",
+        title: "Consistent Character Editing",
+        description:
+          "Nano Banana Pro AI Maintain character consistency across multiple generations - perfect for AI influencers.",
+      },
+      {
+        icon: "🔒",
+        title: "Enterprise Security",
+        description:
+          "SOC 2, GDPR, and ISO 27001 certified - Nano Banana Pro AI trusted by professional teams worldwide.",
+      },
+      {
+        icon: "🎨",
+        title: "Multiple Style Support",
+        description:
+          "From photorealistic to anime, oil painting to watercolor - master any artistic style with one model.",
+      },
+      {
+        icon: "🌐",
+        title: "Multi-Language Prompts",
+        description:
+          "Write prompts in any language - Chinese, Japanese, Korean, English and more supported natively.",
+      },
+      {
+        icon: "📱",
+        title: "Cross-Platform Access",
+        description:
+          "Create anywhere - seamless experience on desktop, tablet, and mobile devices.",
+      },
+    ],
+  },
+  stats: {
+    title: "Trusted by Creators Worldwide",
+    subtitle: "Join our growing community of AI artists and designers",
+    items: [
+      { value: "100K+", label: "Active Users" },
+      { value: "1.3M+", label: "Images Generated" },
+      { value: "99.9%", label: "Uptime" },
+      { value: "4.9/5", label: "User Rating" },
+    ],
+  },
+  testimonials: {
+    title: "What Creators Say",
+    subtitle: "Real feedback from our community",
+    items: [
+      {
+        name: "Sarah Chen",
+        role: "Digital Artist",
+        avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+        content: "Nano Banana Pro AI has completely transformed my workflow. The image quality is incredible and the speed is unmatched. I can now create concept art 10x faster than before.",
+        rating: 5,
+      },
+      {
+        name: "Marcus Johnson",
+        role: "Marketing Director",
+        avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+        content: "We use Nano Banana for all our marketing campaigns. The consistency in character generation is perfect for our brand assets. Highly recommended!",
+        rating: 5,
+      },
+      {
+        name: "Yuki Tanaka",
+        role: "Game Developer",
+        avatar: "https://randomuser.me/api/portraits/women/68.jpg",
+        content: "The anime style generation is absolutely stunning. I've tried many AI tools, but Nano Banana understands artistic nuances better than any other.",
+        rating: 5,
+      },
+      {
+        name: "Alex Rivera",
+        role: "Content Creator",
+        avatar: "https://randomuser.me/api/portraits/men/75.jpg",
+        content: "60 seconds for professional quality images is a game changer. My YouTube thumbnails have never looked better. The ROI is incredible.",
+        rating: 5,
+      },
+      {
+        name: "Emily Watson",
+        role: "Freelance Illustrator",
+        avatar: "https://randomuser.me/api/portraits/women/22.jpg",
+        content: "As a freelancer, time is money. Nano Banana helps me deliver client work faster without compromising on quality. My clients are always impressed!",
+        rating: 5,
+      },
+      {
+        name: "David Kim",
+        role: "E-commerce Entrepreneur",
+        avatar: "https://randomuser.me/api/portraits/men/45.jpg",
+        content: "Product images that used to cost $500+ per shoot now take minutes. The quality rivals professional photography. Absolute game-changer for my business.",
+        rating: 5,
+      },
+      {
+        name: "Lisa Thompson",
+        role: "Social Media Manager",
+        avatar: "https://randomuser.me/api/portraits/women/56.jpg",
+        content: "I manage 10+ brand accounts. Nano Banana helps me create unique, on-brand visuals for each one. The multi-style support is fantastic!",
+        rating: 5,
+      },
+      {
+        name: "James Wilson",
+        role: "Indie Game Studio Founder",
+        avatar: "https://randomuser.me/api/portraits/men/67.jpg",
+        content: "We saved months of art production time. The character consistency feature is perfect for our game assets. Worth every penny!",
+        rating: 5,
+      },
+      {
+        name: "Sophie Martin",
+        role: "Fashion Blogger",
+        avatar: "https://randomuser.me/api/portraits/women/33.jpg",
+        content: "Creating outfit concepts and mood boards has never been easier. The photorealistic quality is just incredible. My followers love the content!",
+        rating: 5,
+      },
+      {
+        name: "Michael Brown",
+        role: "Advertising Creative",
+        avatar: "https://randomuser.me/api/portraits/men/52.jpg",
+        content: "From concept to client presentation in hours instead of days. Nano Banana has revolutionized our creative process. The team loves it!",
+        rating: 5,
+      },
+      {
+        name: "Anna Kowalski",
+        role: "Children's Book Author",
+        avatar: "https://randomuser.me/api/portraits/women/41.jpg",
+        content: "Illustrating my books used to be the hardest part. Now I can bring my stories to life exactly as I imagine them. Magical experience!",
+        rating: 5,
+      },
+      {
+        name: "Robert Taylor",
+        role: "Architecture Visualizer",
+        avatar: "https://randomuser.me/api/portraits/men/28.jpg",
+        content: "The ability to quickly generate architectural concepts and renderings has transformed how I work with clients. Incredible tool for visualization!",
+        rating: 5,
+      },
+    ],
+  },
+  modelComparison: {
+    title: "AI Image Generation Model Comparison",
+    subtitle: "See how Nano Banana Pro AI compares to other leading AI image generation tools",
+    tableHeaders: {
+      model: "Model",
+      speed: "Speed",
+      quality: "Quality",
+      editingCapability: "Editing",
+      characterConsistency: "Character Consistency",
+      pricing: "Pricing",
+      multiLanguage: "Multi-Language",
+    },
+    models: [
+      {
+        name: "Nano Banana Pro AI",
+        icon: "🍌",
+        isHighlighted: true,
+        speed: { value: "60s", rating: 5, label: "Ultra Fast" },
+        quality: { value: "4K", rating: 5, label: "Excellent" },
+        editingCapability: { value: "Full", rating: 5, label: "Text + Image" },
+        characterConsistency: { value: "95%", rating: 5, label: "Excellent" },
+        pricing: { value: "$9.99", rating: 5, label: "Affordable" },
+        multiLanguage: { value: "Yes", rating: 5, label: "50+ Languages" },
+      },
+      {
+        name: "Midjourney",
+        icon: "🎨",
+        isHighlighted: false,
+        speed: { value: "60s", rating: 4, label: "Fast" },
+        quality: { value: "4K", rating: 5, label: "Excellent" },
+        editingCapability: { value: "Limited", rating: 2, label: "Text Only" },
+        characterConsistency: { value: "70%", rating: 3, label: "Medium" },
+        pricing: { value: "$10+", rating: 4, label: "Moderate" },
+        multiLanguage: { value: "Limited", rating: 2, label: "English Main" },
+      },
+      {
+        name: "DALL-E 3",
+        icon: "🤖",
+        isHighlighted: false,
+        speed: { value: "30s", rating: 5, label: "Very Fast" },
+        quality: { value: "HD", rating: 4, label: "Good" },
+        editingCapability: { value: "Basic", rating: 3, label: "Inpainting" },
+        characterConsistency: { value: "60%", rating: 2, label: "Low" },
+        pricing: { value: "$20+", rating: 3, label: "Expensive" },
+        multiLanguage: { value: "Yes", rating: 4, label: "Good" },
+      },
+      {
+        name: "Stable Diffusion",
+        icon: "🖼️",
+        isHighlighted: false,
+        speed: { value: "Variable", rating: 3, label: "Depends" },
+        quality: { value: "HD-4K", rating: 4, label: "Good" },
+        editingCapability: { value: "Advanced", rating: 4, label: "Requires Setup" },
+        characterConsistency: { value: "80%", rating: 4, label: "With LoRA" },
+        pricing: { value: "Free/$", rating: 5, label: "Open Source" },
+        multiLanguage: { value: "Limited", rating: 2, label: "English Main" },
+      },
+      {
+        name: "Flux",
+        icon: "⚡",
+        isHighlighted: false,
+        speed: { value: "45s", rating: 4, label: "Fast" },
+        quality: { value: "4K", rating: 5, label: "Excellent" },
+        editingCapability: { value: "Good", rating: 4, label: "Kontext Edit" },
+        characterConsistency: { value: "85%", rating: 4, label: "Good" },
+        pricing: { value: "$15+", rating: 3, label: "Moderate" },
+        multiLanguage: { value: "Limited", rating: 3, label: "Basic" },
+      },
+      {
+        name: "Adobe Firefly",
+        icon: "🔥",
+        isHighlighted: false,
+        speed: { value: "30s", rating: 4, label: "Fast" },
+        quality: { value: "HD", rating: 4, label: "Good" },
+        editingCapability: { value: "Good", rating: 4, label: "Adobe Suite" },
+        characterConsistency: { value: "65%", rating: 3, label: "Medium" },
+        pricing: { value: "$23+", rating: 2, label: "Expensive" },
+        multiLanguage: { value: "Yes", rating: 4, label: "Good" },
+      },
+    ],
+    footer: "* Comparison based on publicly available information as of 2025. Performance may vary.",
+  },
+  pricing: {
+    title: "Nano Banana Pro AI for Every Creator",
+    subtitle:
+      "From hobbyists to professionals - join the Nano Banana Pro AI community generating millions of images daily.",
+    toggleLabels: {
+      monthly: "Monthly",
+      yearly: "Yearly",
+      yearlyDiscount: "-20%",
+      onetime: "Credit Packs",
+    },
+    getStartedButton: "Subscribe Now",
+    buyNowButton: "Buy Now",
+    creditsLabel: "Credits",
+    onetimeTitle: "💎 Credit Packages",
+    onetimeSubtitle: "No subscription needed • Never expires • Use anytime",
+    monthlyPlans: [
+      {
+        name: "Starter",
+        description: "Perfect for trying out",
+        price: "$9.99",
+        period: "/month",
+        features: [
+          "200 credits per month",
+          "Basic AI models",
+          "Standard generation speed",
+          "Email support",
+          "PNG format downloads",
+          "Commercial license",
+        ],
+        highlighted: false,
+      },
+      {
+        name: "Basic",
+        description: "For individual creators",
+        price: "$24.99",
+        period: "/month",
+        features: [
+          "500 credits/mo + 🎁 100 bonus",
+          "Basic AI models",
+          "HD output quality",
+          "Priority support",
+          "PNG format downloads",
+          "Commercial license",
+        ],
+        highlighted: false,
+      },
+      {
+        name: "Popular",
+        description: "Best for creators and teams",
+        price: "$49.99",
+        period: "/month",
+        badge: "⭐ RECOMMENDED",
+        features: [
+          "1,000 credits/mo + 🎁 300 bonus",
+          "All AI models",
+          "HD output quality",
+          "Batch generation",
+          "Priority support",
+          "Commercial license",
+        ],
+        highlighted: true,
+      },
+      {
+        name: "Pro",
+        description: "For power users & enterprises",
+        price: "$99.99",
+        period: "/month",
+        features: [
+          "2,000 credits/mo + 🎁 500 bonus",
+          "All AI models",
+          "HD output quality",
+          "Batch generation",
+          "Priority queue",
+          "API access",
+        ],
+        highlighted: false,
+      },
+    ],
+    yearlyPlans: [
+      {
+        name: "Starter",
+        description: "Perfect for trying out",
+        price: "$95.90",
+        originalPrice: "$119.88",
+        period: "/year",
+        monthlyEquiv: "$7.99/month",
+        saveBadge: "Save $24",
+        features: [
+          "2,400 credits per year",
+          "Basic AI models",
+          "Standard generation speed",
+          "Email support",
+          "PNG format downloads",
+          "Commercial license",
+        ],
+        highlighted: false,
+      },
+      {
+        name: "Basic",
+        description: "For individual creators",
+        price: "$239.90",
+        originalPrice: "$299.88",
+        period: "/year",
+        monthlyEquiv: "$19.99/month",
+        saveBadge: "Save $60",
+        features: [
+          "6,000 credits/yr + 🎁 1,200 bonus",
+          "Basic AI models",
+          "HD output quality",
+          "Priority support",
+          "PNG format downloads",
+          "Commercial license",
+        ],
+        highlighted: false,
+      },
+      {
+        name: "Popular",
+        description: "Best for creators and teams",
+        price: "$479.90",
+        originalPrice: "$599.88",
+        period: "/year",
+        monthlyEquiv: "$39.99/month",
+        saveBadge: "Save $120",
+        badge: "⭐ BEST VALUE",
+        features: [
+          "12,000 credits/yr + 🎁 3,600 bonus",
+          "All AI models",
+          "HD output quality",
+          "Batch generation",
+          "Priority support",
+          "Commercial license",
+        ],
+        highlighted: true,
+      },
+      {
+        name: "Pro",
+        description: "For power users & enterprises",
+        price: "$959.90",
+        originalPrice: "$1,199.88",
+        period: "/year",
+        monthlyEquiv: "$79.99/month",
+        saveBadge: "Save $240",
+        features: [
+          "24,000 credits/yr + 🎁 6,000 bonus",
+          "All AI models",
+          "HD output quality",
+          "Batch generation",
+          "Priority queue",
+          "API access",
+        ],
+        highlighted: false,
+      },
+    ],
+    onetimePlans: [
+      {
+        name: "Small",
+        description: "Get started",
+        price: "$19.99",
+        credits: "400",
+        features: [
+          "One-time purchase",
+          "Credits never expire",
+          "All AI models",
+          "Commercial license",
+        ],
+        highlighted: false,
+      },
+      {
+        name: "Medium",
+        description: "Popular choice",
+        price: "$49.99",
+        credits: "1,000",
+        features: [
+          "One-time purchase",
+          "Credits never expire",
+          "All AI models",
+          "Commercial license",
+          "Priority support",
+        ],
+        highlighted: false,
+      },
+      {
+        name: "Large",
+        description: "Best value",
+        price: "$99.99",
+        credits: "2,500",
+        badge: "💎 BEST VALUE",
+        features: [
+          "One-time purchase",
+          "Credits never expire",
+          "All AI models",
+          "Commercial license",
+          "Priority support",
+        ],
+        highlighted: true,
+      },
+      {
+        name: "Mega",
+        description: "For power users",
+        price: "$249.99",
+        credits: "6,000",
+        features: [
+          "One-time purchase",
+          "Credits never expire",
+          "All AI models",
+          "Commercial license",
+          "Priority queue",
+          "Dedicated support",
+        ],
+        highlighted: false,
+      },
+    ],
+    trustBadges: [
+      { icon: "🛡️", text: "30-day money-back guarantee" },
+      { icon: "💳", text: "Secure payment" },
+      { icon: "❌", text: "Cancel anytime" },
+      { icon: "🎧", text: "24/7 Support" },
+    ],
+  },
+  tweets: {
+    title: "Nano Banana Pro AI Tweets Explore",
+    subtitle: "See what creators are saying about Nano Banana Pro AI",
+  },
+  faq: {
+    title: "Frequently Asked Question about Nano Banana Pro AI",
+    items: [
+      {
+        question: "What is Nano Banana Pro AI?",
+        answer:
+          "Nano Banana Pro AI is an advanced image generation and editing platform powered by Google's Gemini 3.0 Flash Image technology. It allows you to create, edit, and transform images using simple text prompts.",
+      },
+      {
+        question: "How fast is image generation?",
+        answer:
+          "Nano Banana Pro AI generates professional images in 60 seconds - 10x faster than traditional AI models, thanks to our optimized infrastructure and advanced algorithms.",
+      },
+      {
+        question: "What is face completion technology?",
+        answer:
+          "Our advanced facial reconstruction technology preserves identity with photorealistic accuracy, ensuring that faces in generated images are realistic, detailed, and consistent.",
+      },
+      {
+        question: "Can I use Nano Banana Pro AI for commercial projects?",
+        answer:
+          "Yes! All our paid plans include commercial usage rights. You can use the generated images for your business, marketing, or any commercial purpose.",
+      },
+      {
+        question: "What is character consistency?",
+        answer:
+          "Character consistency allows you to maintain the same character across multiple generations in different poses and settings - perfect for creating AI influencers or consistent brand characters.",
+      },
+      {
+        question: "What security certifications does Nano Banana Pro AI have?",
+        answer:
+          "We are SOC 2, GDPR, and ISO 27001 certified. Your data and creations are protected by enterprise-grade security trusted by professional teams worldwide.",
+      },
+      {
+        question: "Can I cancel my subscription anytime?",
+        answer:
+          "Yes, subscriptions can be cancelled at any time. You'll continue to have access to your plan benefits until the end of your billing period.",
+      },
+      {
+        question: "Is Nano Banana Pro AI suitable for professional creative work?",
+        answer:
+          "Absolutely! Nano Banana Pro AI is designed for professional use, offering 4K resolution output, commercial licensing, and enterprise-grade security (SOC 2, GDPR, ISO 27001 certified). Many marketing agencies, game studios, and content creators rely on it for production-quality assets.",
+      },
+      {
+        question: "Can Nano Banana Pro AI maintain character consistency across multiple edits?",
+        answer:
+          "Yes, one of our standout features is 95% character consistency across multiple generations. You can create a character once and generate them in different poses, scenes, and styles while maintaining their identity - perfect for AI influencers, brand mascots, or game characters.",
+      },
+      {
+        question: "What types of editing can I do with Nano Banana Pro AI?",
+        answer:
+          "Nano Banana Pro AI supports comprehensive image editing including: style transfer (anime, oil painting, watercolor, etc.), background replacement, object removal/addition, face restoration and colorization of old photos, text-to-image generation, image-to-image transformation, and UI mockup creation from wireframes.",
+      },
+      {
+        question: "How is Nano Banana Pro AI different from Flux Kontext?",
+        answer:
+          "While both are powerful AI image tools, Nano Banana Pro AI offers several advantages: faster processing (60 seconds vs variable times), higher character consistency (95% vs 85%), native multi-language support for 50+ languages, more affordable pricing starting at $9.99, and full text+image editing capabilities compared to Flux Kontext's more limited editing options.",
+      },
+      {
+        question: "What exactly is Nano Banana Pro AI and how does it work?",
+        answer:
+          "Nano Banana Pro AI is an advanced AI image generation and editing platform powered by Google's Gemini 3.0 Flash Image technology. Simply describe what you want in natural language (in any of 50+ supported languages), optionally upload reference images, and our AI generates or transforms images in about 60 seconds. It understands context, maintains character consistency, and produces 4K quality output suitable for professional use.",
+      },
+    ],
+  },
+  imageToVideo: {
+    title: "Image to Video - Bring Your Photos to Life",
+    subtitle: "Transform your images into stunning videos with AI",
+    model: "Veo3: Premium quality • 16:9 • 720p • 8 seconds",
+    uploadPanelTitle: "Upload Image",
+    uploadPlaceholder: "Click to upload or drag and drop",
+    uploadHint: "Supported formats: JPG, PNG, WebP",
+    animationPromptLabel: "Animation Prompt",
+    animationPromptPlaceholder: "Describe how you want your image to animate...",
+    generateButton: "Generate Video",
+    generatedPanelTitle: "Generated Video",
+    generatedPlaceholder: "Your generated video will appear here",
+    exampleModelLabel: "Model: Google Veo3",
+    examplePromptLabel: "Example Prompt:",
+    examplePrompt:
+      "Let the anime character come to life: make her smile gently, blink naturally, and have her hair sway softly in the breeze",
+  },
+  prompt: {
+    title: "Nano Banana Pro Showcase",
+    subtitle: "Explore stunning AI-generated images and discover the prompts behind them",
+    textToImageTab: "Text to Image",
+    imageToImageTab: "Image to Image",
+    textToImageTitle: "Text to Image Gallery",
+    textToImageSubtitle: "Click any image to see the full prompt",
+    imageToImageTitle: "Image Transformation Examples",
+    imageToImageSubtitle: "Drag the slider to compare before and after",
+    beforeLabel: "Before",
+    afterLabel: "After",
+    promptLabel: "Prompt",
+    copyPrompt: "Copy Prompt",
+    copied: "Copied!",
+    tryItLabel: "Try it",
+    ctaTitle: "Ready to create your own?",
+    ctaSubtitle: "Start generating amazing images with Nano Banana Pro AI",
+    ctaButton: "Try Nano Banana Now",
+    modelLabel: "Nano Banana Pro"
+  },
+  explore: {
+    title: "Nano Banana Pro AI Explore",
+    subtitle:
+      "Discover the ideal inspiration among 1 million prompts and unleash your imagination!",
+    emptyMessage: "No images found",
+    imageAltPrefix: "Explore item",
+    overlayModel: "Nano Banana Pro AI",
+    overlayPrompt: "Creative image generation...",
+    images: [
+      "https://cdn.ainanobanana.io/nano-banana/20ca34f4-a8cd-4642-a207-052fc9b490ed.png",
+      "https://cdn.ainanobanana.io/image-upscale/bcf8dd18-3576-431f-86d2-a04ceb334245.png",
+      "https://cdn.ainanobanana.io/image-upscale/d8bdb435-0736-468d-82e1-e1d6a4dcc35b.png",
+      "https://cdn.ainanobanana.io/image-upscale/6e7d5257-fb9e-4981-bb62-d92f0c44b216.png",
+      "https://cdn.ainanobanana.io/image-upscale/6a5ad36d-518b-437b-ae97-a7f50682d337.png",
+      "https://cdn.ainanobanana.io/nano-banana/947423e3-bbfb-43b8-b2fb-69d49cf526d5.png",
+      "https://cdn.ainanobanana.io/nano-banana/373c6b42-a0a7-47c6-9141-9d10ba938574.png",
+      "https://cdn.ainanobanana.io/nano-banana/5c5225b8-9adf-41e6-868a-9152f0536dac.png",
+      "https://cdn.ainanobanana.io/nano-banana/d0e1e421-064f-457c-af87-061bbd1a223c.png",
+      "https://cdn.ainanobanana.io/nano-banana/ac48d3f9-e45a-4664-9cbf-7e4c90d6fca8.png",
+      "https://cdn.ainanobanana.io/nano-banana/d2384f25-397a-4afe-8148-26c3c1f8e06b.png",
+      "https://cdn.ainanobanana.io/nano-banana/0a9719bb-ca39-493f-8b3e-953d3dc30372.png",
+      "https://cdn.ainanobanana.io/nano-banana/378c387f-43a3-4f0a-9746-f9fc56b24f6c.png",
+      "https://cdn.ainanobanana.io/nano-banana/46e4ec87-9511-4ca6-bac8-fc4e6c315e9b.png",
+      "https://cdn.ainanobanana.io/nano-banana/18ed5ae4-cdad-4258-bd98-6c99550722c2.png",
+      "https://cdn.ainanobanana.io/nano-banana/336989fa-58eb-46b8-98ac-a8dabc2f2489.png",
+      "https://cdn.ainanobanana.io/nano-banana/86cda981-aac4-468c-9cf5-202d520281fb.png",
+      "https://cdn.ainanobanana.io/nano-banana/79ecf9d6-1643-4fd3-8d72-46aaf7538ba5.png",
+      "https://cdn.ainanobanana.io/nano-banana/1d27dedc-9d65-4712-b513-64b56a20a0cf.png",
+      "https://cdn.ainanobanana.io/nano-banana/806536fa-ec8a-4af4-99cf-c20179f2c9ed.png",
+    ],
+  },
+  history: {
+    title: "My Generation History",
+    subtitle: "View your past creations",
+    emptyMessage: "No history found. Start creating now!",
+  },
+  legal: {
+    titles: {
+      support: "Support",
+      tos: "Terms of Service",
+      privacy: "Privacy Policy",
+      refund: "Refund Policy",
+    },
+    content: {
+      support: {
+        lastUpdated: "Last updated: December 2024",
+        contactTitle: "Contact Us",
+        contactText: "For any questions or support requests, please email us at:",
+        contactEmail: "support@ainanobanana.io",
+        sections: [
+          {
+            heading: "How Can We Help?",
+            paragraphs: [
+              "Welcome to Nano Banana Pro AI Support Center. We're here to help you get the most out of our AI image generation platform.",
+              "Our support team is available to assist you with account issues, billing questions, technical problems, and general inquiries about our services.",
+            ],
+          },
+          {
+            heading: "Common Questions",
+            paragraphs: [
+              "Account & Billing: For questions about your subscription, credits, or payment issues, please include your registered email address when contacting us.",
+              "Technical Issues: If you're experiencing problems with image generation, please describe the issue in detail and include any error messages you've received.",
+              "Feature Requests: We love hearing from our users! Feel free to share your ideas for new features or improvements.",
+            ],
+          },
+          {
+            heading: "Response Time",
+            paragraphs: [
+              "We typically respond to all inquiries within 24-48 business hours. Premium subscribers receive priority support with faster response times.",
+              "For urgent billing issues, please include 'URGENT' in your email subject line.",
+            ],
+          },
+          {
+            heading: "Self-Service Resources",
+            paragraphs: [
+              "Before contacting support, you may find answers in our FAQ section on the homepage. Many common questions about image generation, credits, and account management are covered there.",
+            ],
+          },
+        ],
+      },
+      tos: {
+        lastUpdated: "Last updated: December 2024",
+        contactTitle: "Contact",
+        contactText: "For questions about these terms, please contact:",
+        contactEmail: "legal@ainanobanana.io",
+        sections: [
+          {
+            heading: "1. Acceptance of Terms",
+            paragraphs: [
+              "By accessing or using Nano Banana Pro AI (\"Service\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.",
+              "We reserve the right to modify these terms at any time. Continued use of the Service after changes constitutes acceptance of the modified terms.",
+            ],
+          },
+          {
+            heading: "2. Description of Service",
+            paragraphs: [
+              "Nano Banana Pro AI provides AI-powered image generation and editing services. Users can create, edit, and transform images using text prompts and reference images.",
+              "The Service is provided \"as is\" and we do not guarantee specific results or outcomes from using our AI models.",
+            ],
+          },
+          {
+            heading: "3. User Accounts",
+            paragraphs: [
+              "You must provide accurate information when creating an account. You are responsible for maintaining the security of your account credentials.",
+              "You may not share your account with others or allow unauthorized access. We reserve the right to suspend or terminate accounts that violate these terms.",
+            ],
+          },
+          {
+            heading: "4. Acceptable Use",
+            paragraphs: [
+              "You agree not to use the Service to generate content that is illegal, harmful, threatening, abusive, defamatory, or otherwise objectionable.",
+              "You may not use the Service to create content that infringes on intellectual property rights of others, or to generate deepfakes or deceptive media intended to mislead.",
+              "We reserve the right to remove any content and suspend accounts that violate our acceptable use policy.",
+            ],
+          },
+          {
+            heading: "5. Intellectual Property",
+            paragraphs: [
+              "Images generated using our Service with a paid subscription include commercial usage rights. You retain ownership of images you create.",
+              "You may not claim that AI-generated images are original photographs or human-created artwork when selling or licensing them.",
+              "Our platform, technology, and branding remain our exclusive intellectual property.",
+            ],
+          },
+          {
+            heading: "6. Payment and Subscriptions",
+            paragraphs: [
+              "Paid subscriptions are billed in advance on a monthly or annual basis. Credits purchased are non-refundable except as specified in our Refund Policy.",
+              "We reserve the right to change pricing with 30 days notice to existing subscribers.",
+            ],
+          },
+          {
+            heading: "7. Limitation of Liability",
+            paragraphs: [
+              "To the maximum extent permitted by law, Nano Banana Pro AI shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service.",
+              "Our total liability shall not exceed the amount you paid for the Service in the 12 months preceding the claim.",
+            ],
+          },
+          {
+            heading: "8. Termination",
+            paragraphs: [
+              "We may terminate or suspend your account at any time for violation of these terms. You may cancel your account at any time through your account settings.",
+              "Upon termination, your right to use the Service will immediately cease. We may delete your data after account termination.",
+            ],
+          },
+          {
+            heading: "9. Governing Law",
+            paragraphs: [
+              "These terms shall be governed by and construed in accordance with applicable laws. Any disputes shall be resolved through binding arbitration.",
+            ],
+          },
+        ],
+      },
+      privacy: {
+        lastUpdated: "Last updated: December 2024",
+        contactTitle: "Contact Us",
+        contactText: "For privacy-related inquiries, please contact:",
+        contactEmail: "privacy@ainanobanana.io",
+        sections: [
+          {
+            heading: "1. Information We Collect",
+            paragraphs: [
+              "Account Information: When you create an account, we collect your email address and authentication information from third-party providers (e.g., Google OAuth).",
+              "Usage Data: We collect information about how you use our Service, including prompts used, images generated, and feature usage patterns.",
+              "Payment Information: Payment processing is handled by third-party providers. We do not store your full credit card details.",
+              "Device Information: We collect standard technical information such as browser type, IP address, and device identifiers for security and analytics purposes.",
+            ],
+          },
+          {
+            heading: "2. How We Use Your Information",
+            paragraphs: [
+              "To provide and maintain the Service, process transactions, and send service-related communications.",
+              "To improve our AI models and Service quality through aggregated, anonymized usage analysis.",
+              "To detect and prevent fraud, abuse, and security incidents.",
+              "To comply with legal obligations and respond to lawful requests from authorities.",
+            ],
+          },
+          {
+            heading: "3. Data Sharing",
+            paragraphs: [
+              "We do not sell your personal information to third parties.",
+              "We may share data with service providers who help us operate the Service (payment processors, cloud hosting, analytics).",
+              "We may disclose information when required by law or to protect our rights and safety.",
+            ],
+          },
+          {
+            heading: "4. Data Retention",
+            paragraphs: [
+              "Account data is retained while your account is active. Generated images are stored according to your subscription tier.",
+              "You may request deletion of your account and associated data at any time by contacting support.",
+              "Some data may be retained for legal compliance even after account deletion.",
+            ],
+          },
+          {
+            heading: "5. Data Security",
+            paragraphs: [
+              "We implement industry-standard security measures including encryption, access controls, and regular security audits.",
+              "We are SOC 2, GDPR, and ISO 27001 certified, demonstrating our commitment to data protection.",
+              "While we strive to protect your data, no method of transmission over the Internet is 100% secure.",
+            ],
+          },
+          {
+            heading: "6. Your Rights",
+            paragraphs: [
+              "You have the right to access, correct, or delete your personal information.",
+              "You may opt out of marketing communications at any time.",
+              "EU/EEA users have additional rights under GDPR including data portability and the right to object to processing.",
+            ],
+          },
+          {
+            heading: "7. Cookies and Tracking",
+            paragraphs: [
+              "We use essential cookies for authentication and Service functionality.",
+              "We use analytics tools to understand how users interact with our Service. You can control cookie preferences through your browser settings.",
+            ],
+          },
+          {
+            heading: "8. Children's Privacy",
+            paragraphs: [
+              "Our Service is not intended for children under 13. We do not knowingly collect information from children under 13. If we learn we have collected such information, we will delete it promptly.",
+            ],
+          },
+          {
+            heading: "9. International Data Transfers",
+            paragraphs: [
+              "Your data may be processed in countries outside your residence. We ensure appropriate safeguards are in place for international transfers.",
+            ],
+          },
+          {
+            heading: "10. Changes to This Policy",
+            paragraphs: [
+              "We may update this Privacy Policy periodically. We will notify you of significant changes via email or through the Service.",
+            ],
+          },
+        ],
+      },
+      refund: {
+        lastUpdated: "Last updated: December 2024",
+        contactTitle: "Request a Refund",
+        contactText: "To request a refund, please contact:",
+        contactEmail: "billing@ainanobanana.io",
+        sections: [
+          {
+            heading: "Refund Eligibility",
+            paragraphs: [
+              "We want you to be satisfied with Nano Banana Pro AI. If you're not happy with your purchase, we offer refunds under the following conditions:",
+              "Subscription Plans: You may request a full refund within 7 days of your initial subscription purchase if you have not used more than 20% of your allocated credits.",
+              "Add-on Credit Packages: Credit package purchases are generally non-refundable once credits have been used. Unused credit packages may be refunded within 14 days of purchase.",
+            ],
+          },
+          {
+            heading: "Non-Refundable Situations",
+            paragraphs: [
+              "Refunds will not be provided in the following cases:",
+              "- Credits that have already been used for image generation",
+              "- Subscription renewals (you should cancel before renewal to avoid charges)",
+              "- Accounts terminated for Terms of Service violations",
+              "- Requests made after the eligible refund period",
+              "- Promotional or discounted purchases (unless required by law)",
+            ],
+          },
+          {
+            heading: "How to Request a Refund",
+            paragraphs: [
+              "To request a refund, please email our billing team with the following information:",
+              "- Your registered email address",
+              "- Date of purchase",
+              "- Order or transaction ID (if available)",
+              "- Reason for refund request",
+              "We will process your request within 5-7 business days. Approved refunds will be credited to your original payment method within 10 business days.",
+            ],
+          },
+          {
+            heading: "Subscription Cancellation",
+            paragraphs: [
+              "You may cancel your subscription at any time through your account settings. Upon cancellation:",
+              "- You will retain access to your subscription benefits until the end of your current billing period",
+              "- No partial refunds are provided for the remaining days of your billing period",
+              "- Your credits will expire at the end of your billing period unless you have purchased add-on credits",
+            ],
+          },
+          {
+            heading: "Chargebacks",
+            paragraphs: [
+              "If you initiate a chargeback with your bank or credit card company instead of contacting us first, your account may be suspended pending investigation.",
+              "We encourage you to contact our support team to resolve any billing issues before initiating a chargeback.",
+            ],
+          },
+          {
+            heading: "Special Circumstances",
+            paragraphs: [
+              "We understand that exceptional circumstances may arise. If you believe you have a valid reason for a refund outside our standard policy, please contact us and explain your situation.",
+              "Technical issues that significantly impacted your ability to use the Service may qualify for pro-rated refunds or credit extensions on a case-by-case basis.",
+            ],
+          },
+        ],
+      },
+    },
+  },
+  footer: {
+    logo: "Nano Banana Pro AI",
+    logoImage: "https://aiimage.pkgames.org/nano-banana/logo.webp",
+    tagline: "AI-Powered Image Generation & Editing Platform",
+    description: "Create stunning images with Nano Banana Pro AI - powered by Google Gemini 3.0 Flash. Professional-grade AI image generation, editing, and transformation in seconds.",
+    copyright: "© 2025 Nano Banana Pro AI. All rights reserved.",
+    sections: {
+      product: {
+        title: "Product",
+        links: [
+          { label: "Image Editor", href: "/dashboard", description: "Edit and transform images with AI" },
+          { label: "Batch Generation", href: "/dashboard?tab=batch", description: "Generate multiple images at once" },
+          { label: "Model Comparison", href: "/dashboard?tab=compare", description: "Compare AI models side by side" },
+          { label: "Prompt Gallery", href: "/prompt", description: "Explore creative prompts" },
+        ],
+      },
+      resources: {
+        title: "Resources",
+        links: [
+          { label: "Pricing", href: "/pricing", description: "View pricing plans" },
+          { label: "FAQ", href: "/#faq", description: "Frequently asked questions" },
+          { label: "Generation History", href: "/history", description: "View your past creations" },
+        ],
+      },
+      company: {
+        title: "Company",
+        links: [
+          { label: "Support", href: "/support", description: "Get help with your account" },
+          { label: "Terms of Service", href: "/tos", description: "Read our terms" },
+          { label: "Privacy Policy", href: "/privacy-policy", description: "Your privacy matters" },
+          { label: "Refund Policy", href: "/refund-policy", description: "Refund information" },
+        ],
+      },
+    },
+    social: {
+      title: "Follow Us",
+      links: [
+        { platform: "Twitter", href: "https://twitter.com/nanobananaai", icon: "twitter" },
+        { platform: "Discord", href: "https://discord.gg/nanobanana", icon: "discord" },
+        { platform: "YouTube", href: "https://youtube.com/@nanobananaai", icon: "youtube" },
+      ],
+    },
+    contact: {
+      title: "Contact",
+      email: "BlusDanny1230@gmail.com",
+      emailLabel: "Email Us",
+    },
+    badges: [
+      { text: "SOC 2 Certified", icon: "shield" },
+      { text: "GDPR Compliant", icon: "lock" },
+      { text: "ISO 27001", icon: "certificate" },
+    ],
+    seoKeywords: "AI image generator, text to image, image editing, Gemini 3.0, AI art, image transformation",
+  },
+};

@@ -1,0 +1,269 @@
+.videoSection {
+    min-height: 100vh;
+    padding: 120px 20px 80px;
+    background: var(--background);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--foreground);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modelInfo {
+    text-align: center;
+    color: #2563eb;
+    font-size: 0.9rem;
+    margin-bottom: 40px;
+    background: rgba(37, 99, 235, 0.1);
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+.panelTitle {
+    font-size: 1.2rem;
+    color: var(--foreground);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.uploadArea {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+    margin-bottom: 20px;
+}
+
+.uploadArea:hover {
+    border-color: #2563eb;
+    background: #f3f4f6;
+}
+
+.uploadIcon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.uploadHint {
+    color: #6b7280;
+    font-size: 0.8rem;
+    margin-top: 10px;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.textarea {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 12px;
+    color: #111;
+    font-size: 0.95rem;
+    resize: vertical;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    ring: 2px solid #2563eb;
+}
+
+.generateBtn {
+    width: 100%;
+    padding: 14px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.generateBtn:hover {
+    background: #1d4ed8;
+}
+
+.videoPlaceholder {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    aspect-ratio: 16/9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+.videoIcon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.exampleInfo {
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.exampleLabel {
+    color: #2563eb;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.examplePrompt {
+    color: #4b5563;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .videoSection {
+        padding: 100px 16px 60px;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .contentGrid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .uploadArea {
+        padding: 30px;
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .videoSection {
+        padding: 80px 12px 48px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+    }
+
+    .modelInfo {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        margin-bottom: 24px;
+    }
+
+    .contentGrid {
+        gap: 20px;
+    }
+
+    .panelTitle {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .uploadArea {
+        padding: 24px 16px;
+    }
+
+    .uploadIcon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .uploadHint {
+        font-size: 0.75rem;
+    }
+
+    .formGroup {
+        margin-bottom: 16px;
+    }
+
+    .label {
+        font-size: 0.85rem;
+    }
+
+    .textarea {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .generateBtn {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    .videoPlaceholder {
+        margin-bottom: 16px;
+    }
+
+    .videoIcon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .exampleInfo {
+        padding: 16px;
+    }
+
+    .exampleLabel {
+        font-size: 0.8rem;
+    }
+
+    .examplePrompt {
+        font-size: 0.85rem;
+    }
+}

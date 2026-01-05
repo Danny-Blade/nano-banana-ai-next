@@ -2,90 +2,151 @@
 
 import React from 'react';
 import styles from './Examples.module.css';
-import { siteContent } from '@/config/content';
+import { useI18n, LocaleLink } from "@/components/I18nProvider";
+import { useSiteContent } from "@/components/useSiteContent";
 
 const Examples = () => {
-    const { title, items } = siteContent.examples;
-    const [currentIndex, setCurrentIndex] = React.useState(0);
+    const { localePath } = useI18n();
+    const siteContent = useSiteContent();
+    const { title, subtitle, items, promptLabel, tryItLabel, moreLabel } = siteContent.textToImage;
+    const sectionRef = React.useRef<HTMLElement>(null);
+    const [visibleCards, setVisibleCards] = React.useState<Set<number>>(new Set());
+    const [hoveredCard, setHoveredCard] = React.useState<number | null>(null);
+    const [previewImage, setPreviewImage] = React.useState<{ src: string; prompt: string } | null>(null);
 
-    const nextExample = () => {
-        setCurrentIndex((prev) => (prev + 1) % items.length);
+    React.useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    const index = Number(entry.target.getAttribute('data-index'));
+                    if (entry.isIntersecting) {
+                        setVisibleCards((prev) => new Set([...prev, index]));
+                    }
+                });
+            },
+            { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+        );
+
+        const cards = sectionRef.current?.querySelectorAll('[data-index]');
+        cards?.forEach((card) => observer.observe(card));
+
+        return () => observer.disconnect();
+    }, []);
+
+    const handleImageClick = (e: React.MouseEvent, src: string, prompt: string) => {
+        e.stopPropagation();
+        setPreviewImage({ src, prompt });
     };
 
-    const prevExample = () => {
-        setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+    const closePreview = () => {
+        setPreviewImage(null);
     };
 
-    const currentExample = items[currentIndex];
+    React.useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') closePreview();
+        };
+        if (previewImage) {
+            document.addEventListener('keydown', handleEsc);
+            document.body.style.overflow = 'hidden';
+        }
+        return () => {
+            document.removeEventListener('keydown', handleEsc);
+            document.body.style.overflow = '';
+        };
+    }, [previewImage]);
 
     return (
-        <section className={styles.examplesSection}>
+        <section ref={sectionRef} className={styles.examplesSection}>
             <div className={styles.container}>
-                <h2 className={styles.title}>{title}</h2>
-
-                <div className={styles.exampleViewer}>
-                    <div className={styles.imageComparison}>
-                        <div className={styles.imageBox}>
-                            <span className={styles.label}>Before</span>
-                            <div className={styles.imagePlaceholder}>
-                                <img src={currentExample.before} alt="Before transformation" />
-                            </div>
-                        </div>
-
-                        <div className={styles.arrow}>→</div>
-
-                        <div className={styles.imageBox}>
-                            <span className={styles.label}>After</span>
-                            <div className={styles.imagePlaceholder}>
-                                <img src={currentExample.after} alt="After transformation" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className={styles.promptDisplay}>
-                        <strong>Prompt used:</strong>
-                        <p>"{currentExample.prompt}"</p>
-                    </div>
-
-                    <div className={styles.navigation}>
-                        <button
-                            className={styles.navBtn}
-                            onClick={prevExample}
-                            aria-label="Previous example"
-                        >
-                            ←
-                        </button>
-                        <span className={styles.counter}>
-                            {currentIndex + 1} / {items.length}
-                        </span>
-                        <button
-                            className={styles.navBtn}
-                            onClick={nextExample}
-                            aria-label="Next example"
-                        >
-                            →
-                        </button>
-                    </div>
-
-                    <p className={styles.hint}>
-                        Click on images to view full size • Swipe or use arrows to see more examples
-                    </p>
+                <div className={styles.header}>
+                    <div className={styles.badge}>Text to Image</div>
+                    <h2 className={styles.title}>{title}</h2>
+                    <p className={styles.subtitle}>{subtitle}</p>
                 </div>
 
-                <div className={styles.thumbnails}>
+                <div className={styles.grid}>
                     {items.map((item, index) => (
-                        <button
+                        <div
                             key={index}
-                            className={`${styles.thumbnail} ${index === currentIndex ? styles.active : ''}`}
-                            onClick={() => setCurrentIndex(index)}
+                            data-index={index}
+                            className={`${styles.card} ${visibleCards.has(index) ? styles.visible : ''}`}
+                            style={{ animationDelay: `${index * 80}ms` }}
+                            onMouseEnter={() => setHoveredCard(index)}
+                            onMouseLeave={() => setHoveredCard(null)}
                         >
-                            <div className={styles.thumbnailPlaceholder}>
-                                <img src={item.after} alt={`Example ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <div
+                                className={styles.imageWrapper}
+                                onClick={(e) => handleImageClick(e, item.image, item.prompt)}
+                                style={{ cursor: 'zoom-in' }}
+                            >
+                                <img
+                                    src={item.image}
+                                    alt={item.prompt}
+                                    className={styles.image}
+                                />
+                                <div className={`${styles.overlay} ${hoveredCard === index ? styles.overlayVisible : ''}`}>
+                                    <a
+                                        href={localePath(`/dashboard?prompt=${encodeURIComponent(item.prompt)}`)}
+                                        className={styles.tryButton}
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {tryItLabel}
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
-                        </button>
+                            <div className={styles.content}>
+                                <div className={styles.promptBadge}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    {promptLabel}
+                                </div>
+                                <p className={styles.promptText}>{item.prompt}</p>
+                            </div>
+                        </div>
                     ))}
                 </div>
+
+                <div className={styles.moreButtonWrapper}>
+                    <LocaleLink href="/prompt" className={styles.moreButton}>
+                        {moreLabel}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </LocaleLink>
+                </div>
             </div>
+
+            {/* Image Preview Modal */}
+            {previewImage && (
+                <div className={styles.previewOverlay} onClick={closePreview}>
+                    <button className={styles.closeButton} onClick={closePreview} aria-label="Close preview">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                    <div className={styles.previewContent} onClick={(e) => e.stopPropagation()}>
+                        <img
+                            src={previewImage.src}
+                            alt={previewImage.prompt}
+                            className={styles.previewImage}
+                        />
+                        <div className={styles.previewPrompt}>
+                            <div className={styles.promptBadge}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                {promptLabel}
+                            </div>
+                            <p className={styles.previewPromptText}>{previewImage.prompt}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 };

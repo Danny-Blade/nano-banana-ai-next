@@ -1,45 +1,219 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './PricingCards.module.css';
-import { siteContent } from '@/config/content';
+import { useSiteContent } from "@/components/useSiteContent";
+
+type BillingMode = 'monthly' | 'yearly' | 'onetime';
+
+interface PricingPlan {
+    name: string;
+    description: string;
+    price: string;
+    period?: string;
+    originalPrice?: string;
+    monthlyEquiv?: string;
+    saveBadge?: string;
+    badge?: string;
+    credits?: string;
+    features: string[];
+    highlighted: boolean;
+}
+
+// Generate particles with stable random values
+const generateParticles = (count: number) => {
+    return Array.from({ length: count }, (_, i) => ({
+        id: i,
+        left: `${(i * 37 + 13) % 100}%`,
+        delay: `${(i * 1.7) % 15}s`,
+        duration: `${10 + (i * 0.5) % 10}s`,
+    }));
+};
 
 const PricingCards = () => {
-    const { title, subtitle, plans, addons } = siteContent.pricing;
+    const siteContent = useSiteContent();
+    const { subtitle, monthlyPlans, yearlyPlans, onetimePlans, toggleLabels, trustBadges } = siteContent.pricing;
+    const [billingMode, setBillingMode] = useState<BillingMode>('monthly');
+    // 初始值必须与服务端一致，避免hydration mismatch
+    const [isMobile, setIsMobile] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    // Generate stable particles
+    const particles = useMemo(() => generateParticles(20), []);
+
+    useEffect(() => {
+        // 使用queueMicrotask延迟setState，避免React Compiler警告
+        queueMicrotask(() => {
+            setIsHydrated(true);
+        });
+
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 480);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    const handleModeChange = (mode: BillingMode) => {
+        setBillingMode(mode);
+    };
+
+    const getCurrentPlans = (): PricingPlan[] => {
+        switch (billingMode) {
+            case 'monthly':
+                return monthlyPlans as PricingPlan[];
+            case 'yearly':
+                return yearlyPlans as PricingPlan[];
+            case 'onetime':
+                return onetimePlans as PricingPlan[];
+            default:
+                return monthlyPlans as PricingPlan[];
+        }
+    };
+
+    const currentPlans = getCurrentPlans();
+
+    // Calculate indicator position
+    const getIndicatorStyle = (): React.CSSProperties => {
+        const baseStyle: React.CSSProperties = {};
+
+        // 在hydration完成前禁用transition，避免闪烁
+        if (!isHydrated) {
+            baseStyle.transition = 'none';
+        }
+
+        if (isMobile) {
+            // Vertical layout for mobile
+            const index = billingMode === 'monthly' ? 0 : billingMode === 'yearly' ? 1 : 2;
+            return { ...baseStyle, transform: `translateY(${index * 100}%)` };
+        } else {
+            // Horizontal layout for desktop
+            const percentage = billingMode === 'monthly' ? 0 : billingMode === 'yearly' ? 100 : 200;
+            return { ...baseStyle, transform: `translateX(${percentage}%)` };
+        }
+    };
 
     return (
         <section className={styles.pricingSection}>
+            {/* Background Effects */}
+            <div className={styles.bgContainer}>
+                <div className={`${styles.orb} ${styles.orb1}`} />
+                <div className={`${styles.orb} ${styles.orb2}`} />
+                <div className={`${styles.orb} ${styles.orb3}`} />
+                <div className={styles.particles}>
+                    {particles.map((particle) => (
+                        <div
+                            key={particle.id}
+                            className={styles.particle}
+                            style={{
+                                left: particle.left,
+                                animationDelay: particle.delay,
+                                animationDuration: particle.duration,
+                            }}
+                        />
+                    ))}
+                </div>
+            </div>
+
             <div className={styles.container}>
+                {/* Header */}
                 <div className={styles.header}>
-                    <h2 className={styles.title}>{title}</h2>
+                    <h2 className={styles.title}>
+                        <span className={styles.titleHighlight}>Nano Banana Pro AI</span> for Every Creator
+                    </h2>
                     <p className={styles.subtitle}>{subtitle}</p>
+
+                    {/* Toggle Buttons */}
+                    <div className={styles.toggleContainer}>
+                        <div
+                            className={`${styles.toggleIndicator} ${isMobile ? styles.mobile : ''}`}
+                            style={getIndicatorStyle()}
+                        />
+                        <button
+                            className={`${styles.toggleBtn} ${billingMode === 'monthly' ? styles.active : ''}`}
+                            onClick={() => handleModeChange('monthly')}
+                        >
+                            {toggleLabels.monthly}
+                        </button>
+                        <button
+                            className={`${styles.toggleBtn} ${billingMode === 'yearly' ? styles.active : ''}`}
+                            onClick={() => handleModeChange('yearly')}
+                        >
+                            {toggleLabels.yearly}
+                            <span className={styles.discountBadge}>{toggleLabels.yearlyDiscount}</span>
+                        </button>
+                        <button
+                            className={`${styles.toggleBtn} ${billingMode === 'onetime' ? styles.active : ''}`}
+                            onClick={() => handleModeChange('onetime')}
+                        >
+                            {toggleLabels.onetime}
+                        </button>
+                    </div>
                 </div>
 
-                {/* Main Plans */}
-                <div className={styles.plansGrid}>
-                    {plans.map((plan, index) => (
+                {/* One-time Header */}
+                {billingMode === 'onetime' && (
+                    <div className={styles.onetimeHeader}>
+                        <h3>{siteContent.pricing.onetimeTitle}</h3>
+                        <p>{siteContent.pricing.onetimeSubtitle}</p>
+                    </div>
+                )}
+
+                {/* Plans Grid */}
+                <div className={styles.plansGrid} key={billingMode}>
+                    {currentPlans.map((plan, index) => (
                         <div
                             key={index}
                             className={`${styles.planCard} ${plan.highlighted ? styles.highlighted : ''}`}
+                            style={{ animationDelay: `${index * 100}ms` }}
                         >
                             {plan.badge && (
                                 <div className={styles.badge}>{plan.badge}</div>
                             )}
 
+                            {plan.saveBadge && (
+                                <div className={styles.saveBadge}>{plan.saveBadge}</div>
+                            )}
+
                             <h3 className={styles.planName}>{plan.name}</h3>
                             <p className={styles.planDescription}>{plan.description}</p>
 
+                            {/* Credits Display for One-time */}
+                            {billingMode === 'onetime' && plan.credits && (
+                                <div className={styles.creditsDisplay}>
+                                    <div className={styles.creditsAmount}>{plan.credits}</div>
+                                    <div className={styles.creditsLabel}>{siteContent.pricing.creditsLabel}</div>
+                                </div>
+                            )}
+
                             <div className={styles.priceWrapper}>
+                                {plan.originalPrice && (
+                                    <span className={styles.priceOriginal}>{plan.originalPrice}</span>
+                                )}
                                 <span className={styles.price}>{plan.price}</span>
-                                <span className={styles.period}>{plan.period}</span>
+                                {plan.period && (
+                                    <span className={styles.period}>{plan.period}</span>
+                                )}
+                                {plan.monthlyEquiv && (
+                                    <p className={styles.monthlyEquiv}>{plan.monthlyEquiv}</p>
+                                )}
                             </div>
 
-                            <button className={styles.selectBtn}>
-                                Select Payment Method
+                            <button className={plan.highlighted ? styles.btnPrimary : styles.btnSecondary}>
+                                {billingMode === 'onetime'
+                                    ? siteContent.pricing.buyNowButton
+                                    : siteContent.pricing.getStartedButton}
                             </button>
 
                             <ul className={styles.featuresList}>
                                 {plan.features.map((feature, idx) => (
                                     <li key={idx} className={styles.feature}>
-                                        <span className={styles.checkmark}>✓</span>
+                                        <span className={styles.checkmark}>
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                                <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </span>
                                         {feature}
                                     </li>
                                 ))}
@@ -48,38 +222,15 @@ const PricingCards = () => {
                     ))}
                 </div>
 
-                {/* Add-on Packages */}
-                {addons && addons.length > 0 && (
-                    <div className={styles.addonsSection}>
-                        <h3 className={styles.addonsTitle}>Add-on Packages</h3>
-                        <div className={styles.addonsGrid}>
-                            {addons.map((addon, index) => (
-                                <div key={index} className={styles.addonCard}>
-                                    <h4 className={styles.addonName}>{addon.name}</h4>
-                                    <p className={styles.addonDescription}>{addon.description}</p>
-
-                                    <div className={styles.addonPrice}>
-                                        <span className={styles.price}>{addon.price}</span>
-                                        <span className={styles.credits}>{addon.credits}</span>
-                                    </div>
-
-                                    <ul className={styles.addonFeatures}>
-                                        {addon.features.map((feature, idx) => (
-                                            <li key={idx}>
-                                                <span className={styles.checkmark}>✓</span>
-                                                {feature}
-                                            </li>
-                                        ))}
-                                    </ul>
-
-                                    <button className={styles.addonBtn}>
-                                        Select Payment Method
-                                    </button>
-                                </div>
-                            ))}
+                {/* Trust Badges */}
+                <div className={styles.trustSection}>
+                    {trustBadges.map((badge, index) => (
+                        <div key={index} className={styles.trustItem}>
+                            <span className={styles.trustIcon}>{badge.icon}</span>
+                            <span>{badge.text}</span>
                         </div>
-                    </div>
-                )}
+                    ))}
+                </div>
             </div>
         </section>
     );

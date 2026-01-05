@@ -1,0 +1,98 @@
+/* Pricing Page Theme - Modern Gradient Style */
+:root {
+  /* Primary Colors - Vibrant purple gradient */
+  --pricing-primary: #8b5cf6;
+  --pricing-primary-light: #a78bfa;
+  --pricing-primary-dark: #7c3aed;
+  --pricing-primary-gradient: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+
+  /* Accent Colors */
+  --pricing-accent: #f59e0b;
+  --pricing-accent-light: #fbbf24;
+  --pricing-success: #10b981;
+  --pricing-success-light: #34d399;
+
+  /* Background */
+  --pricing-bg: linear-gradient(180deg, #faf5ff 0%, #ffffff 50%, #f5f3ff 100%);
+  --pricing-card-bg: #ffffff;
+  --pricing-card-highlighted-bg: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+
+  /* Text Colors */
+  --pricing-text-primary: #111827;
+  --pricing-text-secondary: #6b7280;
+  --pricing-text-muted: #9ca3af;
+  --pricing-text-on-primary: #ffffff;
+
+  /* Border Colors */
+  --pricing-border: #e5e7eb;
+  --pricing-border-highlighted: #8b5cf6;
+
+  /* Toggle Button Colors */
+  --pricing-toggle-bg: #f3f4f6;
+  --pricing-toggle-active-bg: var(--pricing-primary-gradient);
+  --pricing-toggle-text: #6b7280;
+  --pricing-toggle-active-text: #ffffff;
+
+  /* Badge Colors */
+  --pricing-badge-popular-bg: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  --pricing-badge-popular-text: #ffffff;
+  --pricing-badge-save-bg: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  --pricing-badge-save-text: #ffffff;
+  --pricing-badge-discount-bg: #fef3c7;
+  --pricing-badge-discount-text: #92400e;
+
+  /* Button Colors */
+  --pricing-btn-primary-bg: var(--pricing-primary-gradient);
+  --pricing-btn-primary-hover: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  --pricing-btn-primary-text: #ffffff;
+  --pricing-btn-secondary-bg: #ffffff;
+  --pricing-btn-secondary-border: #8b5cf6;
+  --pricing-btn-secondary-text: #8b5cf6;
+  --pricing-btn-secondary-hover-bg: #faf5ff;
+
+  /* Shadow */
+  --pricing-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --pricing-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --pricing-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --pricing-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --pricing-shadow-glow: 0 0 40px rgba(139, 92, 246, 0.2);
+  --pricing-shadow-card-hover: 0 20px 40px -10px rgba(139, 92, 246, 0.15);
+
+  /* Spacing */
+  --pricing-spacing-xs: 0.25rem;
+  --pricing-spacing-sm: 0.5rem;
+  --pricing-spacing-md: 1rem;
+  --pricing-spacing-lg: 1.5rem;
+  --pricing-spacing-xl: 2rem;
+  --pricing-spacing-2xl: 3rem;
+  --pricing-spacing-3xl: 4rem;
+
+  /* Border Radius */
+  --pricing-radius-sm: 0.375rem;
+  --pricing-radius-md: 0.5rem;
+  --pricing-radius-lg: 0.75rem;
+  --pricing-radius-xl: 1rem;
+  --pricing-radius-2xl: 1.5rem;
+  --pricing-radius-full: 9999px;
+
+  /* Font */
+  --pricing-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --pricing-font-display: 'Plus Jakarta Sans', var(--pricing-font-sans);
+
+  /* Font Sizes */
+  --pricing-text-xs: 0.75rem;
+  --pricing-text-sm: 0.875rem;
+  --pricing-text-base: 1rem;
+  --pricing-text-lg: 1.125rem;
+  --pricing-text-xl: 1.25rem;
+  --pricing-text-2xl: 1.5rem;
+  --pricing-text-3xl: 1.875rem;
+  --pricing-text-4xl: 2.25rem;
+  --pricing-text-5xl: 3rem;
+
+  /* Transitions */
+  --pricing-transition-fast: 150ms ease;
+  --pricing-transition-normal: 200ms ease-out;
+  --pricing-transition-slow: 300ms ease-out;
+  --pricing-transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
