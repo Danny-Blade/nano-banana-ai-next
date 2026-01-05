@@ -1,19 +1,12 @@
-import type { Metadata } from "next";
-import "../globals.css";
 import { Providers } from "@/components/Providers";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/types";
 import { notFound } from "next/navigation";
+import { LocaleUpdater } from "@/components/LocaleUpdater";
 
-export const metadata: Metadata = {
-  title: "Nano Banana Pro AI - Google Gemini 3.0 Flash Image Generation & Editing Studio",
-  description: "Experience Google's revolutionary Nano Banana Pro AI (Gemini 3.0 Flash Image) for advanced image generation and editing. Create, blend, and enhance images with state-of-the-art AI technology in Nano Banana Pro AI （alternative Google AI Studio and Imarena). Professional image editing made simple.",
-  icons: {
-    icon: "https://aiimage.pkgames.org/nano-banana/logo.webp",
-  },
-};
-
+// 为非默认语言生成静态参数（zh, ja, ko）
+// 默认语言 (en) 由 (default) 路由组处理，不需要 /en 前缀
 export function generateStaticParams() {
-  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+  return SUPPORTED_LOCALES.filter(locale => locale !== 'en').map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout(props: {
@@ -29,10 +22,9 @@ export default async function LocaleLayout(props: {
   }
 
   return (
-    <html lang={locale}>
-      <body>
-        <Providers initialLocale={locale as Locale}>{children}</Providers>
-      </body>
-    </html>
+    <Providers initialLocale={locale as Locale}>
+      <LocaleUpdater locale={locale} />
+      {children}
+    </Providers>
   );
 }

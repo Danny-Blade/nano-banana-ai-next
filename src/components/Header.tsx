@@ -2,10 +2,9 @@
 
 import React from 'react';
 import styles from './Header.module.css';
-import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import LoginModal from './LoginModal';
-import { useI18n } from "@/components/I18nProvider";
+import { useI18n, LocaleLink } from "@/components/I18nProvider";
 import type { Locale } from "@/lib/i18n";
 import { useSiteContent } from "@/components/useSiteContent";
 
@@ -62,21 +61,21 @@ const Header = () => {
         <>
             <header className={styles.header}>
                 <div className={styles.logo}>
-                    <Link href="/">
+                    <LocaleLink href="/">
                         {logoImage ? (
                             <img src={logoImage} alt={logo} height={40} style={{ display: 'block' }} />
                         ) : (
                             logo
                         )}
-                    </Link>
+                    </LocaleLink>
                 </div>
 
                 {/* Desktop Nav */}
                 <nav className={styles.nav}>
                     {navLinks.map((link, index) => (
-                        <Link key={index} href={link.href} className={styles.navLink}>
+                        <LocaleLink key={index} href={link.href} className={styles.navLink}>
                             {link.label}
-                        </Link>
+                        </LocaleLink>
                     ))}
                 </nav>
 
@@ -187,14 +186,14 @@ const Header = () => {
                 {/* Mobile Nav Overlay */}
                 <div className={`${styles.mobileNav} ${isMenuOpen ? styles.open : ''}`}>
                     {navLinks.map((link, index) => (
-                        <Link
+                        <LocaleLink
                             key={index}
                             href={link.href}
                             className={styles.mobileNavLink}
                             onClick={() => setIsMenuOpen(false)}
                         >
                             {link.label}
-                        </Link>
+                        </LocaleLink>
                     ))}
                 </div>
             </header>

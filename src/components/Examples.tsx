@@ -2,9 +2,11 @@
 
 import React from 'react';
 import styles from './Examples.module.css';
+import { useI18n, LocaleLink } from "@/components/I18nProvider";
 import { useSiteContent } from "@/components/useSiteContent";
 
 const Examples = () => {
+    const { localePath } = useI18n();
     const siteContent = useSiteContent();
     const { title, subtitle, items, promptLabel, tryItLabel, moreLabel } = siteContent.textToImage;
     const sectionRef = React.useRef<HTMLElement>(null);
@@ -85,7 +87,7 @@ const Examples = () => {
                                 />
                                 <div className={`${styles.overlay} ${hoveredCard === index ? styles.overlayVisible : ''}`}>
                                     <a
-                                        href={`/dashboard?prompt=${encodeURIComponent(item.prompt)}`}
+                                        href={localePath(`/dashboard?prompt=${encodeURIComponent(item.prompt)}`)}
                                         className={styles.tryButton}
                                         onClick={(e) => e.stopPropagation()}
                                     >
@@ -110,12 +112,12 @@ const Examples = () => {
                 </div>
 
                 <div className={styles.moreButtonWrapper}>
-                    <a href="/prompt" className={styles.moreButton}>
+                    <LocaleLink href="/prompt" className={styles.moreButton}>
                         {moreLabel}
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
-                    </a>
+                    </LocaleLink>
                 </div>
             </div>
 

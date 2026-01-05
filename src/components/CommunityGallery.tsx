@@ -2,9 +2,11 @@
 
 import React from 'react';
 import styles from './CommunityGallery.module.css';
+import { useI18n, LocaleLink } from "@/components/I18nProvider";
 import { useSiteContent } from "@/components/useSiteContent";
 
 const CommunityGallery = () => {
+    const { localePath } = useI18n();
     const siteContent = useSiteContent();
     const { title, subtitle, items, beforeLabel, afterLabel, promptLabel, tryItLabel, moreLabel } = siteContent.imageToImageExamples;
     const sectionRef = React.useRef<HTMLElement>(null);
@@ -152,7 +154,7 @@ const CommunityGallery = () => {
                                         </div>
                                         <p className={styles.promptText}>{item.prompt}</p>
                                     </div>
-                                    <a href={`/dashboard?prompt=${encodeURIComponent(item.prompt)}&refImage=${encodeURIComponent(item.before)}`} className={styles.tryButton}>
+                                    <a href={localePath(`/dashboard?prompt=${encodeURIComponent(item.prompt)}&refImage=${encodeURIComponent(item.before)}`)} className={styles.tryButton}>
                                         {tryItLabel}
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M5 12h14M12 5l7 7-7 7" />
@@ -165,12 +167,12 @@ const CommunityGallery = () => {
                 </div>
 
                 <div className={styles.moreButtonWrapper}>
-                    <a href="/prompt" className={styles.moreButton}>
+                    <LocaleLink href="/prompt" className={styles.moreButton}>
                         {moreLabel}
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
-                    </a>
+                    </LocaleLink>
                 </div>
             </div>
         </section>

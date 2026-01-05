@@ -3,7 +3,7 @@
 import React from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import styles from "./prompt.module.css";
+import styles from "../../[locale]/prompt/prompt.module.css";
 import { useI18n, LocaleLink } from "@/components/I18nProvider";
 import { useSiteContent } from "@/components/useSiteContent";
 
@@ -63,7 +63,6 @@ export default function PromptPage() {
             setToast(promptContent.copied);
             setTimeout(() => setToast(null), 2000);
         } catch {
-            // fallback
             const textarea = document.createElement("textarea");
             textarea.value = text;
             document.body.appendChild(textarea);
@@ -125,12 +124,10 @@ export default function PromptPage() {
             <Header />
             <section className={styles.promptSection}>
                 <div className={styles.container}>
-                    {/* Hero */}
                     <div className={styles.hero}>
                         <h1 className={styles.title}>{promptContent.title}</h1>
                         <p className={styles.subtitle}>{promptContent.subtitle}</p>
 
-                        {/* Tab Switcher */}
                         <div className={styles.tabContainer}>
                             <button
                                 className={`${styles.tab} ${activeTab === "textToImage" ? styles.tabActive : ""}`}
@@ -149,7 +146,6 @@ export default function PromptPage() {
                         </div>
                     </div>
 
-                    {/* Text to Image Gallery */}
                     {activeTab === "textToImage" && (
                         <div className={styles.gallerySection} key="textToImage">
                             <div className={styles.sectionHeader}>
@@ -203,7 +199,6 @@ export default function PromptPage() {
                         </div>
                     )}
 
-                    {/* Image to Image Section */}
                     {activeTab === "imageToImage" && currentCompareItem && (
                         <div className={styles.compareSection} key="imageToImage">
                             <div className={styles.sectionHeader}>
@@ -214,14 +209,12 @@ export default function PromptPage() {
                             </div>
 
                             <div className={styles.compareContainer}>
-                                {/* Before/After Compare */}
                                 <div
                                     ref={compareRef}
                                     className={styles.compareMain}
                                     onMouseDown={handleSliderMouseDown}
                                     onTouchStart={handleSliderTouchStart}
                                 >
-                                    {/* Before Image (Background) */}
                                     <div className={styles.compareImageWrapper}>
                                         <img
                                             src={currentCompareItem.before}
@@ -230,7 +223,6 @@ export default function PromptPage() {
                                         />
                                     </div>
 
-                                    {/* After Image (Clipped) */}
                                     <div
                                         className={styles.compareAfterWrapper}
                                         style={{ width: `${sliderPosition}%` }}
@@ -243,7 +235,6 @@ export default function PromptPage() {
                                         />
                                     </div>
 
-                                    {/* Slider */}
                                     <div
                                         className={styles.compareSlider}
                                         style={{ left: `${sliderPosition}%` }}
@@ -253,14 +244,12 @@ export default function PromptPage() {
                                         </div>
                                     </div>
 
-                                    {/* Labels */}
                                     <div className={styles.compareLabels}>
                                         <span className={styles.compareLabel}>{promptContent.afterLabel}</span>
                                         <span className={styles.compareLabel}>{promptContent.beforeLabel}</span>
                                     </div>
                                 </div>
 
-                                {/* Prompt Box */}
                                 <div className={styles.comparePromptBox}>
                                     <div className={styles.comparePromptLabel}>{promptContent.promptLabel}</div>
                                     <div className={styles.comparePromptText}>{currentCompareItem.prompt}</div>
@@ -282,7 +271,6 @@ export default function PromptPage() {
                                     </div>
                                 </div>
 
-                                {/* Thumbnails */}
                                 <div className={styles.thumbnails}>
                                     {imageToImageItems.map((item, index) => (
                                         <div
@@ -306,7 +294,6 @@ export default function PromptPage() {
                         </div>
                     )}
 
-                    {/* CTA Section */}
                     <div className={styles.ctaSection}>
                         <h2 className={styles.ctaTitle}>{promptContent.ctaTitle}</h2>
                         <p className={styles.ctaSubtitle}>{promptContent.ctaSubtitle}</p>
@@ -318,7 +305,6 @@ export default function PromptPage() {
                 </div>
             </section>
 
-            {/* Image Preview Modal */}
             {previewImage && (
                 <div className={styles.modal} onClick={() => setPreviewImage(null)}>
                     <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -353,7 +339,6 @@ export default function PromptPage() {
                 </div>
             )}
 
-            {/* Toast */}
             {toast && <div className={styles.toast}>{toast}</div>}
 
             <Footer />

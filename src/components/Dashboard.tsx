@@ -3,7 +3,7 @@
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./Dashboard.module.css";
-import { useI18n } from "@/components/I18nProvider";
+import { useI18n, LocaleLink } from "@/components/I18nProvider";
 import { getMessage } from "@/lib/i18n";
 import { useSiteContent } from "@/components/useSiteContent";
 import { useSession } from "next-auth/react";
@@ -405,9 +405,9 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
               >
                 {t("dashboard.insufficientCreditsModal.close")}
               </button>
-              <a href="/pricing" className={styles.primaryBtn}>
+              <LocaleLink href="/pricing" className={styles.primaryBtn}>
                 {t("dashboard.insufficientCreditsModal.buyCredits")}
-              </a>
+              </LocaleLink>
             </div>
           </div>
         </div>

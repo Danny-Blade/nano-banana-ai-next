@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './Hero.module.css';
-import Link from 'next/link';
+import { LocaleLink } from "@/components/I18nProvider";
 import { useSiteContent } from "@/components/useSiteContent";
 
 const Hero = () => {
@@ -27,14 +27,14 @@ const Hero = () => {
                 <h1 className={styles.title}>{title}</h1>
                 <p className={styles.subtitle}>{subtitle}</p>
                 <div className={styles.ctaGroup}>
-                    <Link href={ctaPrimaryHref || '/dashboard'} className={styles.primaryBtn}>
+                    <LocaleLink href={ctaPrimaryHref || '/dashboard'} className={styles.primaryBtn}>
                         {ctaPrimary}
                         <span className={styles.btnArrow}>→</span>
-                    </Link>
+                    </LocaleLink>
                     {ctaSecondary && ctaSecondaryHref && (
-                        <Link href={ctaSecondaryHref} className={styles.secondaryBtn}>
+                        <LocaleLink href={ctaSecondaryHref} className={styles.secondaryBtn}>
                             {ctaSecondary}
-                        </Link>
+                        </LocaleLink>
                     )}
                 </div>
             </div>

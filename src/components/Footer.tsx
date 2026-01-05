@@ -2,8 +2,8 @@
 
 import React from 'react';
 import styles from './Footer.module.css';
-import Link from 'next/link';
 import Image from 'next/image';
+import { LocaleLink } from "@/components/I18nProvider";
 import { useSiteContent } from "@/components/useSiteContent";
 
 const ShieldIcon = () => (
@@ -114,13 +114,13 @@ const Footer = () => {
                             <ul className={styles.linkList}>
                                 {sections.product.links.map((link: { label: string; href: string; description: string }, index: number) => (
                                     <li key={index}>
-                                        <Link
+                                        <LocaleLink
                                             href={link.href}
                                             className={styles.navLink}
                                             title={link.description}
                                         >
                                             {link.label}
-                                        </Link>
+                                        </LocaleLink>
                                     </li>
                                 ))}
                             </ul>
@@ -132,13 +132,13 @@ const Footer = () => {
                             <ul className={styles.linkList}>
                                 {sections.resources.links.map((link: { label: string; href: string; description: string }, index: number) => (
                                     <li key={index}>
-                                        <Link
+                                        <LocaleLink
                                             href={link.href}
                                             className={styles.navLink}
                                             title={link.description}
                                         >
                                             {link.label}
-                                        </Link>
+                                        </LocaleLink>
                                     </li>
                                 ))}
                             </ul>
@@ -150,13 +150,13 @@ const Footer = () => {
                             <ul className={styles.linkList}>
                                 {sections.company.links.map((link: { label: string; href: string; description: string }, index: number) => (
                                     <li key={index}>
-                                        <Link
+                                        <LocaleLink
                                             href={link.href}
                                             className={styles.navLink}
                                             title={link.description}
                                         >
                                             {link.label}
-                                        </Link>
+                                        </LocaleLink>
                                     </li>
                                 ))}
                             </ul>

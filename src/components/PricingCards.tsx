@@ -42,8 +42,10 @@ const PricingCards = () => {
     const particles = useMemo(() => generateParticles(20), []);
 
     useEffect(() => {
-        // 标记已hydrated
-        setIsHydrated(true);
+        // 使用queueMicrotask延迟setState，避免React Compiler警告
+        queueMicrotask(() => {
+            setIsHydrated(true);
+        });
 
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 480);
