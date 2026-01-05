@@ -157,7 +157,7 @@ const d1DatabaseName = getEnv("D1_DATABASE_NAME", "CF_D1_DATABASE_NAME") ?? "nan
 const nextAuthUrl = getEnv("NEXTAUTH_URL");
 const defaultNextAuthUrl =
 	getEnv("DEFAULT_NEXTAUTH_URL") ??
-	"https://nano-banana-ai-next.blusdanny1230.workers.dev";
+	"https://nanobananago.org";
 
 // Google OAuth 凭据
 const googleClientId = getEnv("GOOGLE_CLIENT_ID");

@@ -18,7 +18,7 @@
     }
   ],
   "vars": {
-    "NEXTAUTH_URL": "https://nano-banana-ai-next.blusdanny1230.workers.dev",
+    "NEXTAUTH_URL": "https://nanobananago.org",
     "GOOGLE_CLIENT_ID": "5783249126-pofhal0pprh4dfguso8u5luhov883jdm.apps.googleusercontent.com"
   }
 }

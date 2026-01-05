@@ -50,7 +50,10 @@
       "Bash:*",
       "Bash(git -C /Users/dony/Documents/github/danny-blade/nano-banana-ai-next add package.json)",
       "Bash(git -C /Users/dony/Documents/github/danny-blade/nano-banana-ai-next commit -m \"fix: 移除Next.js 15不支持的--webpack选项\")",
-      "Bash(:*)"
+      "Bash(:*)",
+      "Bash(dwebp:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(python3:*)"
     ],
     "deny": [],
     "ask": []
