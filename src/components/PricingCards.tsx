@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './PricingCards.module.css';
 import { useSiteContent } from "@/components/useSiteContent";
+import { trackEvents } from "@/lib/gtag";
 
 type BillingMode = 'monthly' | 'yearly' | 'onetime';
 
@@ -52,6 +53,10 @@ const PricingCards = () => {
         };
         checkMobile();
         window.addEventListener('resize', checkMobile);
+
+        // 追踪定价页面浏览
+        trackEvents.viewPricing();
+
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
@@ -200,7 +205,10 @@ const PricingCards = () => {
                                 )}
                             </div>
 
-                            <button className={plan.highlighted ? styles.btnPrimary : styles.btnSecondary}>
+                            <button
+                                className={plan.highlighted ? styles.btnPrimary : styles.btnSecondary}
+                                onClick={() => trackEvents.selectPlan(`${plan.name}-${billingMode}`)}
+                            >
                                 {billingMode === 'onetime'
                                     ? siteContent.pricing.buyNowButton
                                     : siteContent.pricing.getStartedButton}

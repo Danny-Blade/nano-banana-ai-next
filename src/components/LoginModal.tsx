@@ -4,6 +4,7 @@ import React from 'react';
 import { signIn } from 'next-auth/react';
 import styles from './LoginModal.module.css';
 import { useI18n } from "@/components/I18nProvider";
+import { trackEvents } from "@/lib/gtag";
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -122,6 +123,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
                                 // next-auth 在某些情况下会返回非 2xx，但依然给出可用的 url；
                                 // 只要 url 存在就直接跳转，避免误报“登录失败”。
                                 if (result?.url) {
+                                    trackEvents.login('google');
                                     window.location.href = result.url;
                                     return;
                                 }
@@ -166,6 +168,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, callbackUrl })
                                             );
                                             return;
                                         }
+                                        trackEvents.login('dev');
                                         window.location.href = result.url;
                                         return;
                                     }

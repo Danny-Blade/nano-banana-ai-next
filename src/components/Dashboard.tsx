@@ -19,6 +19,7 @@ import {
   type LocalizedModelOption,
 } from "./dashboard/types";
 import { useImageHistory, type ImageHistoryItem } from "@/hooks/useImageHistory";
+import { trackEvents } from "@/lib/gtag";
 
 type Tab = "generate" | "batch" | "compare" | "history";
 type TemplateTarget = "generate" | "batch" | "batch-multi" | "compare";
@@ -184,6 +185,7 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
   const handleModelSelect = (modelValue: ModelValue) => {
     setSelectedModel(modelValue);
     setShowModelPicker(false);
+    trackEvents.generateImage(modelValue);
   };
 
   const openPreview = React.useCallback((
@@ -452,7 +454,10 @@ const Dashboard = ({ variant = "full" }: DashboardProps) => {
                 className={`${styles.tabButton} ${
                   activeTab === tab.key ? styles.active : ""
                 }`}
-                onClick={() => setActiveTab(tab.key as Tab)}
+                onClick={() => {
+                  setActiveTab(tab.key as Tab);
+                  if (tab.key === 'history') trackEvents.viewHistory();
+                }}
               >
                 <span className={styles.tabIcon}>{tab.icon}</span>
                 {tab.label}
